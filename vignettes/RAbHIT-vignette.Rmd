@@ -4,33 +4,33 @@ author: "Moriah Gidoni, Ayelet Peres, Gur Yaari"
 date: "Last modified `r Sys.Date()`"
 output:
   pdf_document:
-  dev: pdf
-fig_height: 20
-fig_width: 15
-highlight: pygments
-toc: yes
-html_document:
-  fig_height: 20
-fig_width: 15
-highlight: pygments
-theme: readable
-toc: yes
-md_document:
-  fig_height: 20
-fig_width: 15
-preserve_yaml: no
-toc: yes
+    dev: pdf
+    fig_height: 20
+    fig_width: 15
+    highlight: pygments
+    toc: yes
+  html_document:
+    fig_height: 20
+    fig_width: 15
+    highlight: pygments
+    theme: readable
+    toc: yes
+  md_document:
+    fig_height: 20
+    fig_width: 15
+    preserve_yaml: no
+    toc: yes
 geometry: margin=1in
 fontsize: 11pt
 vignette: >
   %\VignetteEngine{knitr::rmarkdown} 
-%\VignetteIndexEntry{Haplotype infrence} 
-%\usepackage[utf8]{inputenc}
+  %\VignetteIndexEntry{Haplotype infrence} 
+  %\usepackage[utf8]{inputenc}
 ---
   
-  ## Introduction 
+## Introduction 
   
-  Analysis of antibody repertoires by high throughput sequencing is of major importance in understanding adaptive immune responses. 
+Analysis of antibody repertoires by high throughput sequencing is of major importance in understanding adaptive immune responses. 
 Our knowledge of variations in the genomic loci encoding antibody genes is incomplete, mostly due to technical difficulties in aligning short reads to these highly repetitive loci. 
 The partial knowledge results in conflicting \textit{V-D-J} gene assignments between different algorithms, and biased genotype and haplotype inference. Previous studies have shown that haplotypes can be inferred by taking advantage of \textit{IGHJ6} heterozygosity, observed in approximately one third of the population.
 

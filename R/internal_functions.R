@@ -64,7 +64,7 @@ createHaplotypeTable <- function(df,HapByPriors=c(0.5,0.5),toHapByCol=TRUE,toHap
 
   GENES.df <- data.frame(GENE=tohap.gene,'Unk','Unk',stringsAsFactors = F)
   names(GENES.df)[2:3] <- gsub('*','.',hapBy,fixed = T)
-  GENES.df.num <- melt(df)
+  GENES.df.num <- reshape2::melt(df)
 
   df.old <- df
   if(toHapByCol){
