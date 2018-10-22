@@ -29,7 +29,7 @@ Author: Moriah Gidoni [aut],
 Maintainer: Moriah Gidoni <moriahcohen@gmail.com>
 Collate:
     'Data.R'
-    'Haplotyper.R'
+    'rabhit.R'
     'internal_functions.R'
     'functions.R'
     'graphic_functions.R'
