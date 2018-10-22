@@ -1,6 +1,6 @@
 # HaplotypeR graphic functions -----------------------------------------------------
 
-#' @include Haplotyper.R
+#' @include rabhit.R
 #' @include internal_functions.R
 NULL
 

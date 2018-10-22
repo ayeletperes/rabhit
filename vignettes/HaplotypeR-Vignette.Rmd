@@ -1,6 +1,6 @@
 ---
-title: "HaplotyperR"
-author: "Moriah, asadadas"
+title: "RAbHIT: R Antibody Haplotype Infrence Tool"
+author: "Moriah Gidoni, Ayelet Peres, Gur Yaari"
 date: "Last modified `r Sys.Date()`"
 output:
   pdf_document:
@@ -39,7 +39,7 @@ Our method extends haplotype inference to \textit{IGHD}- and \textit{IGHV}-based
 
 More details can be found here:
 
-[]().
+[Mosaic deletion patterns of the human antibody heavy chain gene locus as revealed by Bayesian haplotyping](https://doi.org/10.1101/314476).
 
 
 ## Input
@@ -60,7 +60,7 @@ Column Name           | Description
 `J_CALL`              | (Comma separated) name(s) of the nearest J allele(s) 
 
 
-An example dataset is provided with the `haplotyper` package. It contains unique naive b-cell
+An example dataset is provided with the `rabhit` package. It contains unique naive b-cell
 sequences, from a single individual.
 
 The database of germline sequences should be provided in FASTA format with 
@@ -68,7 +68,7 @@ sequences gapped according to the IMGT numbering scheme ([[3]][3]). IGHV alleles
 the IMGT database (build 201408-4) are provided with this package. (object name)
 
 ```{r, eval=TRUE, message=FALSE, warning=FALSE}
-library(haplotyper)
+library(rabhit)
 # Load example sequence data and example germline database
 data(sample_db, HVGERM, HDGERM)
 ```
@@ -76,15 +76,16 @@ data(sample_db, HVGERM, HDGERM)
 
 One can use TIgGER functions to filter the data.....It is important to note which cell types/ exp. protocol....one representative from each clone (see SHAZAM...).
 
-## Running HaplotypeR
+## Running RAbHIT
 
 The functions provided by this package can be used to perform any combination of
 the following:
 
 1. Infer haplotype by anchor gene
 2. Infer D/J single chromosome deletions by the V pooled approach
-3. Graphical output of the inferred haplotype 
-4. Graphical output of the inferred deletion 
+3. Infer double chromosome deletion by relative gene usage
+4. Graphical output of the inferred haplotype 
+5. Graphical output of the inferred deletion
 
 ### Infer haplotype by anchor gene
 
@@ -158,13 +159,29 @@ However, it is recomended to use this function for multiple individuals.
 plotDeletionsByVpooled(del_db)
 ```
 
+
+### Infering double chromosome deletion by relative gene usage
+
+....
+
+The `deletionsByBinom` function uses the V pooled approach to detect single chromosomal deletion for D and J.
+
+
+```{r, eval=TRUE, warning=FALSE}
+# Infered deletion summary table
+del_binom_db <- deletionsByBinom(samples_db)
+head(del_binom_db)
+```
+
 ## References
 
+1. [Gidoni *et al.* (2018)](https://doi.org/10.1101/314476).
 1. [Alamyar *et al.* (2010)](http://www.imgt.org/IMGTindex/IMGTHighV-QUEST.html)
 2. [Munshaw and Kepler (2010)](http://www.ncbi.nlm.nih.gov/pubmed/20147303)
 3. [Lefranc *et al.* (2003)](http://www.ncbi.nlm.nih.gov/pubmed/12477501)
 
-[1]: http://www.imgt.org/IMGTindex/IMGTHighV-QUEST.html "Alamyar et al. (2010)" 
-[2]: http://www.ncbi.nlm.nih.gov/pubmed/20147303 "Munshaw and Kepler (2010)" 
-[3]: http://www.ncbi.nlm.nih.gov/pubmed/12477501 "Lefranc et al. (2003)"
+[1]: https://doi.org/10.1101/314476 "Gidoni et al. (2018)"
+[2]: http://www.imgt.org/IMGTindex/IMGTHighV-QUEST.html "Alamyar et al. (2010)" 
+[3]: http://www.ncbi.nlm.nih.gov/pubmed/20147303 "Munshaw and Kepler (2010)" 
+[4]: http://www.ncbi.nlm.nih.gov/pubmed/12477501 "Lefranc et al. (2003)"
 

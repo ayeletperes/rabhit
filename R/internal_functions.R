@@ -1,6 +1,6 @@
 # Internal functions -----------------------------------------------------
 
-#' @include Haplotyper.R
+#' @include rabhit.R
 NULL
 
 # Calculate models likelihood

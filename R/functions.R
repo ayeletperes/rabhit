@@ -1,6 +1,6 @@
-# HaplotypeR functions -----------------------------------------------------
+# RAbHIT functions -----------------------------------------------------
 
-#' @include Haplotyper.R
+#' @include rabhit.R
 #' @include internal_functions.R
 NULL
 
@@ -323,7 +323,7 @@ deletionsByBinom <- function(clip_db,chain=c('IGH','IGK','IGL')){
   }
 
   GENE.usage.mean.dist <- sapply(GENE.usage,function(x){(x-mean(x))/sd(x)})
-  GENE.usage.mean.dist.mlt <- melt(GENE.usage.mean.dist)
+  GENE.usage.mean.dist.mlt <- reshape2::melt(GENE.usage.mean.dist)
   no.existent.genes<- which(colSums(GENE.usage.mean.dist,na.rm = T) == 0)
   GENE.usage.mean.dist.mlt <- GENE.usage.mean.dist.mlt[!(GENE.usage.mean.dist.mlt$Var2 %in% names(no.existent.genes)), ]
   GENE.usage.mean.dist.mlt$value1 <- cut(GENE.usage.mean.dist.mlt$value,breaks = c(-Inf,-3:3,Inf),right = FALSE)
