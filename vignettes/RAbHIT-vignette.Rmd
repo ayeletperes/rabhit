@@ -4,33 +4,33 @@ author: "Moriah Gidoni, Ayelet Peres, Gur Yaari"
 date: "Last modified `r Sys.Date()`"
 output:
   pdf_document:
-    dev: pdf
-    fig_height: 20
-    fig_width: 15
-    highlight: pygments
-    toc: yes
-  html_document:
-    fig_height: 20
-    fig_width: 15
-    highlight: pygments
-    theme: readable
-    toc: yes
-  md_document:
-    fig_height: 20
-    fig_width: 15
-    preserve_yaml: no
-    toc: yes
+  dev: pdf
+fig_height: 20
+fig_width: 15
+highlight: pygments
+toc: yes
+html_document:
+  fig_height: 20
+fig_width: 15
+highlight: pygments
+theme: readable
+toc: yes
+md_document:
+  fig_height: 20
+fig_width: 15
+preserve_yaml: no
+toc: yes
 geometry: margin=1in
 fontsize: 11pt
 vignette: >
   %\VignetteEngine{knitr::rmarkdown} 
-  %\VignetteIndexEntry{Haplotype infrence} 
-  %\usepackage[utf8]{inputenc}
+%\VignetteIndexEntry{Haplotype infrence} 
+%\usepackage[utf8]{inputenc}
 ---
-
-## Introduction 
-
-Analysis of antibody repertoires by high throughput sequencing is of major importance in understanding adaptive immune responses. 
+  
+  ## Introduction 
+  
+  Analysis of antibody repertoires by high throughput sequencing is of major importance in understanding adaptive immune responses. 
 Our knowledge of variations in the genomic loci encoding antibody genes is incomplete, mostly due to technical difficulties in aligning short reads to these highly repetitive loci. 
 The partial knowledge results in conflicting \textit{V-D-J} gene assignments between different algorithms, and biased genotype and haplotype inference. Previous studies have shown that haplotypes can be inferred by taking advantage of \textit{IGHJ6} heterozygosity, observed in approximately one third of the population.
 
@@ -38,15 +38,15 @@ Here we provide a robust novel method for determining \textit{V-D-J} haplotypes 
 Our method extends haplotype inference to \textit{IGHD}- and \textit{IGHV}-based analysis, thereby enabling inference of complex genetic events like deletions and copy number variations in the entire population. It calculates a Bayes factor, a number that indicates the certainty level of the inference, for each haplotyped gene. 
 
 More details can be found here:
-
-[Mosaic deletion patterns of the human antibody heavy chain gene locus as revealed by Bayesian haplotyping](https://doi.org/10.1101/314476).
+  
+  [Mosaic deletion patterns of the human antibody heavy chain gene locus as revealed by Bayesian haplotyping](https://doi.org/10.1101/314476).
 
 
 ## Input
 
 HaplotypeR requires two main inputs:
-
-1. Pre-processed antibody repertoire sequencing data with heterozygosity in at least one gene
+  
+  1. Pre-processed antibody repertoire sequencing data with heterozygosity in at least one gene
 2. Database of germline gene sequences
 
 Antibody repertoire sequencing data is in a data frame format. Each row represents a unique 
@@ -54,7 +54,7 @@ observation and columns represent data about that observation. The names of the 
 
 Column Name           | Description 
 ----------------------|---------------------------------------------------------
-`SUBJECT`             | Subject name
+  `SUBJECT`             | Subject name
 `V_CALL`              | (Comma separated) name(s) of the nearest V allele(s) (IMGT format)
 `D_CALL`              | (Comma separated) name(s) of the nearest J allele(s) 
 `J_CALL`              | (Comma separated) name(s) of the nearest J allele(s) 
@@ -80,8 +80,8 @@ One can use TIgGER functions to filter the data.....It is important to note whic
 
 The functions provided by this package can be used to perform any combination of
 the following:
-
-1. Infer haplotype by anchor gene
+  
+  1. Infer haplotype by anchor gene
 2. Infer D/J single chromosome deletions by the V pooled approach
 3. Infer double chromosome deletion by relative gene usage
 4. Graphical output of the inferred haplotype 
@@ -98,7 +98,7 @@ Prior to haplotyping, it is recommended to run TIgGER on the data, to detect new
 ```{r, eval=TRUE, warning=FALSE}
 # Infered haplotype summary table
 haplo_db <- createFullHaplotype(sample_db,toHap_col=c("V_CALL","D_CALL"),
-                            hapBy_col="J_CALL",hapBy="IGHJ6",toHap_GERM=c(HVGERM,HDGERM))
+hapBy_col="J_CALL",hapBy="IGHJ6",toHap_GERM=c(HVGERM,HDGERM))
 
 head(haplo_db)
 ```
@@ -125,7 +125,7 @@ The function creatre a heatmap of the deletion infered and colors them by the ce
 data(samples_db)
 # Infered haplotype summary table for multiple subjects
 haplo_db <- createFullHaplotype(samples_db,toHap_col=c("V_CALL","D_CALL"),
-                            hapBy_col="J_CALL",hapBy="IGHJ6",toHap_GERM=c(HVGERM,HDGERM))
+hapBy_col="J_CALL",hapBy="IGHJ6",toHap_GERM=c(HVGERM,HDGERM))
 # plot deletion heatmap
 deletionHeatmap(haplo_db)
 ```
@@ -184,4 +184,3 @@ head(del_binom_db)
 [2]: http://www.imgt.org/IMGTindex/IMGTHighV-QUEST.html "Alamyar et al. (2010)" 
 [3]: http://www.ncbi.nlm.nih.gov/pubmed/20147303 "Munshaw and Kepler (2010)" 
 [4]: http://www.ncbi.nlm.nih.gov/pubmed/12477501 "Lefranc et al. (2003)"
-

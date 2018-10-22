@@ -19,7 +19,8 @@ VignetteBuilder: knitr
 Depends: R (>= 3.2.5), ggplot2 (>= 2.0.0)
 Imports: mltools, dplyr (>= 0.5.0), reshape2, gtools (>= 3.5.0), plotly (>= 4.7.1), cowplot (>= 0.9.1)
 Suggests: knitr,
-    testthat
+    testthat,
+    rmarkdown
 RoxygenNote: 6.1.0
 NeedsCompilation: no
 Packaged: 

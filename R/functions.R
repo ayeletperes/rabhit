@@ -125,7 +125,7 @@ createFullHaplotype <- function(clip_db,toHap_col=c("V_CALL","D_CALL"),hapBy_col
 
         tmp <- table(clip_db_sub.G[,toHap_col_tmp],clip_db_sub.G[,hapBy_col])
         relFreq <- min(rowSums(tmp))/sum(rowSums(tmp))
-        GENES.df.num_ToPlot <- rbind(GENES.df.num_ToPlot,melt(tmp))
+        GENES.df.num_ToPlot <- rbind(GENES.df.num_ToPlot,reshape2::melt(tmp))
         # if one column add the second
         if(ncol(tmp)==1){
           toadd <- setdiff(hapBy_alleles,colnames(tmp))
