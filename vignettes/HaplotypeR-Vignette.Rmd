@@ -1,0 +1,170 @@
+---
+title: "HaplotyperR"
+author: "Moriah, asadadas"
+date: "Last modified `r Sys.Date()`"
+output:
+  pdf_document:
+    dev: pdf
+    fig_height: 20
+    fig_width: 15
+    highlight: pygments
+    toc: yes
+  html_document:
+    fig_height: 20
+    fig_width: 15
+    highlight: pygments
+    theme: readable
+    toc: yes
+  md_document:
+    fig_height: 20
+    fig_width: 15
+    preserve_yaml: no
+    toc: yes
+geometry: margin=1in
+fontsize: 11pt
+vignette: >
+  %\VignetteEngine{knitr::rmarkdown} 
+  %\VignetteIndexEntry{Haplotype infrence} 
+  %\usepackage[utf8]{inputenc}
+---
+
+## Introduction 
+
+Analysis of antibody repertoires by high throughput sequencing is of major importance in understanding adaptive immune responses. 
+Our knowledge of variations in the genomic loci encoding antibody genes is incomplete, mostly due to technical difficulties in aligning short reads to these highly repetitive loci. 
+The partial knowledge results in conflicting \textit{V-D-J} gene assignments between different algorithms, and biased genotype and haplotype inference. Previous studies have shown that haplotypes can be inferred by taking advantage of \textit{IGHJ6} heterozygosity, observed in approximately one third of the population.
+
+Here we provide a robust novel method for determining \textit{V-D-J} haplotypes by adapting a Bayesian framework, **Haplotyper**. 
+Our method extends haplotype inference to \textit{IGHD}- and \textit{IGHV}-based analysis, thereby enabling inference of complex genetic events like deletions and copy number variations in the entire population. It calculates a Bayes factor, a number that indicates the certainty level of the inference, for each haplotyped gene. 
+
+More details can be found here:
+
+[]().
+
+
+## Input
+
+HaplotypeR requires two main inputs:
+
+1. Pre-processed antibody repertoire sequencing data with heterozygosity in at least one gene
+2. Database of germline gene sequences
+
+Antibody repertoire sequencing data is in a data frame format. Each row represents a unique 
+observation and columns represent data about that observation. The names of the required columns are provided below along with a short description.
+
+Column Name           | Description 
+----------------------|---------------------------------------------------------
+`SUBJECT`             | Subject name
+`V_CALL`              | (Comma separated) name(s) of the nearest V allele(s) (IMGT format)
+`D_CALL`              | (Comma separated) name(s) of the nearest J allele(s) 
+`J_CALL`              | (Comma separated) name(s) of the nearest J allele(s) 
+
+
+An example dataset is provided with the `haplotyper` package. It contains unique naive b-cell
+sequences, from a single individual.
+
+The database of germline sequences should be provided in FASTA format with 
+sequences gapped according to the IMGT numbering scheme ([[3]][3]). IGHV alleles in
+the IMGT database (build 201408-4) are provided with this package. (object name)
+
+```{r, eval=TRUE, message=FALSE, warning=FALSE}
+library(haplotyper)
+# Load example sequence data and example germline database
+data(sample_db, HVGERM, HDGERM)
+```
+### Pre-processing of the data
+
+One can use TIgGER functions to filter the data.....It is important to note which cell types/ exp. protocol....one representative from each clone (see SHAZAM...).
+
+## Running HaplotypeR
+
+The functions provided by this package can be used to perform any combination of
+the following:
+
+1. Infer haplotype by anchor gene
+2. Infer D/J single chromosome deletions by the V pooled approach
+3. Graphical output of the inferred haplotype 
+4. Graphical output of the inferred deletion 
+
+### Infer haplotype by anchor gene
+
+An individual's haplotype can be inferred using the functions `createFullHaplotype`.
+The function infers the haplotype based on the provided anchor gene. Using this function a contingency table is created for each gene, *from which strand is inferred for each allele*.
+The user can set the anchor gene for haplotyping as well as the column for which a haplotype should be inferred.
+
+Prior to haplotyping, it is recommended to run TIgGER on the data, to detect new alleles and construct a genotype [link to docs].
+
+```{r, eval=TRUE, warning=FALSE}
+# Infered haplotype summary table
+haplo_db <- createFullHaplotype(sample_db,toHap_col=c("V_CALL","D_CALL"),
+                            hapBy_col="J_CALL",hapBy="IGHJ6",toHap_GERM=c(HVGERM,HDGERM))
+
+head(haplo_db)
+```
+
+```{r, eval=TRUE, warning=FALSE}
+# Plot the haplotype
+plotHaplotype(haplo_db)
+```
+
+```{r, eval=TRUE, warning=FALSE}
+# Plot interactive haplotype plot
+p <- plotHaplotype(haplo_db,html_output = T)
+#save plot to html output
+htmlwidgets::saveWidget(p, "haplotype.html",selfcontained = T)
+```
+
+### Haplotype inference deletion heatmap
+
+For a group of individuals, the deletions detected by the haplotyping process can be visualized with `deletionHeatmap`.
+The function creatre a heatmap of the deletion infered and colors them by the certainty level (lK).
+
+```{r, eval=TRUE, warning=FALSE,fig.height=12,fig.width=15}
+# Load example sequence data
+data(samples_db)
+# Infered haplotype summary table for multiple subjects
+haplo_db <- createFullHaplotype(samples_db,toHap_col=c("V_CALL","D_CALL"),
+                            hapBy_col="J_CALL",hapBy="IGHJ6",toHap_GERM=c(HVGERM,HDGERM))
+# plot deletion heatmap
+deletionHeatmap(haplo_db)
+```
+
+
+### Infering D/J single chromosome deletion by V pooled approach
+
+Since V gene heterozygosity is extremely common,
+using V genes as anchors for haplotype inference could dramatically 
+increase the number of people for which D haplotype can be inferred.
+However, reliable haplotype inference using V genes as 
+anchors requires a much greater sequencing depth than haplotype inference using J6 gene as an anchor.
+
+The haplotper package offeres a solution to  overcome the low number of sequences that connect a given V-D allele pair.
+The package function applies an aggregation approach, in which information from several V heterozygous genes can be combined to infer D gene
+deletions.
+
+The `deletionsByVpooled` function uses the V pooled approach to detect single chromosomal deletion for D and J.
+
+
+```{r, eval=TRUE, warning=FALSE}
+# Infered deletion summary table
+del_db <- deletionsByVpooled(samples_db)
+head(del_db)
+```
+
+For visualzing the deletion detected by `deletionsByVpooled`, the `plotDeletionsByVpooled` can be used. 
+However, it is recomended to use this function for multiple individuals.
+```{r, eval=TRUE, warning=FALSE,fig.height=4,fig.width=8}
+# Plot the deletion heatmap
+plotDeletionsByVpooled(del_db)
+```
+
+## References
+
+1. [Alamyar *et al.* (2010)](http://www.imgt.org/IMGTindex/IMGTHighV-QUEST.html)
+2. [Munshaw and Kepler (2010)](http://www.ncbi.nlm.nih.gov/pubmed/20147303)
+3. [Lefranc *et al.* (2003)](http://www.ncbi.nlm.nih.gov/pubmed/12477501)
+
+[1]: http://www.imgt.org/IMGTindex/IMGTHighV-QUEST.html "Alamyar et al. (2010)" 
+[2]: http://www.ncbi.nlm.nih.gov/pubmed/20147303 "Munshaw and Kepler (2010)" 
+[3]: http://www.ncbi.nlm.nih.gov/pubmed/12477501 "Lefranc et al. (2003)"
+

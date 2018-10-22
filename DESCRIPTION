@@ -1,0 +1,35 @@
+Package: rabhit
+Type: Package
+Title: Antibody Haplotype Infrence
+Version: 0.1.0
+Authors@R: c(person("Moriah", "Gidoni", role=c("aut"), 
+                    email=""),
+             person("Ayelet", "Peres", role=c("aut"), 
+                    email=""),
+             person("Gur", "Yaari", role=c("aut"), 
+                    email=""))
+Description: Infers an individual haplotype from immunoglobulin (Ig)
+    repertoire-sequencing (Rep-Seq) data.
+License: CC BY-SA 4.0
+URL: 
+BugReports: https://bitbucket.org/yaarilab/haplotyper/issues
+LazyData: true
+BuildVignettes: true
+VignetteBuilder: knitr
+Depends: R (>= 3.2.5), ggplot2 (>= 2.0.0)
+Imports: mltools, dplyr (>= 0.5.0), reshape2, gtools (>= 3.5.0), plotly (>= 4.7.1), cowplot (>= 0.9.1)
+Suggests: knitr,
+    testthat
+RoxygenNote: 6.1.0
+NeedsCompilation: no
+Packaged: 
+Author: Moriah Gidoni [aut],
+  Aylet Peres [aut],
+  Gur Yaari [aut]
+Maintainer: Moriah Gidoni <moriahcohen@gmail.com>
+Collate:
+    'Data.R'
+    'Haplotyper.R'
+    'internal_functions.R'
+    'functions.R'
+    'graphic_functions.R'
