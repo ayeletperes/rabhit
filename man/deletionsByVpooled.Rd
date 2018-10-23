@@ -15,7 +15,7 @@ deletionsByVpooled(clip_db, deletion_col = c("D_CALL"),
 
 \item{count_thresh}{integer, the minimun number of sequences mapped to a specific V gene to be included in the V pooled inference.}
 
-\item{deleted_genes}{A vector of genes known to be deleted prior to haplotype.}
+\item{deleted_genes}{Double chromosome deletion summary table. A \code{data.frame} created by \code{binom_test_deletion}.}
 
 \item{min_minor_fraction}{the minimum minor allele fraction to be used as an anchor gene. Default is 0.3}
 }

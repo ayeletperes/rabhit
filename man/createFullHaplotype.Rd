@@ -27,7 +27,7 @@ createFullHaplotype(clip_db, toHap_col = c("V_CALL", "D_CALL"),
 
 \item{rmPseudo}{if TRUE non-functional and pseudo genes are removed. Defualt is TRUE.}
 
-\item{deleted_genes}{A vector of genes known to be deleted prior to haplotype.}
+\item{deleted_genes}{Double chromosome deletion summary table. A \code{data.frame} created by \code{binom_test_deletion}.}
 
 \item{min_minor_fraction}{the minimum minor allele fraction to be used as an anchor gene. Default is 0.3}
 

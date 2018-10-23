@@ -7,9 +7,9 @@
 plotDeletionsByBinom(GENE.usage.df, chain = c("IGH", "IGK", "IGL"), ...)
 }
 \arguments{
-\item{chain}{the IG chain: IGH,IGK,IGL. Default is IGH.}
+\item{GENE.usage.df}{Double chromosome deletion summary table. See details.}
 
-\item{hap_table}{Double chromosome deletion summary table. See details.}
+\item{chain}{the IG chain: IGH,IGK,IGL. Default is IGH.}
 }
 \value{
 a double chromosome deletion visualization.

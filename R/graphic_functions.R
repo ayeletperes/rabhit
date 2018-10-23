@@ -494,7 +494,8 @@ deletionHeatmap <- function(hap_table,html_output=FALSE,chain=c('IGH','IGK','IGL
           axis.text.x = element_text(angle = 90,vjust = 0.5 ,hjust = 1),plot.margin = margin(b = 30),
           panel.grid.major = element_blank(),
           panel.grid.minor = element_blank(),
-          panel.background = element_blank())
+          panel.background = element_blank(),
+          legend.direction = "horizontal",legend.justification="center" ,legend.box.just = "bottom")
 
   ### CHR FOR PAPER
 
@@ -532,10 +533,14 @@ deletionHeatmap <- function(hap_table,html_output=FALSE,chain=c('IGH','IGK','IGL
              xaxis2 = list(domain=list(x=c(0.5,1),y=c(0.5,1))))
 
   }
-  heatmap.plot <- heatmap.plot + theme(legend.position = c(0.43, -0.23),legend.direction="horizontal")
+  legend <- cowplot::get_legend(heatmap.plot)
+  heatmap.plot <- heatmap.plot + theme(legend.position = 'none')
   pdel <- pdel + theme(legend.position = c(0.9, 0.8))
 
-  plot_grid(pdel, heatmap.plot,ncol=1,rel_heights=c(0.15, 0.3),align = "h")
+
+
+  comb <- plot_grid(pdel, heatmap.plot,ncol=1,rel_heights=c(0.15, 0.3),align = "h")
+  plot_grid(comb, legend,nrow=2,rel_heights=c(1, 0.2))
 }
 
 ########################################################################################################
@@ -545,7 +550,7 @@ deletionHeatmap <- function(hap_table,html_output=FALSE,chain=c('IGH','IGK','IGL
 #'
 #' @details A \code{data.frame} created by \code{binom_test_deletion}.
 #'
-#' @param    hap_table            Double chromosome deletion summary table. See details.
+#' @param    GENE.usage.df        Double chromosome deletion summary table. See details.
 #' @param    chain                the IG chain: IGH,IGK,IGL. Default is IGH.
 #'
 #'
@@ -581,7 +586,7 @@ plotDeletionsByBinom <- function(GENE.usage.df,chain=c('IGH','IGK','IGL'), ...){
 
   ### gene usage with deletions in population according to binom test
   p.del <- ggplot(GENE.usage.df,aes(x=GENE2,y=FRAC)) + geom_boxplot(outlier.colour=NA) +
-    geom_jitter(aes(x=GENE2,color=col),width = 0.25,size=0.5)+ theme(axis.text.y = element_text(size=16),
+    geom_jitter(aes(x=GENE2,color=DELETION),width = 0.25,size=0.5)+ theme(axis.text.y = element_text(size=16),
                                                                      axis.title = element_text(size=16),
                                                                      axis.text.x = element_text(size=14,angle = 90, hjust = 1,vjust=0.5,color=colvec),
                                                                      legend.text = element_text(size=16),
@@ -590,13 +595,14 @@ plotDeletionsByBinom <- function(GENE.usage.df,chain=c('IGH','IGK','IGL'), ...){
     guides(color = guide_legend(override.aes = list(size=5)))
 
   ### heat map of deletions in population according to binom test
-  GENE.usage.df$col <- factor(GENE.usage.df$col,levels=levels(GENE.usage.df$col))
+  GENE.usage.df$DELETION <- factor(GENE.usage.df$DELETION,levels=levels(GENE.usage.df$DELETION))
 
   heatmap.plot <-   ggplot(data = GENE.usage.df, aes(x = GENE2, y = SUBJECT)) +
-    geom_tile(aes(fill = col)) +
+    geom_tile(aes(fill = DELETION)) +
     scale_fill_manual(name='',labels=c('Deletion','No Deletion','NA'),values = c('blue','white','grey40'),drop=F)+
     scale_x_discrete(drop=FALSE) +ylab('Subject')+ xlab('')+
-    theme(axis.text = element_text(size = 12),axis.title.y = element_text(size=18),axis.text.x = element_text(angle = 90,vjust = 0.5 ,hjust = 1,size=14),
+    theme(axis.text = element_text(size = 12),axis.title.y = element_text(size=18),
+          axis.text.x = element_text(angle = 90,vjust = 0.5 ,hjust = 1,size=14),
           legend.key = element_rect(colour = 'black' , size = 0.5, linetype='solid'),legend.text = element_text(size=16),
           legend.direction = "horizontal",legend.justification="center" ,legend.box.just = "bottom")
 

@@ -24,7 +24,7 @@ NULL
 #' @param    relative_freq_priors  if TRUE, the priors for Bayesian inference are estimated from the relative frequencies in clip_db. Else, priors are set to \code{c(0.5,0.5)}. Defualt is TRUE
 #' @param    kThreshDel            The minimum lK (log10 of the Bayes factor) to call a deletion. Defualt is 3.
 #' @param    rmPseudo              if TRUE non-functional and pseudo genes are removed. Defualt is TRUE.
-#' @param    deleted_genes         A vector of genes known to be deleted prior to haplotype.
+#' @param    deleted_genes         Double chromosome deletion summary table. A \code{data.frame} created by \code{binom_test_deletion}.
 #' @param    min_minor_fraction    the minimum minor allele fraction to be used as an anchor gene. Default is 0.3
 #' @param    chain                 the IG chain: IGH,IGK,IGL. Default is IGH.
 #' @param    supress_print         if TRUE the function does not print summary. Dufault FALSE
@@ -58,6 +58,8 @@ createFullHaplotype <- function(clip_db,toHap_col=c("V_CALL","D_CALL"),hapBy_col
   haplo_db <- c()
   for(sample_name in unique(clip_db$SUBJECT)){
       clip_db_sub = clip_db[clip_db$SUBJECT==sample_name,]
+      if(is.data.frame(deleted_genes)) deleted_genes_vec <- deleted_genes %>% filter(SUBJECT==sample_name,DELETION=='Deletion') %>% select(GENE) %>% pull()
+      else deleted_genes_vec <-c()
       #Number of iniial sequences
       nrows1 <- nrow(clip_db_sub)
       ### Check if haplotype can be infered by the specific gene in the data set.
@@ -203,19 +205,19 @@ createFullHaplotype <- function(clip_db,toHap_col=c("V_CALL","D_CALL"),hapBy_col
 
       #### Remove deleted genes according to known list
 
-      if(length(deleted_genes)!=0){
-        GENES.df.num[,5] <- sapply(1:nrow(GENES.df.num),function(i){if(GENES.df.num$GENE[i] %in% deleted_genes){
+      if(length(deleted_genes_vec)!=0){
+        GENES.df.num[,5] <- sapply(1:nrow(GENES.df.num),function(i){if(GENES.df.num$GENE[i] %in% deleted_genes_vec){
           return('Del')
         } else {
           return( GENES.df.num[i,5])
         }})
-        GENES.df.num[,6] <- sapply(1:nrow(GENES.df.num),function(i){if(GENES.df.num$GENE[i] %in% deleted_genes){
+        GENES.df.num[,6] <- sapply(1:nrow(GENES.df.num),function(i){if(GENES.df.num$GENE[i] %in% deleted_genes_vec){
           return('Del')
         } else {
           return( GENES.df.num[i,6])
         }
         })
-        GENES.df.num['K1'] <- sapply(1:nrow(GENES.df.num),function(i){if(GENES.df.num$GENE[i] %in% deleted_genes){
+        GENES.df.num['K1'] <- sapply(1:nrow(GENES.df.num),function(i){if(GENES.df.num$GENE[i] %in% deleted_genes_vec){
           return(NA)
         } else {
           return( GENES.df.num[i,'K1'])
@@ -373,7 +375,7 @@ deletionsByBinom <- function(clip_db,chain=c('IGH','IGK','IGL')){
   }else{
     GENE.usage.df <- rbind(GENE.usage.df.V,GENE.usage.df.J)
   }
-
+  GENE.usage.df <- GENE.usage.df %>% ungroup() %>% select(SUBJECT,GENE,FRAC,CUTOFF=min_frac,PVAL=pval_adj,DELETION=col)
   return(GENE.usage.df)
 }
 
@@ -393,7 +395,7 @@ deletionsByBinom <- function(clip_db,chain=c('IGH','IGK','IGL')){
 #' @param  clip_db              a \code{data.frame} in Change-O format. See details.
 #' @param  deletion_col         a vector of column names for which single chromosome deletions should be inferred. Default is J_CALL and D_CALL.
 #' @param  count_thresh         integer, the minimun number of sequences mapped to a specific V gene to be included in the V pooled inference.
-#' @param  deleted_genes        A vector of genes known to be deleted prior to haplotype.
+#' @param  deleted_genes         Double chromosome deletion summary table. A \code{data.frame} created by \code{binom_test_deletion}.
 #' @param  min_minor_fraction   the minimum minor allele fraction to be used as an anchor gene. Default is 0.3
 #'
 #'
@@ -414,11 +416,11 @@ deletionsByVpooled <- function(clip_db,deletion_col=c('D_CALL'),count_thresh=50,
   if(!("SUBJECT" %in% names(clip_db))){clip_db$SUBJECT <- rep('S1',nrow(clip_db))}
 
   del.df <- c()
-  for(samp in unique(clip_db$SUBJECT)){
+  for(sample_name in unique(clip_db$SUBJECT)){
 
-    clip_db_sub <- clip_db[clip_db$SUBJECT==samp,]
-    sample_name=samp
-
+    clip_db_sub <- clip_db[clip_db$SUBJECT==sample_name,]
+    if(is.data.frame(deleted_genes)) deleted_genes_df <- deleted_genes %>% filter(SUBJECT==sample_name,grepl('IGHD|IGHJ',GENE))
+    else deleted_genes_df <-c()
     ### Single V gene assignment
     #Number of iniial sequences
     nrows1 <- nrow(clip_db_sub)
@@ -447,7 +449,7 @@ deletionsByVpooled <- function(clip_db,deletion_col=c('D_CALL'),count_thresh=50,
 
         full.hap <- createFullHaplotype(clip_db_sub,toHap_col = deletion_col,hapBy_col = "V_CALL",hapBy = g,toHap_GERM = toHapGerm,
                                         relative_freq_priors = T,kThreshDel =kThreshDel,rmPseudo=T,
-                                        deleted_genes = deleted_genes,chain='IGH',supress_print = T)
+                                        deleted_genes = deleted_genes_df,chain='IGH',supress_print = T)
 
         full.hap$V_ALLELE_1 <- strsplit(names(full.hap)[5],'_')[[1]][2]
         full.hap$V_ALLELE_2 <- strsplit(names(full.hap)[6],'_')[[1]][2]
@@ -469,7 +471,7 @@ deletionsByVpooled <- function(clip_db,deletion_col=c('D_CALL'),count_thresh=50,
       d.del.df <- c()
 
       for(g in GENES){
-        tmp <- V.df[[g]] %>% filter(SUBJECT == samp,grepl('IGHD',GENE))
+        tmp <- V.df[[g]] %>% filter(SUBJECT == sample_name,grepl('IGHD',GENE))
         tmp$DELETION <- apply(tmp,1,function(x){if(x[5]=='Unk' & x[6]!='Unk' | x[5]!='Unk' & x[6] == 'Unk'){return(1)};
           if(x[5]=='Del' & x[6]!='Del' | x[5]!='Del' & x[6] == 'Del'){return(2)};
           if(x[5]=='Unk' & x[6]=='Unk'){return(3)};
@@ -520,7 +522,7 @@ deletionsByVpooled <- function(clip_db,deletion_col=c('D_CALL'),count_thresh=50,
       d.del.df <- rbind(d.del.df,as.data.frame(tmp.df.slct.all))
       d.del.df.pooled <-  d.del.df %>% filter(V_GENE=='V(pooled)')
       d.del.df.pooled$K1 <- round(as.numeric(d.del.df.pooled$K1),digits = 2)
-      d.del.df.pooled$SUBJECT <- samp
+      d.del.df.pooled$SUBJECT <- sample_name
       d.del.df.pooled$GENE <- factor(x = d.del.df.pooled$GENE,levels = GENE.loc[['IGH']])
      }
     del.df <- rbind(del.df,d.del.df.pooled)

@@ -48,7 +48,7 @@
 #'                          group_by group_by_ ungroup
 #'                          mutate mutate_ summarize summarize_
 #'                          mutate_at summarize_at count_
-#'                          rename rename_ transmute transmute_
+#'                          rename rename_ transmute transmute_ pull
 #' @importFrom  reshape2    melt
 #' @importFrom  mltools     bin_data
 #' @importFrom  gtools      ddirichlet
