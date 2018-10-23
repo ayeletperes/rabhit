@@ -534,13 +534,15 @@ deletionHeatmap <- function(hap_table,html_output=FALSE,chain=c('IGH','IGK','IGL
 
   }
   legend <- cowplot::get_legend(heatmap.plot)
-  heatmap.plot <- heatmap.plot + theme(legend.position = 'none')
-  pdel <- pdel + theme(legend.position = c(0.9, 0.8))
+  heatmap.plot <- heatmap.plot + theme(legend.position = 'none',panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+                                       panel.background = element_blank(), axis.line = element_line(colour = "black"))
+  pdel <- pdel + theme(legend.position = c(0.9, 0.8),panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+                       panel.background = element_blank(), axis.line = element_line(colour = "black"))
 
 
 
   comb <- plot_grid(pdel, heatmap.plot,ncol=1,rel_heights=c(0.15, 0.3),align = "h")
-  plot_grid(comb, legend,nrow=2,rel_heights=c(1, 0.2))
+  plot(plot_grid(comb, legend,nrow=2,rel_heights=c(1, 0.2)))
 }
 
 ########################################################################################################
@@ -575,7 +577,7 @@ plotDeletionsByBinom <- function(GENE.usage.df,chain=c('IGH','IGK','IGL'), ...){
   if(!("SUBJECT" %in% names(GENE.usage.df))){GENE.usage.df$SUBJECT <- rep('S1',nrow(GENE.usage.df))}
 
   genes_hap <- unique(substr(GENE.usage.df$GENE,4,4))
-  GENE.loc <- GENE.loc[[chain]][grep(paste0(genes_hap,collapse = '|'),GENE.loc[[chain]])]
+  GENE.loc <- GENE.loc[[chain]][GENE.loc[[chain]] %in% GENE.usage.df$GENE]
 
   GENE.usage.df$GENE2 <- factor(gsub(chain,'',GENE.usage.df$GENE), levels=gsub(chain,'',GENE.loc))
 
@@ -607,11 +609,13 @@ plotDeletionsByBinom <- function(GENE.usage.df,chain=c('IGH','IGK','IGL'), ...){
           legend.direction = "horizontal",legend.justification="center" ,legend.box.just = "bottom")
 
   legend <- cowplot::get_legend(heatmap.plot)
-  heatmap.plot <- heatmap.plot + theme(legend.position = 'none')
-  p.del <- p.del + theme(legend.position = 'none')
+  heatmap.plot <- heatmap.plot + theme(legend.position = 'none',panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+                                       panel.background = element_blank(), axis.line = element_line(colour = "black"))
+  p.del <- p.del + theme(legend.position = 'none',panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+                         panel.background = element_blank(), axis.line = element_line(colour = "black"))
 
-  comb <- plot_grid(p.del, heatmap.plot,ncol=1,rel_heights=c(0.15, 0.3),align = "h")
-  plot_grid(comb, legend,nrow=2,rel_heights=c(1, 0.2))
+  comb <- plot_grid(p.del, heatmap.plot,ncol=1,rel_heights=c(0.15, 0.3),align = "hv")
+  plot(plot_grid(comb, legend,nrow=2,rel_heights=c(1, 0.2)))
 }
 
 ##########################################################################

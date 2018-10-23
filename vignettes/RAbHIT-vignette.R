@@ -31,7 +31,7 @@ plotDeletionsByBinom(del_binom_db)
 
 ## ---- eval=TRUE, warning=FALSE-------------------------------------------
 # Infered deletion summary table
-del_binom_db <- deletionsByBinom(samples_db)
+del_binom_db <- deletionsByBinom(sample_db)
 haplo_db <- createFullHaplotype(sample_db,toHap_col=c("V_CALL","D_CALL"),
 hapBy_col="J_CALL",hapBy="IGHJ6",toHap_GERM=c(HVGERM,HDGERM),deleted_genes = del_binom_db,supress_print = T)
 plotHaplotype(haplo_db)
@@ -41,7 +41,7 @@ plotHaplotype(haplo_db)
 data(samples_db)
 # Infered haplotype summary table for multiple subjects
 haplo_db <- createFullHaplotype(samples_db,toHap_col=c("V_CALL","D_CALL"),
-hapBy_col="J_CALL",hapBy="IGHJ6",toHap_GERM=c(HVGERM,HDGERM))
+hapBy_col="J_CALL",hapBy="IGHJ6",toHap_GERM=c(HVGERM,HDGERM),supress_print = T)
 # plot deletion heatmap
 deletionHeatmap(haplo_db)
 

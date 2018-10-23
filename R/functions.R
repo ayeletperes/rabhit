@@ -324,18 +324,23 @@ deletionsByBinom <- function(clip_db,chain=c('IGH','IGK','IGL')){
     }
   }
 
-  GENE.usage.mean.dist <- sapply(GENE.usage,function(x){(x-mean(x))/sd(x)})
-  GENE.usage.mean.dist.mlt <- reshape2::melt(GENE.usage.mean.dist)
-  no.existent.genes<- which(colSums(GENE.usage.mean.dist,na.rm = T) == 0)
-  GENE.usage.mean.dist.mlt <- GENE.usage.mean.dist.mlt[!(GENE.usage.mean.dist.mlt$Var2 %in% names(no.existent.genes)), ]
-  GENE.usage.mean.dist.mlt$value1 <- cut(GENE.usage.mean.dist.mlt$value,breaks = c(-Inf,-3:3,Inf),right = FALSE)
+  # GENE.usage.mean.dist <- sapply(GENE.usage,function(x){(x-mean(x))/sd(x)})
+  # GENE.usage.mean.dist.mlt <- reshape2::melt(GENE.usage.mean.dist)
+  # no.existent.genes<- which(colSums(GENE.usage.mean.dist,na.rm = T) == 0)
+  # GENE.usage.mean.dist.mlt <- GENE.usage.mean.dist.mlt[!(GENE.usage.mean.dist.mlt$Var2 %in% names(no.existent.genes)), ]
+  # GENE.usage.mean.dist.mlt$value1 <- cut(GENE.usage.mean.dist.mlt$value,breaks = c(-Inf,-3:3,Inf),right = FALSE)
 
 
   ###  Gene usage for violin plot for paper
   SAMPLE.SIZE.V <- sapply(unique(clip_db$SUBJECT),function(x){sub <- clip_db[clip_db$SUBJECT==x,];nrow(sub[!grepl(',',sub$V_CALL),])})
-  if(chain=='IGH'){SAMPLE.SIZE.D <- sapply(unique(clip_db$SUBJECT),function(x){sub <- clip_db[clip_db$SUBJECT==x,];nrow(sub[!grepl(',',sub$D_CALL),])})}
+  names(SAMPLE.SIZE.V) <- unique(clip_db$SUBJECT)
+  if(chain=='IGH'){
+    SAMPLE.SIZE.D <- sapply(unique(clip_db$SUBJECT),function(x){sub <- clip_db[clip_db$SUBJECT==x,];nrow(sub[!grepl(',',sub$D_CALL),])})
+    names(SAMPLE.SIZE.D) <- unique(clip_db$SUBJECT)}
   SAMPLE.SIZE.J <- sapply(unique(clip_db$SUBJECT),function(x){sub <- clip_db[clip_db$SUBJECT==x,];nrow(sub[!grepl(',',sub$J_CALL),])})
+  names(SAMPLE.SIZE.J) <- unique(clip_db$SUBJECT)
   SAMPLE.SIZE <- sapply(unique(clip_db$SUBJECT),function(x) nrow(clip_db[clip_db$SUBJECT==x,]))
+  names(SAMPLE.SIZE) <- unique(clip_db$SUBJECT)
 
   gusage <- unlist(GENE.usage)
   gusage.gene <- sapply(strsplit(names(unlist(GENE.usage)),'.',fixed = T),'[',1)
