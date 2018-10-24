@@ -75,7 +75,13 @@ data(sample_db, HVGERM, HDGERM)
 ```
 ### Pre-processing of the data
 
-One can use TIgGER functions to filter the data.....It is important to note which cell types/ exp. protocol....one representative from each clone (see SHAZAM...).
+To get the most reliable result we suggest to follow the data pre-processing steps below.
+1. Discover novel alleles (TIgGER [[2]][2])
+2. Infer genotype and reassign sequences accordingly (TIgGER [[2]][2]) 
+3.1 For naive cells sequences, use only V genes with <=3 mutation and no mutation in D gene.
+3.2 For PBMC cells sequences, first cluster sequences into clones (SHazaM [[5]][5]) then chose from each clone a representative sequence with the least number of mutations.
+4. Preferably filter out non-functional sequences.
+
 
 ## Running RAbHIT
 
@@ -195,11 +201,13 @@ plotDeletionsByVpooled(del_db)
 ## References
 
 1. [Gidoni *et al.* (2018)](https://doi.org/10.1101/314476).
-1. [Alamyar *et al.* (2010)](http://www.imgt.org/IMGTindex/IMGTHighV-QUEST.html)
-2. [Munshaw and Kepler (2010)](http://www.ncbi.nlm.nih.gov/pubmed/20147303)
-3. [Lefranc *et al.* (2003)](http://www.ncbi.nlm.nih.gov/pubmed/12477501)
+2. [Gadala-Maria and Gidoni *et al.* (2018)](https://doi.org/10.1101/405704)
+3. [Munshaw and Kepler (2010)](http://www.ncbi.nlm.nih.gov/pubmed/20147303)
+4. [Lefranc *et al.* (2003)](http://www.ncbi.nlm.nih.gov/pubmed/12477501)
+5. [Gupta  *et al.* (2015)](http://doi.org/10.1093/bioinformatics/btv359)  
 
 [1]: https://doi.org/10.1101/314476 "Gidoni et al. (2018)"
-[2]: http://www.imgt.org/IMGTindex/IMGTHighV-QUEST.html "Alamyar et al. (2010)" 
+[2]: https://tigger.readthedocs.io/en/0.3.1/ "Gadala-Maria and Gidoni *et al.* (2018)" 
 [3]: http://www.ncbi.nlm.nih.gov/pubmed/20147303 "Munshaw and Kepler (2010)" 
 [4]: http://www.ncbi.nlm.nih.gov/pubmed/12477501 "Lefranc et al. (2003)"
+[5]: https://shazam.readthedocs.io/en/version-0.1.10/ "Gupta N *et al.* (2015)"
