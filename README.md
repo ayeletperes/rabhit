@@ -54,7 +54,7 @@ install()
 
 ## Documentation ##
 
-The full documentation of the all package functions is available in vignettes folder
+A complete documentation of RAbHIT is available at: https://yaarilab.bitbucket.io/RAbHIT/ or in your local repository at: ./vignettes/RAbHIT-vignette.html
 
 ## Contact ##
 
