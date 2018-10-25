@@ -76,10 +76,11 @@ data(sample_db, HVGERM, HDGERM)
 ### Pre-processing of the data
 
 To get the most reliable result we suggest to follow the data pre-processing steps below.
+
 1. Discover novel alleles (TIgGER [[2]][2])
 2. Infer genotype and reassign sequences accordingly (TIgGER [[2]][2]) 
-3.1 For naive cells sequences, use only V genes with <=3 mutation and no mutation in D gene.
-3.2 For PBMC cells sequences, first cluster sequences into clones (SHazaM [[5]][5]) then chose from each clone a representative sequence with the least number of mutations.
+3. 3.1 For naive cells sequences, use only V genes with <=3 mutation and no mutation in D gene.
+   3.2 For PBMC cells sequences, first cluster sequences into clones (SHazaM [[5]][5]) then chose from each clone a representative sequence with the least number of mutations.
 4. Preferably filter out non-functional sequences.
 
 
@@ -89,7 +90,7 @@ The functions provided by this package can be used to perform any combination of
 the following:
   
 1. Infer haplotype by anchor gene
-2. Infer *D/J* single chromosome deletions by the V pooled approach
+2. Infer *D/J* single chromosome deletions by the *V* pooled approach
 3. Infer double chromosome deletion by relative gene usage
 4. Graphical output of the inferred haplotype 
 5. Graphical output of the inferred deletion
@@ -101,7 +102,7 @@ An individual's haplotype can be inferred using the functions `createFullHaploty
 The function infers the haplotype based on the provided anchor gene. Using this function a contingency table is created for each gene, *from which strand is inferred for each allele*.
 The user can set the anchor gene for haplotyping as well as the column for which a haplotype should be inferred.
 
-Prior to haplotyping, it is recommended to run TIgGER on the data, to detect new alleles and construct a genotype [link to docs].
+Prior to haplotyping, it is recommended to run TIgGER on the data, to detect new alleles and construct a genotype (TIgGER [[2]][2]).
 
 ```{r, eval=TRUE, warning=FALSE}
 # Infered haplotype summary table
@@ -138,11 +139,12 @@ For visualzing the deletion detected by `deletionsByBinom`, the `plotDeletionsBy
 
 ```{r, eval=TRUE, warning=FALSE,fig.height=9,fig.width=12}
 # Infered deletion summary table
-plotDeletionsByBinom(del_binom_db)
+plotDeletionsByBinom(del_binom_db[grep('IGHJ',del_binom_db$GENE,invert = T),]) ## Don't plot IGHJ
 ```
 
 
 The detection of double chromosome deltion from the function can be then used for the haplotype infernce, this prior knowldege of deletion can rise the certentiy level of the infrence of the genes where a deletion where a deletion was detected. The `createFullHaplotype` recives a vector of the deleted genes detected.
+V gene labels marked in red represent low expressed genes for which deletions are inferred with low certainty. D gene labels marked in purple represent indistinguishable genes due to high sequence similarity, therefore alignment call is less reliable.
 
 ```{r, eval=TRUE, warning=FALSE}
 # Infered deletion summary table
