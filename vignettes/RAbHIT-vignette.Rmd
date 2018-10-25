@@ -33,7 +33,7 @@ vignette: >
   
 Analysis of antibody repertoires by high throughput sequencing is of major importance in understanding adaptive immune responses. 
 Our knowledge of variations in the genomic loci encoding antibody genes is incomplete, mostly due to technical difficulties in aligning short reads to these highly repetitive loci. 
-The partial knowledge results in conflicting *V-D-J* gene assignments between different algorithms, and biased genotype and haplotype inference. Previous studies have shown that haplotypes can be inferred by taking advantage of *IGHJ6* heterozygosity, observed in approximately one third of the population.
+The partial knowledge results in conflicting *V-D-J* gene assignments between different algorithms, and biased genotype and haplotype inference. Previous studies have shown that haplotypes can be inferred by taking advantage of *IGHJ6* heterozygosity, observed in approximately one third of the population ([[1]][1],[[2]][2]).
 
 Here we provide a robust novel method for determining *V-D-J* haplotypes by adapting a Bayesian framework, **RAbHIT**. 
 Our method extends haplotype inference to *IGHD*- and *IGHV*-based analysis, thereby enabling inference of complex genetic events like deletions and copy number variations in the entire population. It calculates a Bayes factor, a number that indicates the certainty level of the inference, for each haplotyped gene. 
@@ -65,7 +65,7 @@ An example dataset is provided with the `rabhit` package. It contains unique nai
 sequences, from a single individual.
 
 The database of germline sequences should be provided in FASTA format with 
-sequences gapped according to the IMGT numbering scheme ([[4]][4]). IGHV alleles in
+sequences gapped according to the IMGT numbering scheme ([[3]][3]). IGHV alleles in
 the IMGT database (build 201408-4) are provided with this package. (object name)
 
 ```{r, eval=TRUE, message=FALSE, warning=FALSE}
@@ -77,10 +77,11 @@ data(sample_db, HVGERM, HDGERM)
 
 To get the most reliable result we suggest to follow the data pre-processing steps below.
 
-1. Discover novel alleles (TIgGER [[2]][2])
-2. Infer genotype and reassign sequences accordingly (TIgGER [[2]][2]) 
-3. 3.1 For naive cells sequences, use only V genes with <=3 mutation and no mutation in D gene.
-   3.2 For PBMC cells sequences, first cluster sequences into clones (SHazaM [[5]][5]) then chose from each clone a representative sequence with the least number of mutations.
+1. Discover novel alleles (TIgGER [[4]][5])
+2. Infer genotype and reassign sequences accordingly (TIgGER [[4]][4]) 
+3. Sequence filtration by cells type:
+   + For naive cells sequences, use only V genes with <=3 mutation and no mutation in D gene.
+   + For PBMC cells sequences, first cluster sequences into clones (SHazaM [[5]][5]) then chose from each clone a representative sequence with the least number of mutations.
 4. Preferably filter out non-functional sequences.
 
 
@@ -102,7 +103,7 @@ An individual's haplotype can be inferred using the functions `createFullHaploty
 The function infers the haplotype based on the provided anchor gene. Using this function a contingency table is created for each gene, *from which strand is inferred for each allele*.
 The user can set the anchor gene for haplotyping as well as the column for which a haplotype should be inferred.
 
-Prior to haplotyping, it is recommended to run TIgGER on the data, to detect new alleles and construct a genotype (TIgGER [[2]][2]).
+Prior to haplotyping, it is recommended to run TIgGER on the data, to detect new alleles and construct a genotype (TIgGER [[4]][4]).
 
 ```{r, eval=TRUE, warning=FALSE}
 # Infered haplotype summary table
@@ -126,7 +127,7 @@ htmlwidgets::saveWidget(p, "haplotype.html",selfcontained = T)
 
 ### Infering double chromosome deletion by relative gene usage
 
-Gene usage tends to change between individuals, in some cases the relative gene usage of certain individuals are much lower than the rest of the population. To asses whether the low frequency arise from a deleted gene, a binomial test described in  Gidoni *et al.* (2018) ([[1]][1]) was implemented. They cheked whether a certian relative gene usage of an individual is lower than the a chosen cutoff, for example for the *IGHV* genes, the chosen cutoff was $0.001$. The `deletionsByBinom` function implements the binomial and return the detect gene deletion for a certian individual.
+Gene usage tends to change between individuals, in some cases the relative gene usage of certain individuals are much lower than the rest of the population. To asses whether the low frequency arise from a deleted gene, a binomial test described in  Gidoni *et al.* (2018) ([[6]][6]) was implemented. They cheked whether a certian relative gene usage of an individual is lower than the a chosen cutoff, for example for the *IGHV* genes, the chosen cutoff was $0.001$. The `deletionsByBinom` function implements the binomial and return the detect gene deletion for a certian individual.
 
 
 ```{r, eval=TRUE, warning=FALSE}
@@ -202,14 +203,17 @@ plotDeletionsByVpooled(del_db)
 
 ## References
 
-1. [Gidoni *et al.* (2018)](https://doi.org/10.1101/314476).
-2. [Gadala-Maria and Gidoni *et al.* (2018)](https://doi.org/10.1101/405704)
-3. [Munshaw and Kepler (2010)](http://www.ncbi.nlm.nih.gov/pubmed/20147303)
-4. [Lefranc *et al.* (2003)](http://www.ncbi.nlm.nih.gov/pubmed/12477501)
+1. [Kidd *et al.* (2012)](https://www.ncbi.nlm.nih.gov/pubmed/22205028).
+2. [Kirik *et al.* (2017)](https://www.ncbi.nlm.nih.gov/pubmed/28388445).
+3. [Lefranc *et al.* (2003)](http://www.ncbi.nlm.nih.gov/pubmed/12477501)
+4. [Gadala-Maria and Gidoni *et al.* (2018)](https://doi.org/10.1101/405704)
 5. [Gupta  *et al.* (2015)](http://doi.org/10.1093/bioinformatics/btv359)  
+6. [Gidoni *et al.* (2018)](https://doi.org/10.1101/314476).
 
-[1]: https://doi.org/10.1101/314476 "Gidoni et al. (2018)"
-[2]: https://tigger.readthedocs.io/en/0.3.1/ "Gadala-Maria and Gidoni *et al.* (2018)" 
-[3]: http://www.ncbi.nlm.nih.gov/pubmed/20147303 "Munshaw and Kepler (2010)" 
-[4]: http://www.ncbi.nlm.nih.gov/pubmed/12477501 "Lefranc et al. (2003)"
+
+[1]: https://www.ncbi.nlm.nih.gov/pubmed/22205028 "Kidd *et al.* (2012)"
+[2]: https://www.ncbi.nlm.nih.gov/pubmed/28388445 "Kirik *et al.* (2017)" 
+[3]: http://www.ncbi.nlm.nih.gov/pubmed/12477501 "Lefranc et al. (2003)"
+[4]: https://tigger.readthedocs.io/en/0.3.1/ "Gadala-Maria and Gidoni *et al.* (2018)" 
 [5]: https://shazam.readthedocs.io/en/version-0.1.10/ "Gupta N *et al.* (2015)"
+[6]: https://doi.org/10.1101/314476 "Gidoni et al. (2018)"

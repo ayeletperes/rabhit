@@ -526,7 +526,7 @@ deletionHeatmap <- function(hap_table,html_output=FALSE,chain=c('IGH','IGK','IGL
 
 
   comb <- plot_grid(pdel, heatmap.plot,ncol=1,rel_heights=c(0.15, 0.3),align = "h")
-  plot(plot_grid(comb, legend,nrow=2,rel_heights=c(1, 0.2)))
+  plot(plot_grid(comb, legend,nrow=2,rel_heights=c(1, 0.1)))
 }
 
 ########################################################################################################

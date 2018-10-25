@@ -23,7 +23,8 @@ to these highly repetitive loci. The partial knowledge results in
 conflicting *V-D-J* gene assignments between different algorithms, and
 biased genotype and haplotype inference. Previous studies have shown
 that haplotypes can be inferred by taking advantage of *IGHJ6*
-heterozygosity, observed in approximately one third of the population.
+heterozygosity, observed in approximately one third of the population
+([\[1\]](https://www.ncbi.nlm.nih.gov/pubmed/22205028 "Kidd *et al.* (2012)"),[\[2\]](https://www.ncbi.nlm.nih.gov/pubmed/28388445 "Kirik *et al.* (2017)")).
 
 Here we provide a robust novel method for determining *V-D-J* haplotypes
 by adapting a Bayesian framework, **RAbHIT**. Our method extends
@@ -35,8 +36,8 @@ for each haplotyped gene.
 
 More details can be found here:
 
-[Gidoni, Moriah, et al. “Mosaic deletion patterns of the human antibody
-heavy chain gene locus as revealed by Bayesian haplotyping.” bioRxiv
+[Gidoni, Moriah, et al. "Mosaic deletion patterns of the human antibody
+heavy chain gene locus as revealed by Bayesian haplotyping." bioRxiv
 (2018): 314476.](https://doi.org/10.1101/314476)
 
 Input
@@ -85,7 +86,7 @@ unique naive b-cell sequences, from a single individual.
 
 The database of germline sequences should be provided in FASTA format
 with sequences gapped according to the IMGT numbering scheme
-([\[4\]](http://www.ncbi.nlm.nih.gov/pubmed/12477501 "Lefranc et al. (2003)")).
+([\[3\]](http://www.ncbi.nlm.nih.gov/pubmed/12477501 "Lefranc et al. (2003)")).
 IGHV alleles in the IMGT database (build 201408-4) are provided with
 this package. (object name)
 
@@ -99,16 +100,20 @@ To get the most reliable result we suggest to follow the data
 pre-processing steps below.
 
 1.  Discover novel alleles (TIgGER
-    [\[2\]](https://tigger.readthedocs.io/en/0.3.1/ "Gadala-Maria and Gidoni *et al.* (2018)"))
+    [\[4\]](https://shazam.readthedocs.io/en/version-0.1.10/ "Gupta N *et al.* (2015)"))
 2.  Infer genotype and reassign sequences accordingly (TIgGER
-    [\[2\]](https://tigger.readthedocs.io/en/0.3.1/ "Gadala-Maria and Gidoni *et al.* (2018)"))
-3.  3.1 For naive cells sequences, use only V genes with &lt;=3 mutation
-    and no mutation in D gene. 3.2 For PBMC cells sequences, first
-    cluster sequences into clones (SHazaM
+    [\[4\]](https://tigger.readthedocs.io/en/0.3.1/ "Gadala-Maria and Gidoni *et al.* (2018)"))
+3.  Sequence filtration by cells type:
+
+-   For naive cells sequences, use only V genes with &lt;=3 mutation and
+    no mutation in D gene.
+-   For PBMC cells sequences, first cluster sequences into clones
+    (SHazaM
     [\[5\]](https://shazam.readthedocs.io/en/version-0.1.10/ "Gupta N *et al.* (2015)"))
     then chose from each clone a representative sequence with the least
     number of mutations.
-4.  Preferably filter out non-functional sequences.
+
+1.  Preferably filter out non-functional sequences.
 
 Running RAbHIT
 --------------
@@ -124,7 +129,7 @@ combination of the following:
 
 ### Infer haplotype by anchor gene
 
-An individual’s haplotype can be inferred using the functions
+An individual's haplotype can be inferred using the functions
 `createFullHaplotype`. The function infers the haplotype based on the
 provided anchor gene. Using this function a contingency table is created
 for each gene, *from which strand is inferred for each allele*. The user
@@ -133,7 +138,7 @@ a haplotype should be inferred.
 
 Prior to haplotyping, it is recommended to run TIgGER on the data, to
 detect new alleles and construct a genotype (TIgGER
-[\[2\]](https://tigger.readthedocs.io/en/0.3.1/ "Gadala-Maria and Gidoni *et al.* (2018)")).
+[\[4\]](https://tigger.readthedocs.io/en/0.3.1/ "Gadala-Maria and Gidoni *et al.* (2018)")).
 
     # Infered haplotype summary table
     haplo_db <- createFullHaplotype(sample_db,toHap_col=c("V_CALL","D_CALL"),
@@ -189,7 +194,7 @@ Gene usage tends to change between individuals, in some cases the
 relative gene usage of certain individuals are much lower than the rest
 of the population. To asses whether the low frequency arise from a
 deleted gene, a binomial test described in Gidoni *et al.* (2018)
-([\[1\]](https://doi.org/10.1101/314476 "Gidoni et al. (2018)")) was
+([\[6\]](https://doi.org/10.1101/314476 "Gidoni et al. (2018)")) was
 implemented. They cheked whether a certian relative gene usage of an
 individual is lower than the a chosen cutoff, for example for the *IGHV*
 genes, the chosen cutoff was 0.001. The `deletionsByBinom` function
@@ -334,12 +339,14 @@ this function for multiple individuals.
 References
 ----------
 
-1.  [Gidoni *et al.* (2018)](https://doi.org/10.1101/314476).
-2.  [Gadala-Maria and Gidoni *et
-    al.* (2018)](https://doi.org/10.1101/405704)
-3.  [Munshaw and
-    Kepler (2010)](http://www.ncbi.nlm.nih.gov/pubmed/20147303)
-4.  [Lefranc *et
+1.  [Kidd *et
+    al.* (2012)](https://www.ncbi.nlm.nih.gov/pubmed/22205028).
+2.  [Kirik *et
+    al.* (2017)](https://www.ncbi.nlm.nih.gov/pubmed/28388445).
+3.  [Lefranc *et
     al.* (2003)](http://www.ncbi.nlm.nih.gov/pubmed/12477501)
+4.  [Gadala-Maria and Gidoni *et
+    al.* (2018)](https://doi.org/10.1101/405704)
 5.  [Gupta *et
-    al.* (2015)](http://doi.org/10.1093/bioinformatics/btv359)
+    al.* (2015)](http://doi.org/10.1093/bioinformatics/btv359)  
+6.  [Gidoni *et al.* (2018)](https://doi.org/10.1101/314476).

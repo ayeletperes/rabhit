@@ -24,6 +24,7 @@
 #' \itemize{
 #'   \item  \link{plotHaplotype}:            Haplotype inference plot.
 #'   \item  \link{deletionHeatmap}:          Single chromosome deletion heatmap.
+#'   \item  \link{hapHeatmap}:               Alleles per genes by chromosome heatmap.
 #'   \item  \link{plotDeletionsByVpooled}:   V pooled based single chromosome deletion heatmap.
 #'   \item  \link{plotDeletionsByBinom}:     Double chromosome deletion heatmap.
 #' }
