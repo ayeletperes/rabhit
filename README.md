@@ -62,6 +62,7 @@ For help, questions, or suggestions, please contact:
 
 * [Moriah Gidoni](mailto:moriah.cohen@biu.ac.il)
 * [Ayelet Peres](mailto:peresay@biu.ac.il)
+* [Gur Yaari](mailto:gur.yaari@biu.ac.il)
 * [issue tracker](https://bitbucket.org/yaarilab/rabhit/issues?status=new&status=open).
 
 
