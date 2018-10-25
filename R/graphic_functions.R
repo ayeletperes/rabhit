@@ -101,10 +101,35 @@ plotHaplotype <- function(hap_table,html_output=FALSE, gene_sort = c("name", "po
 
     geno2$hapBy <- gsub('_','*',geno2$hapBy,fixed = T)
 
-    AlleleCol <- c(sort(grep('[012]',unique(geno2$ALLELES),value = T,perl = T)),'Unk','Del')
+    AlleleCol <- grep('[012]',unique(geno2$ALLELES),value = T,perl = T)
+    AlleleCol.tmp <- sort(unique(sapply(strsplit(AlleleCol,'_'),'[',1)))
+    tmp.col <- ALLELE_PALETTE[AlleleCol.tmp]
 
+    novels <- grep('_',AlleleCol,value = T)
+    if(length(novels) > 0){
+      novels.col <- ALLELE_PALETTE[sapply(strsplit(novels,'_'),'[',1)]
+      names(novels.col) <- novels
+      alleles.comb <- c(tmp.col,novels.col)[order(names(c(tmp.col,novels.col)))]
+    } else {
+      alleles.comb <- c(tmp.col)[order(names(c(tmp.col)))]
 
-    ## change underscores to * in  hapby names
+    }
+
+    AlleleCol<- names(c(alleles.comb,Unk='#dedede',Del='#6d6d6d'))
+    names(AlleleCol) <- c(alleles.comb,Unk='#dedede',Del='#6d6d6d')
+
+    transper <- sapply(AlleleCol,function(x){if(grepl('_',x)){mom_allele <- strsplit(x,'_')[[1]][1];
+    all_novel <- grep(paste0(mom_allele,'_'),AlleleCol,value=T);
+    if(length(all_novel)==1){return(0.5)};
+    if(length(all_novel)==2){m=which(all_novel==x);return(ifelse(m==1,0.6,0.3))}
+    if(length(all_novel)==3){m=which(all_novel==x);if(m==1){return(0.6)} ; return(ifelse(m==2,0.4,0.2))}
+    } else (1)})
+    names(transper) <- AlleleCol
+
+    #remove 'mother' allele if added (when there is no germline allele but there is a novel)
+    AlleleCol <- AlleleCol[AlleleCol %in% c(sort(grep('[012]',unique(geno2$ALLELES),value = T,perl = T)),'Unk','Del')]
+    transper <- transper[names(transper) %in% AlleleCol ]
+
     p = ggplot(geno2, aes(x = GENE, fill = factor(ALLELES,levels=AlleleCol))) + theme_bw() +
       theme(axis.ticks = element_blank(), axis.text.x = element_blank(),
             panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
@@ -113,54 +138,13 @@ plotHaplotype <- function(hap_table,html_output=FALSE, gene_sort = c("name", "po
             panel.spacing = unit(0, "cm"),
             strip.switch.pad.grid = unit(0, "cm"),
             plot.margin = unit(c(0.25, 0, 0.2, 0), "cm")) + geom_bar(position = "fill",width = 0.9) +
-      coord_flip() + xlab("") + ylab("") + facet_grid(paste0(".~", "hapBy"),switch = 'x')
+      coord_flip() + xlab("") + ylab("") + facet_grid(paste0(".~", "hapBy"),switch = 'x') +
+      scale_fill_manual(values=alpha(names(AlleleCol),transper),name='Alleles')
 
     if(!plotYaxis){
       p=p+theme(axis.text.y=element_blank())
     }
 
-
-    if(is.null(ALLELE_PALETTE)){
-      AlleleCol <- c(sort(grep('[012]',unique(geno2$ALLELES),value = T,perl = T)),'Unk','Del')
-      tmp.col <- scale_fill_hue(h.start = 10, h=c(10, 270))
-      len.col <- length(AlleleCol)-2
-      names(AlleleCol) <-  c(tmp.col$palette(len.col),'#dedede','#6d6d6d')
-      p = p +scale_fill_manual(values=(names(AlleleCol)),name='ALLELES')
-    } else {
-
-      AlleleCol <- grep('[012]',unique(geno2$ALLELES),value = T,perl = T)
-      AlleleCol.tmp <- sort(unique(sapply(strsplit(AlleleCol,'_'),'[',1)))
-      tmp.col <- ALLELE_PALETTE[AlleleCol.tmp]
-
-      novels <- grep('_',AlleleCol,value = T)
-      if(length(novels) > 0){
-        novels.col <- ALLELE_PALETTE[sapply(strsplit(novels,'_'),'[',1)]
-        names(novels.col) <- novels
-        alleles.comb <- c(tmp.col,novels.col)[order(names(c(tmp.col,novels.col)))]
-      } else {
-        alleles.comb <- c(tmp.col)[order(names(c(tmp.col)))]
-
-      }
-
-      AlleleCol<- names(c(alleles.comb,Unk='#dedede',Del='#6d6d6d'))
-      names(AlleleCol) <- c(alleles.comb,Unk='#dedede',Del='#6d6d6d')
-
-
-
-      transper <- sapply(AlleleCol,function(x){if(grepl('_',x)){mom_allele <- strsplit(x,'_')[[1]][1];
-      all_novel <- grep(paste0(mom_allele,'_'),AlleleCol,value=T);
-      if(length(all_novel)==1){return(0.5)};
-      if(length(all_novel)==2){m=which(all_novel==x);return(ifelse(m==1,0.6,0.3))}
-      if(length(all_novel)==3){m=which(all_novel==x);if(m==1){return(0.6)} ; return(ifelse(m==2,0.4,0.2))}
-      } else (1)})
-      names(transper) <- AlleleCol
-
-      #remove 'mother' allele if added (when there is no germline allele but there is a novel)
-      AlleleCol <- AlleleCol[AlleleCol %in% c(sort(grep('[012]',unique(geno2$ALLELES),value = T,perl = T)),'Unk','Del')]
-      transper <- transper[names(transper) %in% AlleleCol ]
-      p = p +scale_fill_manual(values=alpha(names(AlleleCol),transper),name='Alleles')
-
-    }
 
 
     kval.df$K_GROUPED <- bin_data(kval.df$K, bins=c(0, 1,2,3,4,5,10,20,50,Inf), binType = "explicit")
@@ -546,6 +530,160 @@ deletionHeatmap <- function(hap_table,html_output=FALSE,chain=c('IGH','IGK','IGL
 }
 
 ########################################################################################################
+#' Graphical output of alleles division by chromosome
+#'
+#' \code{deletionHeatmap} creates a graphical output of the alleles per gene in chromosome in multiple samples.
+#'
+#' @details A \code{data.frame} created by \code{createFullHaplotype}.
+#'
+#' @param    hap_table            haplotype summary table. See details.
+#' @param    chain                the IG chain: IGH,IGK,IGL. Default is IGH.
+#'
+#'
+#' @return   a single chromosome deletion visualization.
+#'
+#' @examples
+#' # Load example data and germlines
+#' data(samples_db, HVGERM, HDGERM)
+#'
+#' # Infering haplotype
+#' hap_df = createFullHaplotype(samples_db,toHap_col=c("V_CALL","D_CALL"),hapBy_col="J_CALL",hapBy="IGHJ6",toHap_GERM=c(HVGERM,HDGERM));
+#' hapHeatmap(hap_df)
+#'
+#' @export
+hapHeatmap <- function(hap_table,chain=c('IGH','IGK','IGL'), ...){
+
+  hapBy_alleles <-  gsub('_','*',names(hap_table)[grep(chain,names(hap_table))])
+  hapBy_cols <- gsub('IG[H|K|L]','',hapBy_alleles)
+
+
+  genos <- c()
+  for(sample_name in unique(hap_table$SUBJECT)){
+
+    hap_table_parse = parseHapTab(hap_table[hap_table$SUBJECT==sample_name,],hapBy_alleles)
+    GENE.loc.tmp <- GENE.loc[[chain]]
+
+    genotype = hap_table_parse$genotype
+    kval.df = hap_table_parse$kval.df
+    count.df = hap_table_parse$count.df
+
+    alleles = strsplit(genotype$ALLELES, ",")
+
+    geno2 = genotype
+    r = 1
+    for (g in 1:nrow(genotype)) {
+      for (a in 1:length(alleles[[g]])) {
+        geno2[r, ] = genotype[g, ]
+        geno2[r, ]$ALLELES = alleles[[g]][a]
+        r = r + 1
+      }
+    }
+    if(gene_sort=='name'){
+      geno2$GENE = factor(geno2$GENE, levels = rev(sortAlleles(unique(geno2$GENE), method = gene_sort)))
+    } else {
+
+      names(GENE.loc.tmp) <- GENE.loc.tmp
+
+      geno2$GENE = factor(geno2$GENE, levels = rev(GENE.loc.tmp))
+
+      if(removeIGH){
+        GENE.loc.tmp <- gsub('IG[H|K|L]','',GENE.loc.tmp)
+        names(GENE.loc.tmp) <- GENE.loc.tmp
+        geno2$GENE <- gsub('IG[H|K|L]','',geno2$GENE)
+        geno2$GENE = factor(geno2$GENE, levels = rev(GENE.loc.tmp))
+        geno2$hapBy <- gsub('IG[H|K|L]','',geno2$hapBy)
+      } else {
+        names(GENE.loc.tmp) <- GENE.loc.tmp
+
+        geno2$GENE = factor(geno2$GENE, levels = rev(GENE.loc.tmp))
+
+      }
+
+    }
+
+    geno2$hapBy <- gsub('_','*',geno2$hapBy,fixed = T)
+    geno2$SUBJECT <- sample_name
+    genos <- rbind(genos,geno2)
+  }
+
+  heatmap.df <- genos %>% group_by(SUBJECT,hapBy,GENE) %>% mutate(n=n()) %>% mutate(n=ifelse(n==2,0.5,1))
+  heatmap.df$GENE <- factor(heatmap.df$GENE, levels =  gsub('IG[H|K|L]','',GENE.loc[[chain]]))
+  AlleleCol <- grep('[012]',unique(heatmap.df$ALLELES),value = T,perl = T)
+  AlleleCol.tmp <- sort(unique(sapply(strsplit(AlleleCol,'_'),'[',1)))
+  tmp.col <- ALLELE_PALETTE[AlleleCol.tmp]
+
+  novels <- grep('_',AlleleCol,value = T)
+  if(length(novels) > 0){
+    novels.col <- ALLELE_PALETTE[sapply(strsplit(novels,'_'),'[',1)]
+    names(novels.col) <- novels
+    alleles.comb <- c(tmp.col,novels.col)[order(names(c(tmp.col,novels.col)))]
+  } else {
+    alleles.comb <- c(tmp.col)[order(names(c(tmp.col)))]
+
+  }
+
+  AlleleCol<- names(c(alleles.comb,Unk='#dedede',Del='#6d6d6d'))
+  names(AlleleCol) <- c(alleles.comb,Unk='#dedede',Del='#6d6d6d')
+
+  transper <- sapply(AlleleCol,function(x){
+    if(grepl('_',x)){
+      mom_allele <- strsplit(x,'_')[[1]][1];
+      all_novel <- grep(paste0(mom_allele,'_'),AlleleCol,value=T);
+      if(length(all_novel)==1){return(0.5)};
+      if(length(all_novel)==2){m=which(all_novel==x);return(ifelse(m==1,0.6,0.3))}
+      if(length(all_novel)==3){m=which(all_novel==x);if(m==1){return(0.6)} ; return(ifelse(m==2,0.4,0.2))}
+      if(length(all_novel)>3){m=which(all_novel==x);if(m==1){return(0.85)} ; return(0.85-m/10)}
+    }else (1)})
+  names(transper) <- AlleleCol
+
+  #remove 'mother' allele if added (when there is no germline allele but there is a novel)
+  AlleleCol <- AlleleCol[AlleleCol %in% c(sort(grep('[012]',unique(heatmap.df$ALLELES),value = T,perl = T)),'Unk','Del')]
+  AlleleCol.tmp <- names(AlleleCol)
+  names(AlleleCol.tmp) <- AlleleCol
+  transper <- transper[names(transper) %in% AlleleCol ]
+
+  heatmap.df$title <- ifelse(heatmap.df$hapBy==hapBy_cols[1],hapBy_cols[1],hapBy_cols[2])
+
+  col <- ifelse(c(1:(nrow(unique(heatmap.df[heatmap.df$hapBy==hapBy_cols[1],'SUBJECT']))*4))%%3==0,'black','white')
+
+  p <- ggplot(heatmap.df[heatmap.df$hapBy==hapBy_cols[1],], (aes(x = GENE, y = n, fill = factor(ALLELES,levels=AlleleCol)))) +
+    geom_col(position = "fill", width = 0.95) +
+    scale_fill_manual(values=alpha(names(AlleleCol),transper),name='Alleles',drop=F)+
+    facet_grid(SUBJECT ~ title, as.table = FALSE, switch = "y") +
+    scale_y_continuous(expand = c(0, 0)) +
+    scale_x_discrete(expand = c(0, 0)) +  theme(axis.text.x = element_text(angle = 90,vjust = 0.5 ,hjust = 1, size=10,colour = 'black')
+                                                , strip.text.x = element_text(size=14)
+                                                , strip.text.y = element_text(angle = 180, size=10)
+                                                , panel.grid = element_blank()
+                                                , strip.placement = "outside"
+                                                , axis.ticks.y = element_line(colour = col)
+                                                , axis.text.y = element_blank()
+                                                , strip.background.y = element_blank()
+                                                , panel.spacing.y = unit(0.9, "pt")) + labs(y='',x='')
+
+  col <- ifelse(c(1:(nrow(unique(heatmap.df[heatmap.df$hapBy==hapBy_cols[2],'SUBJECT']))*4))%%3==0,'black','white')
+
+  p1 <- ggplot(heatmap.df[heatmap.df$hapBy==hapBy_cols[2],], (aes(x = GENE, y = n, fill = factor(ALLELES,levels=AlleleCol)))) +
+    geom_col(position = "fill", width = 0.95) +
+    scale_fill_manual(values=alpha(names(AlleleCol),transper),name='Alleles',drop=F)+
+    facet_grid(SUBJECT ~ title, as.table = FALSE, switch = "y") +
+    scale_y_continuous(expand = c(0, 0)) +
+    scale_x_discrete(expand = c(0, 0)) +  theme(axis.text.x = element_text(angle = 90,vjust = 0.5 ,hjust = 1, size=10,colour = 'black')
+                                                , strip.text.x = element_text(size=14)
+                                                , strip.text.y = element_text(angle = 180, size=10)
+                                                , panel.grid = element_blank()
+                                                , strip.placement = "outside"
+                                                , axis.ticks.y = element_line(colour = col)
+                                                , axis.text.y = element_blank()
+                                                , strip.background.y = element_blank()
+                                                , panel.spacing.y = unit(0.9, "pt")) + labs(y='')
+
+  legend <- get_legend(p)
+  plot(plot_grid(plot_grid(p+theme(legend.position = 'none'),
+                                        p1+theme(legend.position = 'none'),
+                                        nrow=2,align = 'hv'),legend,rel_widths = c(0.7,0.15),ncol=2))
+}
+########################################################################################################
 #' Graphical output of double chromosome deletions
 #'
 #' \code{plotDeletionsByBinom} creates a graphical output of the double chromosome deletions in multiple samples.
@@ -554,7 +692,8 @@ deletionHeatmap <- function(hap_table,html_output=FALSE,chain=c('IGH','IGK','IGL
 #'
 #' @param    GENE.usage.df        Double chromosome deletion summary table. See details.
 #' @param    chain                the IG chain: IGH,IGK,IGL. Default is IGH.
-#'
+#' @param    genes.low.cer        a vector of IGH genes known to be with low certantiny in the binomial test. Default is IGHV3-43 and IGHV3-20
+#' @param    genes.dup            a vector of IGH genes known to have a duplicated gene. Default is IGHD4-11 that his duplicate is IGHD4-4 and IGHD5-18 that his duplicate is IGHD5-5
 #'
 #' @return   a double chromosome deletion visualization.
 #'
@@ -567,7 +706,7 @@ deletionHeatmap <- function(hap_table,html_output=FALSE,chain=c('IGH','IGK','IGL
 #' plotDeletionsByBinom(hap_df)
 #'
 #' @export
-plotDeletionsByBinom <- function(GENE.usage.df,chain=c('IGH','IGK','IGL'), ...){
+plotDeletionsByBinom <- function(GENE.usage.df,chain=c('IGH','IGK','IGL'),genes.low.cer=c('IGHV3-43','IGHV3-20'), genes.dup=c('IGHD4-11','IGHD5-18'),...){
 
   if(missing(chain)) {
     chain='IGH'
@@ -581,10 +720,7 @@ plotDeletionsByBinom <- function(GENE.usage.df,chain=c('IGH','IGK','IGL'), ...){
 
   GENE.usage.df$GENE2 <- factor(gsub(chain,'',GENE.usage.df$GENE), levels=gsub(chain,'',GENE.loc))
 
-  genes.low.cer <- c('IGHV3-43','IGHV3-20')
-  genes.dup <- c('IGHD4-11','IGHD5-18')
-
-  colvec <- ifelse(GENE.loc%in%genes.low.cer, "red", ifelse(GENE.loc%in%genes.dup, "darkgreen", "black"))
+  colvec <- ifelse(GENE.loc%in%genes.low.cer, "red", ifelse(GENE.loc%in%genes.dup, "purple", "black"))
 
   ### gene usage with deletions in population according to binom test
   p.del <- ggplot(GENE.usage.df,aes(x=GENE2,y=FRAC)) + geom_boxplot(outlier.colour=NA) +

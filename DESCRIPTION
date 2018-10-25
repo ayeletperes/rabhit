@@ -34,4 +34,3 @@ Collate:
     'internal_functions.R'
     'functions.R'
     'graphic_functions.R'
-RoxygenNote: 6.1.0

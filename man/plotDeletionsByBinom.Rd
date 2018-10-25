@@ -4,12 +4,18 @@
 \alias{plotDeletionsByBinom}
 \title{Graphical output of double chromosome deletions}
 \usage{
-plotDeletionsByBinom(GENE.usage.df, chain = c("IGH", "IGK", "IGL"), ...)
+plotDeletionsByBinom(GENE.usage.df, chain = c("IGH", "IGK", "IGL"),
+  genes.low.cer = c("IGHV3-43", "IGHV3-20"), genes.dup = c("IGHD4-11",
+  "IGHD5-18"), ...)
 }
 \arguments{
 \item{GENE.usage.df}{Double chromosome deletion summary table. See details.}
 
 \item{chain}{the IG chain: IGH,IGK,IGL. Default is IGH.}
+
+\item{genes.low.cer}{a vector of IGH genes known to be with low certantiny in the binomial test. Default is IGHV3-43 and IGHV3-20}
+
+\item{genes.dup}{a vector of IGH genes known to have a duplicated gene. Default is IGHD4-11 that his duplicate is IGHD4-4 and IGHD5-18 that his duplicate is IGHD5-5}
 }
 \value{
 a double chromosome deletion visualization.
