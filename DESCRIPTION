@@ -3,15 +3,15 @@ Type: Package
 Title: Antibody Haplotype Infrence
 Version: 0.1.0.9000
 Authors@R: c(person("Moriah", "Gidoni", role=c("aut"), 
-                    email=""),
+                    email="moriah.cohen@biu.ac.il"),
              person("Ayelet", "Peres", role=c("aut"), 
-                    email=""),
+                    email="peresay@biu.ac.il"),
              person("Gur", "Yaari", role=c("aut"), 
-                    email=""))
+                    email="gur.yaari@biu.ac.il"))
 Description: Infers an individual haplotype from immunoglobulin (Ig)
     repertoire-sequencing (Rep-Seq) data.
 License: GPLv3
-URL: 
+URL: https://yaarilab.bitbucket.io/RAbHIT/
 BugReports: https://bitbucket.org/yaarilab/haplotyper/issues
 LazyData: true
 BuildVignettes: true
