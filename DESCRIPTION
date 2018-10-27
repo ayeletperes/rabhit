@@ -1,7 +1,7 @@
 Package: rabhit
 Type: Package
 Title: Antibody Haplotype Infrence
-Version: 0.1.0
+Version: 0.1.0.9000
 Authors@R: c(person("Moriah", "Gidoni", role=c("aut"), 
                     email=""),
              person("Ayelet", "Peres", role=c("aut"), 
@@ -10,7 +10,7 @@ Authors@R: c(person("Moriah", "Gidoni", role=c("aut"),
                     email=""))
 Description: Infers an individual haplotype from immunoglobulin (Ig)
     repertoire-sequencing (Rep-Seq) data.
-License: CC BY-SA 4.0
+License: GPLv3
 URL: 
 BugReports: https://bitbucket.org/yaarilab/haplotyper/issues
 LazyData: true

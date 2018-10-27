@@ -44,6 +44,10 @@ NULL
 createFullHaplotype <- function(clip_db,toHap_col=c("V_CALL","D_CALL"),hapBy_col="J_CALL",hapBy="IGHJ6",
                               toHap_GERM,relative_freq_priors=TRUE,kThreshDel=3,rmPseudo=TRUE,deleted_genes=c(),
                               min_minor_fraction=0.3,chain=c('IGH','IGK','IGL'),supress_print=FALSE){
+
+  # Check if germline was inputed
+  if(missing(toHap_GERM)) stop('Missing toHap_GERM, please input germline sequences')
+
   if(missing(chain)) {
         chain='IGH'
     }
@@ -58,6 +62,8 @@ createFullHaplotype <- function(clip_db,toHap_col=c("V_CALL","D_CALL"),hapBy_col
   haplo_db <- c()
   for(sample_name in unique(clip_db$SUBJECT)){
       clip_db_sub = clip_db[clip_db$SUBJECT==sample_name,]
+
+
       if(is.data.frame(deleted_genes)) deleted_genes_vec <- deleted_genes %>% filter(SUBJECT==sample_name,DELETION=='Deletion') %>% select(GENE) %>% pull()
       else deleted_genes_vec <-c()
       #Number of iniial sequences
@@ -90,7 +96,6 @@ createFullHaplotype <- function(clip_db,toHap_col=c("V_CALL","D_CALL"),hapBy_col
         }
 
       }
-
 
       GENES.ref <- unique(sapply(strsplit(names(toHap_GERM),'*',fixed = T),'[',1))
 
@@ -176,8 +181,8 @@ createFullHaplotype <- function(clip_db,toHap_col=c("V_CALL","D_CALL"),hapBy_col
         }
       }
 
-
-
+      # Check if toHap_col genes are in toHap_GERM
+      if(length(GENES.df.num)==0) stop("Genes in haplotype column to be infered do not match the genes germline given")
 
 
       ## Fill deleted according to a k thershold
@@ -323,12 +328,6 @@ deletionsByBinom <- function(clip_db,chain=c('IGH','IGK','IGL')){
       }
     }
   }
-
-  # GENE.usage.mean.dist <- sapply(GENE.usage,function(x){(x-mean(x))/sd(x)})
-  # GENE.usage.mean.dist.mlt <- reshape2::melt(GENE.usage.mean.dist)
-  # no.existent.genes<- which(colSums(GENE.usage.mean.dist,na.rm = T) == 0)
-  # GENE.usage.mean.dist.mlt <- GENE.usage.mean.dist.mlt[!(GENE.usage.mean.dist.mlt$Var2 %in% names(no.existent.genes)), ]
-  # GENE.usage.mean.dist.mlt$value1 <- cut(GENE.usage.mean.dist.mlt$value,breaks = c(-Inf,-3:3,Inf),right = FALSE)
 
 
   ###  Gene usage for violin plot for paper

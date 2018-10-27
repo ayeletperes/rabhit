@@ -1,4 +1,4 @@
 library(testthat)
-library(haplotyper)
+library(rabhit)
 
-test_check("haplotyper")
+test_check("rabhit")

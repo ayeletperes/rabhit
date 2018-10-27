@@ -33,7 +33,7 @@ vignette: >
   
 Analysis of antibody repertoires by high throughput sequencing is of major importance in understanding adaptive immune responses. 
 Our knowledge of variations in the genomic loci encoding antibody genes is incomplete, mostly due to technical difficulties in aligning short reads to these highly repetitive loci. 
-The partial knowledge results in conflicting *V-D-J* gene assignments between different algorithms, and biased genotype and haplotype inference. Previous studies have shown that haplotypes can be inferred by taking advantage of *IGHJ6* heterozygosity, observed in approximately one third of the population ([[1]][1],[[2]][2]).
+The partial knowledge results in conflicting *V-D-J* gene assignments between different algorithms, and biased genotype and haplotype inference. Previous studies have shown that haplotypes can be inferred by taking advantage of *IGHJ6* heterozygosity, observed in approximately one third of the population([[1]][1],[[2]][2]).
 
 Here we provide a robust novel method for determining *V-D-J* haplotypes by adapting a Bayesian framework, **RAbHIT**. 
 Our method extends haplotype inference to *IGHD*- and *IGHV*-based analysis, thereby enabling inference of complex genetic events like deletions and copy number variations in the entire population. It calculates a Bayes factor, a number that indicates the certainty level of the inference, for each haplotyped gene. 
@@ -42,6 +42,9 @@ More details can be found here:
   
 [Gidoni, Moriah, et al. "Mosaic deletion patterns of the human antibody heavy chain gene locus as revealed by Bayesian haplotyping." bioRxiv (2018): 314476.](https://doi.org/10.1101/314476)
 
+## Installation
+
+To install `RAbHIT` please refer to [https://bitbucket.org/yaarilab/rabhit](https://bitbucket.org/yaarilab/rabhit)
 
 ## Input
 
@@ -80,7 +83,7 @@ To get the most reliable result we suggest to follow the data pre-processing ste
 1. Discover novel alleles (TIgGER [[4]][5])
 2. Infer genotype and reassign sequences accordingly (TIgGER [[4]][4]) 
 3. Sequence filtration by cells type:
-   + For naive cells sequences, use only V genes with <=3 mutation and no mutation in D gene.
+   + For naive cells sequences, use only *V* genes with <=3 mutation and no mutation in *D* gene.
    + For PBMC cells sequences, first cluster sequences into clones (SHazaM [[5]][5]) then chose from each clone a representative sequence with the least number of mutations.
 4. Preferably filter out non-functional sequences.
 
@@ -106,9 +109,10 @@ The user can set the anchor gene for haplotyping as well as the column for which
 Prior to haplotyping, it is recommended to run TIgGER on the data, to detect new alleles and construct a genotype (TIgGER [[4]][4]).
 
 ```{r, eval=TRUE, warning=FALSE}
-# Infered haplotype summary table
-haplo_db <- createFullHaplotype(sample_db,toHap_col=c("V_CALL","D_CALL"),
-hapBy_col="J_CALL",hapBy="IGHJ6",toHap_GERM=c(HVGERM,HDGERM))
+# Inferred haplotype summary table
+haplo_db <- createFullHaplotype(sample_db, toHap_col=c("V_CALL","D_CALL"),
+                                hapBy_col="J_CALL", hapBy="IGHJ6", 
+                                toHap_GERM=c(HVGERM, HDGERM))
 
 head(haplo_db)
 ```
@@ -120,38 +124,55 @@ plotHaplotype(haplo_db)
 
 ```{r, eval=TRUE, warning=FALSE}
 # Plot interactive haplotype plot
-p <- plotHaplotype(haplo_db,html_output = T)
-#save plot to html output
-htmlwidgets::saveWidget(p, "haplotype.html",selfcontained = T)
+p <- plotHaplotype(haplo_db, html_output = T)
+# Save plot to html output
+htmlwidgets::saveWidget(p, "haplotype.html", selfcontained = T)
 ```
+
+
+For a group of individuals one can visualize the haplotype inferred using the `hapHeatmap` function. The function create a heatmap of the alleles genes inferred for each chromosome and.
+
+```{r, eval=TRUE, warning=FALSE, fig.width=12, fig.height=8}
+# Load example sequence data
+data(samples_db)
+# Inferred haplotype summary table
+haplo_db <- createFullHaplotype(samples_db, toHap_col=c("V_CALL","D_CALL"),
+                        hapBy_col="J_CALL", hapBy="IGHJ6", toHap_GERM=c(HVGERM, HDGERM),
+                        supress_print = T)
+# Plot the haplotype inferred heatmap
+hapHeatmap(haplo_db)
+``` 
 
 ### Infering double chromosome deletion by relative gene usage
 
-Gene usage tends to change between individuals, in some cases the relative gene usage of certain individuals are much lower than the rest of the population. To asses whether the low frequency arise from a deleted gene, a binomial test described in  Gidoni *et al.* (2018) ([[6]][6]) was implemented. They cheked whether a certian relative gene usage of an individual is lower than the a chosen cutoff, for example for the *IGHV* genes, the chosen cutoff was $0.001$. The `deletionsByBinom` function implements the binomial and return the detect gene deletion for a certian individual.
+Gene usage tends to change between individuals, in some cases the relative gene usage of certain individuals are much lower than the rest of the population. To asses whether the low frequency arise from a deleted gene, a binomial test described in  Gidoni *et al.* (2018) ([[6]][6]) was implemented. They checked whether a certain relative gene usage of an individual is lower than the a chosen cutoff, for example for the *IGHV* genes, the chosen cutoff was $0.001$. The `deletionsByBinom` function implements the binomial and return the detect gene deletion for a certain individual.
 
 
 ```{r, eval=TRUE, warning=FALSE}
-# Infered deletion summary table
+# Inferred deletion summary table
 del_binom_db <- deletionsByBinom(samples_db)
 head(del_binom_db)
 ```
 
-For visualzing the deletion detected by `deletionsByBinom`, the `plotDeletionsByBinom` can be used. It is recomended to use this function for multiple individuals.
+For visualizing the deletion detected by `deletionsByBinom`, the `plotDeletionsByBinom` can be used. It is recommended to use this function for multiple individuals.
 
-```{r, eval=TRUE, warning=FALSE,fig.height=9,fig.width=12}
-# Infered deletion summary table
-plotDeletionsByBinom(del_binom_db[grep('IGHJ',del_binom_db$GENE,invert = T),]) ## Don't plot IGHJ
+```{r, eval=TRUE, warning=FALSE,fig.height=9,fig.width=15}
+# Don't plot IGHJ
+del_binom_db <- del_binom_db[grep('IGHJ',del_binom_db$GENE, invert = T),]
+# Inferred deletion summary table
+plotDeletionsByBinom(del_binom_db) 
 ```
 
 
-The detection of double chromosome deltion from the function can be then used for the haplotype infernce, this prior knowldege of deletion can rise the certentiy level of the infrence of the genes where a deletion where a deletion was detected. The `createFullHaplotype` recives a vector of the deleted genes detected.
+The detection of double chromosome deletion from the function can be then used for the haplotype inference, this prior knowledge of deletion can rise the certainty level of the inference of the genes where a deletion where a deletion was detected. The `createFullHaplotype` receives a vector of the deleted genes detected.
 V gene labels marked in red represent low expressed genes for which deletions are inferred with low certainty. D gene labels marked in purple represent indistinguishable genes due to high sequence similarity, therefore alignment call is less reliable.
 
 ```{r, eval=TRUE, warning=FALSE}
-# Infered deletion summary table
+# Inferred deletion summary table
 del_binom_db <- deletionsByBinom(sample_db)
-haplo_db <- createFullHaplotype(sample_db,toHap_col=c("V_CALL","D_CALL"),
-hapBy_col="J_CALL",hapBy="IGHJ6",toHap_GERM=c(HVGERM,HDGERM),deleted_genes = del_binom_db,supress_print = T)
+haplo_db <- createFullHaplotype(sample_db, toHap_col=c("V_CALL","D_CALL"),
+                        hapBy_col="J_CALL", hapBy="IGHJ6", toHap_GERM=c(HVGERM, HDGERM),
+                        deleted_genes = del_binom_db, supress_print = T)
 plotHaplotype(haplo_db)
 ```
 
@@ -162,11 +183,9 @@ For a group of individuals, the deletions detected by the haplotyping process ca
 The function create a heatmap of the deletion inferred and colors them by the certainty level ($lK$).
 
 ```{r, eval=TRUE, warning=FALSE,fig.height=16,fig.width=15}
-# Load example sequence data
-data(samples_db)
-# Infered haplotype summary table for multiple subjects
-haplo_db <- createFullHaplotype(samples_db,toHap_col=c("V_CALL","D_CALL"),
-hapBy_col="J_CALL",hapBy="IGHJ6",toHap_GERM=c(HVGERM,HDGERM),supress_print = T)
+# Inferred haplotype summary table for multiple subjects
+haplo_db <- createFullHaplotype(samples_db, toHap_col=c("V_CALL","D_CALL"),
+hapBy_col="J_CALL", hapBy="IGHJ6", toHap_GERM=c(HVGERM, HDGERM), supress_print = T)
 # plot deletion heatmap
 deletionHeatmap(haplo_db)
 ```
@@ -180,7 +199,7 @@ increase the number of people for which *D* haplotype can be inferred.
 However, reliable haplotype inference using *V* genes as 
 anchors requires a much greater sequencing depth than haplotype inference using J6 gene as an anchor.
 
-The RAbHIT package offeres a solution to  overcome the low number of sequences that connect a given *V-D* allele pair.
+The RAbHIT package offers a solution to  overcome the low number of sequences that connect a given *V-D* allele pair.
 The package function applies an aggregation approach, in which information from several *V* heterozygous genes can be combined to infer *D* gene
 deletions.
 
@@ -188,17 +207,26 @@ The `deletionsByVpooled` function uses the *V* pooled approach to detect single 
 
 
 ```{r, eval=TRUE, warning=FALSE}
-# Infered deletion summary table
+# Inferred deletion summary table
 del_db <- deletionsByVpooled(samples_db)
 head(del_db)
 ```
 
-For visualzing the deletion detected by `deletionsByVpooled`, the `plotDeletionsByVpooled` can be used. 
-However, it is recomended to use this function for multiple individuals.
+For visualizing the deletion detected by `deletionsByVpooled`, the `plotDeletionsByVpooled` can be used. 
+However, it is recommended to use this function for multiple individuals.
 ```{r, eval=TRUE, warning=FALSE,fig.height=4,fig.width=8}
 # Plot the deletion heatmap
 plotDeletionsByVpooled(del_db)
 ```
+
+## Contact
+
+For help, questions, or suggestions, please contact:
+
+* [Moriah Gidoni](mailto:moriah.cohen@biu.ac.il)
+* [Ayelet Peres](mailto:peresay@biu.ac.il)
+* [Gur Yaari](mailto:gur.yaari@biu.ac.il)
+* [Issue tracker](https://bitbucket.org/yaarilab/rabhit/issues?status=new&status=open)
 
 
 ## References

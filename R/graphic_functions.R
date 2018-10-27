@@ -12,8 +12,8 @@ NULL
 #'
 #' @param    hap_table            haplotype summary table. See details.
 #' @param    html_output          If TRUE, a html5 interactive graph is outputed. Defualt is FALSE.
-#' @param    gene_sort            If by ‘name’ the genes in the output are ordered lexicographically,
-#' if by ‘position’ only functional genes are used and are ordered by their chromosomal location. Default is ‘position’.
+#' @param    gene_sort            If by 'name' the genes in the output are ordered lexicographically,
+#' if by 'position' only functional genes are used and are ordered by their chromosomal location. Default is 'position'.
 #' @param    text_size            the size of graph labels. Default is 14 (pts).
 #' @param    removeIGH            if TRUE, 'IGH'\'IGK'\'IGL' prefix is removed from gene names.
 #' @param    plotYaxis            if TRUE, Y axis labels (gene names) are plotted on the middle and right plots. Default is TRUE.
@@ -481,8 +481,6 @@ deletionHeatmap <- function(hap_table,html_output=FALSE,chain=c('IGH','IGK','IGL
           panel.background = element_blank(),
           legend.direction = "horizontal",legend.justification="center" ,legend.box.just = "bottom")
 
-  ### CHR FOR PAPER
-
   del.df.heatmap <- heatmap.df
   del.df.heatmap <- del.df.heatmap %>% filter(ALLELE=='Del')
 
@@ -532,13 +530,15 @@ deletionHeatmap <- function(hap_table,html_output=FALSE,chain=c('IGH','IGK','IGL
 ########################################################################################################
 #' Graphical output of alleles division by chromosome
 #'
-#' \code{deletionHeatmap} creates a graphical output of the alleles per gene in chromosome in multiple samples.
+#' \code{hapHeatmap} creates a graphical output of the alleles per gene in chromosome in multiple samples.
 #'
 #' @details A \code{data.frame} created by \code{createFullHaplotype}.
 #'
 #' @param    hap_table            haplotype summary table. See details.
 #' @param    chain                the IG chain: IGH,IGK,IGL. Default is IGH.
-#'
+#' @param    gene_sort            If by 'name' the genes in the output are ordered lexicographically,
+#' if by 'position' only functional genes are used and are ordered by their chromosomal location. Default is 'position'.
+#' @param    removeIGH            if TRUE, 'IGH'\'IGK'\'IGL' prefix is removed from gene names.
 #'
 #' @return   a single chromosome deletion visualization.
 #'
@@ -551,11 +551,15 @@ deletionHeatmap <- function(hap_table,html_output=FALSE,chain=c('IGH','IGK','IGL
 #' hapHeatmap(hap_df)
 #'
 #' @export
-hapHeatmap <- function(hap_table,chain=c('IGH','IGK','IGL'), ...){
+hapHeatmap <- function(hap_table,chain=c('IGH','IGK','IGL'),gene_sort='position',removeIGH=TRUE, ...){
 
   hapBy_alleles <-  gsub('_','*',names(hap_table)[grep(chain,names(hap_table))])
   hapBy_cols <- gsub('IG[H|K|L]','',hapBy_alleles)
 
+  if(missing(chain)) {
+    chain='IGH'
+  }
+  chain <- match.arg(chain)
 
   genos <- c()
   for(sample_name in unique(hap_table$SUBJECT)){
@@ -606,7 +610,8 @@ hapHeatmap <- function(hap_table,chain=c('IGH','IGK','IGL'), ...){
     genos <- rbind(genos,geno2)
   }
 
-  heatmap.df <- genos %>% group_by(SUBJECT,hapBy,GENE) %>% mutate(n=n()) %>% mutate(n=ifelse(n==2,0.5,1))
+  heatmap.df <- genos %>% group_by(SUBJECT,hapBy,GENE) %>% mutate(n=n())
+  heatmap.df$freq <-ifelse(heatmap.df$n==2,0.5,1)
   heatmap.df$GENE <- factor(heatmap.df$GENE, levels =  gsub('IG[H|K|L]','',GENE.loc[[chain]]))
   AlleleCol <- grep('[012]',unique(heatmap.df$ALLELES),value = T,perl = T)
   AlleleCol.tmp <- sort(unique(sapply(strsplit(AlleleCol,'_'),'[',1)))
@@ -646,7 +651,7 @@ hapHeatmap <- function(hap_table,chain=c('IGH','IGK','IGL'), ...){
 
   col <- ifelse(c(1:(nrow(unique(heatmap.df[heatmap.df$hapBy==hapBy_cols[1],'SUBJECT']))*4))%%3==0,'black','white')
 
-  p <- ggplot(heatmap.df[heatmap.df$hapBy==hapBy_cols[1],], (aes(x = GENE, y = n, fill = factor(ALLELES,levels=AlleleCol)))) +
+  p <- ggplot(heatmap.df[heatmap.df$hapBy==hapBy_cols[1],], (aes(x = GENE, y = freq, fill = factor(ALLELES,levels=AlleleCol)))) +
     geom_col(position = "fill", width = 0.95) +
     scale_fill_manual(values=alpha(names(AlleleCol),transper),name='Alleles',drop=F)+
     facet_grid(SUBJECT ~ title, as.table = FALSE, switch = "y") +
@@ -819,8 +824,8 @@ plotDeletionsByVpooled <- function(del.df,K_ranges=c(3,7)){
     geom_tile(aes(fill = EVENT)) +
     scale_fill_manual(name='',labels=labels1,
                       values = values1,drop=F) + ylab('Subject') + xlab('Gene') +
-    theme(strip.text = element_text(size=18),axis.title = element_text(size=18),axis.text = element_text(size = 14),
-          legend.position = 'bottom',axis.text.x = element_text(angle = 90,vjust = 0.5 ,hjust = 1),legend.text=element_text(size=18))
+    theme(strip.text = element_text(size=14),axis.title = element_text(size=14),axis.text = element_text(size = 12),
+          legend.position = 'bottom',axis.text.x = element_text(angle = 90,vjust = 0.5 ,hjust = 1),legend.text=element_text(size=14))
 
 
 

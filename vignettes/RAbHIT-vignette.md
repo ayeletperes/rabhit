@@ -1,4 +1,5 @@
 -   [Introduction](#introduction)
+-   [Installation](#installation)
 -   [Input](#input)
     -   [Pre-processing of the data](#pre-processing-of-the-data)
 -   [Running RAbHIT](#running-rabhit)
@@ -10,6 +11,7 @@
         heatmap](#haplotype-inference-deletion-heatmap)
     -   [Infering D/J single chromosome deletion by V pooled
         approach](#infering-dj-single-chromosome-deletion-by-v-pooled-approach)
+-   [Contact](#contact)
 -   [References](#references)
 
 Introduction
@@ -23,8 +25,8 @@ to these highly repetitive loci. The partial knowledge results in
 conflicting *V-D-J* gene assignments between different algorithms, and
 biased genotype and haplotype inference. Previous studies have shown
 that haplotypes can be inferred by taking advantage of *IGHJ6*
-heterozygosity, observed in approximately one third of the population
-([\[1\]](https://www.ncbi.nlm.nih.gov/pubmed/22205028 "Kidd *et al.* (2012)"),[\[2\]](https://www.ncbi.nlm.nih.gov/pubmed/28388445 "Kirik *et al.* (2017)")).
+heterozygosity, observed in approximately one third of the
+population([\[1\]](https://www.ncbi.nlm.nih.gov/pubmed/22205028 "Kidd *et al.* (2012)"),[\[2\]](https://www.ncbi.nlm.nih.gov/pubmed/28388445 "Kirik *et al.* (2017)")).
 
 Here we provide a robust novel method for determining *V-D-J* haplotypes
 by adapting a Bayesian framework, **RAbHIT**. Our method extends
@@ -39,6 +41,12 @@ More details can be found here:
 [Gidoni, Moriah, et al. "Mosaic deletion patterns of the human antibody
 heavy chain gene locus as revealed by Bayesian haplotyping." bioRxiv
 (2018): 314476.](https://doi.org/10.1101/314476)
+
+Installation
+------------
+
+To install `RAbHIT` please refer to
+<https://bitbucket.org/yaarilab/rabhit>
 
 Input
 -----
@@ -105,8 +113,8 @@ pre-processing steps below.
     [\[4\]](https://tigger.readthedocs.io/en/0.3.1/ "Gadala-Maria and Gidoni *et al.* (2018)"))
 3.  Sequence filtration by cells type:
 
--   For naive cells sequences, use only V genes with &lt;=3 mutation and
-    no mutation in D gene.
+-   For naive cells sequences, use only *V* genes with &lt;=3 mutation
+    and no mutation in *D* gene.
 -   For PBMC cells sequences, first cluster sequences into clones
     (SHazaM
     [\[5\]](https://shazam.readthedocs.io/en/version-0.1.10/ "Gupta N *et al.* (2015)"))
@@ -140,9 +148,10 @@ Prior to haplotyping, it is recommended to run TIgGER on the data, to
 detect new alleles and construct a genotype (TIgGER
 [\[4\]](https://tigger.readthedocs.io/en/0.3.1/ "Gadala-Maria and Gidoni *et al.* (2018)")).
 
-    # Infered haplotype summary table
-    haplo_db <- createFullHaplotype(sample_db,toHap_col=c("V_CALL","D_CALL"),
-    hapBy_col="J_CALL",hapBy="IGHJ6",toHap_GERM=c(HVGERM,HDGERM))
+    # Inferred haplotype summary table
+    haplo_db <- createFullHaplotype(sample_db, toHap_col=c("V_CALL","D_CALL"),
+                                    hapBy_col="J_CALL", hapBy="IGHJ6", 
+                                    toHap_GERM=c(HVGERM, HDGERM))
 
     ## In sample S32, 6475 sequnces were removed due to multiple assignments,
     ##  40108 sequences left.
@@ -184,9 +193,24 @@ detect new alleles and construct a genotype (TIgGER
 ![](RAbHIT-vignette_files/figure-markdown_strict/unnamed-chunk-3-1.png)
 
     # Plot interactive haplotype plot
-    p <- plotHaplotype(haplo_db,html_output = T)
-    #save plot to html output
-    htmlwidgets::saveWidget(p, "haplotype.html",selfcontained = T)
+    p <- plotHaplotype(haplo_db, html_output = T)
+    # Save plot to html output
+    htmlwidgets::saveWidget(p, "haplotype.html", selfcontained = T)
+
+For a group of individuals one can visualize the haplotype inferred
+using the `hapHeatmap` function. The function create a heatmap of the
+alleles genes inferred for each chromosome and.
+
+    # Load example sequence data
+    data(samples_db)
+    # Inferred haplotype summary table
+    haplo_db <- createFullHaplotype(samples_db, toHap_col=c("V_CALL","D_CALL"),
+                            hapBy_col="J_CALL", hapBy="IGHJ6", toHap_GERM=c(HVGERM, HDGERM),
+                            supress_print = T)
+    # Plot the haplotype inferred heatmap
+    hapHeatmap(haplo_db)
+
+![](RAbHIT-vignette_files/figure-markdown_strict/unnamed-chunk-5-1.png)
 
 ### Infering double chromosome deletion by relative gene usage
 
@@ -195,13 +219,13 @@ relative gene usage of certain individuals are much lower than the rest
 of the population. To asses whether the low frequency arise from a
 deleted gene, a binomial test described in Gidoni *et al.* (2018)
 ([\[6\]](https://doi.org/10.1101/314476 "Gidoni et al. (2018)")) was
-implemented. They cheked whether a certian relative gene usage of an
+implemented. They checked whether a certain relative gene usage of an
 individual is lower than the a chosen cutoff, for example for the *IGHV*
 genes, the chosen cutoff was 0.001. The `deletionsByBinom` function
 implements the binomial and return the detect gene deletion for a
-certian individual.
+certain individual.
 
-    # Infered deletion summary table
+    # Inferred deletion summary table
     del_binom_db <- deletionsByBinom(samples_db)
     head(del_binom_db)
 
@@ -215,32 +239,35 @@ certian individual.
     ## 5 S28     IGHV3-74 0.00793 0.00471     1 No Deletion
     ## 6 S84     IGHV3-74 0.00855 0.00471     1 No Deletion
 
-For visualzing the deletion detected by `deletionsByBinom`, the
-`plotDeletionsByBinom` can be used. It is recomended to use this
+For visualizing the deletion detected by `deletionsByBinom`, the
+`plotDeletionsByBinom` can be used. It is recommended to use this
 function for multiple individuals.
 
-    # Infered deletion summary table
-    plotDeletionsByBinom(del_binom_db[grep('IGHJ',del_binom_db$GENE,invert = T),]) ## Don't plot IGHJ
-
-![](RAbHIT-vignette_files/figure-markdown_strict/unnamed-chunk-6-1.png)
-
-The detection of double chromosome deltion from the function can be then
-used for the haplotype infernce, this prior knowldege of deletion can
-rise the certentiy level of the infrence of the genes where a deletion
-where a deletion was detected. The `createFullHaplotype` recives a
-vector of the deleted genes detected. V gene labels marked in red
-represent low expressed genes for which deletions are inferred with low
-certainty. D gene labels marked in purple represent indistinguishable
-genes due to high sequence similarity, therefore alignment call is less
-reliable.
-
-    # Infered deletion summary table
-    del_binom_db <- deletionsByBinom(sample_db)
-    haplo_db <- createFullHaplotype(sample_db,toHap_col=c("V_CALL","D_CALL"),
-    hapBy_col="J_CALL",hapBy="IGHJ6",toHap_GERM=c(HVGERM,HDGERM),deleted_genes = del_binom_db,supress_print = T)
-    plotHaplotype(haplo_db)
+    # Don't plot IGHJ
+    del_binom_db <- del_binom_db[grep('IGHJ',del_binom_db$GENE, invert = T),]
+    # Inferred deletion summary table
+    plotDeletionsByBinom(del_binom_db) 
 
 ![](RAbHIT-vignette_files/figure-markdown_strict/unnamed-chunk-7-1.png)
+
+The detection of double chromosome deletion from the function can be
+then used for the haplotype inference, this prior knowledge of deletion
+can rise the certainty level of the inference of the genes where a
+deletion where a deletion was detected. The `createFullHaplotype`
+receives a vector of the deleted genes detected. V gene labels marked in
+red represent low expressed genes for which deletions are inferred with
+low certainty. D gene labels marked in purple represent
+indistinguishable genes due to high sequence similarity, therefore
+alignment call is less reliable.
+
+    # Inferred deletion summary table
+    del_binom_db <- deletionsByBinom(sample_db)
+    haplo_db <- createFullHaplotype(sample_db, toHap_col=c("V_CALL","D_CALL"),
+                            hapBy_col="J_CALL", hapBy="IGHJ6", toHap_GERM=c(HVGERM, HDGERM),
+                            deleted_genes = del_binom_db, supress_print = T)
+    plotHaplotype(haplo_db)
+
+![](RAbHIT-vignette_files/figure-markdown_strict/unnamed-chunk-8-1.png)
 
 ### Haplotype inference deletion heatmap
 
@@ -249,15 +276,13 @@ process can be visualized with `deletionHeatmap`. The function create a
 heatmap of the deletion inferred and colors them by the certainty level
 (*l**K*).
 
-    # Load example sequence data
-    data(samples_db)
-    # Infered haplotype summary table for multiple subjects
-    haplo_db <- createFullHaplotype(samples_db,toHap_col=c("V_CALL","D_CALL"),
-    hapBy_col="J_CALL",hapBy="IGHJ6",toHap_GERM=c(HVGERM,HDGERM),supress_print = T)
+    # Inferred haplotype summary table for multiple subjects
+    haplo_db <- createFullHaplotype(samples_db, toHap_col=c("V_CALL","D_CALL"),
+    hapBy_col="J_CALL", hapBy="IGHJ6", toHap_GERM=c(HVGERM, HDGERM), supress_print = T)
     # plot deletion heatmap
     deletionHeatmap(haplo_db)
 
-![](RAbHIT-vignette_files/figure-markdown_strict/unnamed-chunk-8-1.png)
+![](RAbHIT-vignette_files/figure-markdown_strict/unnamed-chunk-9-1.png)
 
 ### Infering D/J single chromosome deletion by V pooled approach
 
@@ -267,7 +292,7 @@ of people for which *D* haplotype can be inferred. However, reliable
 haplotype inference using *V* genes as anchors requires a much greater
 sequencing depth than haplotype inference using J6 gene as an anchor.
 
-The RAbHIT package offeres a solution to overcome the low number of
+The RAbHIT package offers a solution to overcome the low number of
 sequences that connect a given *V-D* allele pair. The package function
 applies an aggregation approach, in which information from several *V*
 heterozygous genes can be combined to infer *D* gene deletions.
@@ -275,7 +300,7 @@ heterozygous genes can be combined to infer *D* gene deletions.
 The `deletionsByVpooled` function uses the *V* pooled approach to detect
 single chromosomal deletion for *D* and *J*.
 
-    # Infered deletion summary table
+    # Inferred deletion summary table
     del_db <- deletionsByVpooled(samples_db)
 
     ## [1] "5093 sequnces were removed due to multiple assignments, 37749 sequences left"
@@ -327,14 +352,25 @@ single chromosomal deletion for *D* and *J*.
     ## 5 IGHD2-15        0 198.5908     170,309 V(pooled) 198.59     S42
     ## 6  IGHD2-2        0 279.3872     234,405 V(pooled) 279.39     S42
 
-For visualzing the deletion detected by `deletionsByVpooled`, the
-`plotDeletionsByVpooled` can be used. However, it is recomended to use
+For visualizing the deletion detected by `deletionsByVpooled`, the
+`plotDeletionsByVpooled` can be used. However, it is recommended to use
 this function for multiple individuals.
 
     # Plot the deletion heatmap
     plotDeletionsByVpooled(del_db)
 
-![](RAbHIT-vignette_files/figure-markdown_strict/unnamed-chunk-10-1.png)
+![](RAbHIT-vignette_files/figure-markdown_strict/unnamed-chunk-11-1.png)
+
+Contact
+-------
+
+For help, questions, or suggestions, please contact:
+
+-   [Moriah Gidoni](mailto:moriah.cohen@biu.ac.il)
+-   [Ayelet Peres](mailto:peresay@biu.ac.il)
+-   [Gur Yaari](mailto:gur.yaari@biu.ac.il)
+-   [Issue
+    tracker](https://bitbucket.org/yaarilab/rabhit/issues?status=new&status=open)
 
 References
 ----------
