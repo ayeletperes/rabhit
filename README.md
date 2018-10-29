@@ -4,11 +4,8 @@ Analysis of antibody repertoires by high throughput sequencing is of major impor
 
 **RAbHIT is a haplotype infrence tool based on a robust novel method for determining V-D-J haplotypes by adapting a Bayesian framework**. Our method extends haplotype inference to IGHD, IGHV, IGKJ, IGKV, and IGLV based analysis, thereby enabling inference of complex genetic events like deletions and copy number variations in the entire population. Based on this method we developed an R package, which implements the method on sequences from naive B-cells, for both the heavy and the light chains. The package offers a haplotype and single chromosome deletion inference based on an anchor gene.  The inferred haplotypes and deletion patterns may have clinical implications for genetic predispositions to diseases. 
 
-<center>
+![](./logo/RAbHIt4.png){width=150px}
 
-![](./logo/RAbHIt4.png){width=350px}
-
-</center>
 
 ## Core Abilities ##
 
