@@ -125,8 +125,16 @@
   \postauthor{\par}
       \predate{\centering\large\emph}
   \postdate{\par}
-    \date{Last modified 2018-10-27}
+    \date{Last modified 2018-10-29}
 
+\usepackage{titling}
+
+\pretitle{%
+  \begin{center}
+  \LARGE
+  \includegraphics[width=4cm,height=6cm]{../logo/RAbHIt4.png}\\[\bigskipamount]
+}
+\posttitle{\end{center}}
 
 \begin{document}
 \maketitle
@@ -147,7 +155,8 @@ conflicting \emph{V-D-J} gene assignments between different algorithms,
 and biased genotype and haplotype inference. Previous studies have shown
 that haplotypes can be inferred by taking advantage of \emph{IGHJ6}
 heterozygosity, observed in approximately one third of the
-population(\href{https://www.ncbi.nlm.nih.gov/pubmed/22205028}{{[}1{]}},\href{https://www.ncbi.nlm.nih.gov/pubmed/28388445}{{[}2{]}}).
+population{[}\protect\hyperlink{ref-kidd_inference_2012}{1}{]},
+{[}\protect\hyperlink{ref-kirik2017parallel}{2}{]}.
 
 Here we provide a robust novel method for determining \emph{V-D-J}
 haplotypes by adapting a Bayesian framework, \textbf{RAbHIT}. Our method
@@ -206,10 +215,10 @@ An example dataset is provided with the \texttt{rabhit} package. It
 contains unique naive b-cell sequences, from a single individual.
 
 The database of germline sequences should be provided in FASTA format
-with sequences gapped according to the IMGT numbering scheme
-(\href{http://www.ncbi.nlm.nih.gov/pubmed/12477501}{{[}3{]}}). IGHV
-alleles in the IMGT database (build 201408-4) are provided with this
-package. (object name)
+with sequences gapped according to the IMGT numbering
+scheme{[}\protect\hyperlink{ref-lefranc2003imgt}{3}{]}. IGHV alleles in
+the IMGT database (build 2014-08-4) are provided with this package.
+(object name)
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -229,11 +238,11 @@ pre-processing steps below.
 \def\labelenumi{\arabic{enumi}.}
 \tightlist
 \item
-  Discover novel alleles (TIgGER
-  \href{https://shazam.readthedocs.io/en/version-0.1.10/}{{[}4{]}})
+  Discover novel alleles
+  (TIgGER{[}\protect\hyperlink{ref-gadala2018identification}{4}{]})
 \item
-  Infer genotype and reassign sequences accordingly (TIgGER
-  \href{https://tigger.readthedocs.io/en/0.3.1/}{{[}4{]}})
+  Infer genotype and reassign sequences accordingly
+  (TIgGER{[}\protect\hyperlink{ref-gadala2018identification}{4}{]})
 \item
   Sequence filtration by cells type:
 \end{enumerate}
@@ -245,9 +254,8 @@ pre-processing steps below.
   mutation and no mutation in \emph{D} gene.
 \item
   For PBMC cells sequences, first cluster sequences into clones (SHazaM
-  \href{https://shazam.readthedocs.io/en/version-0.1.10/}{{[}5{]}}) then
-  chose from each clone a representative sequence with the least number
-  of mutations.
+  {[}\protect\hyperlink{ref-gupta2015change}{5}{]}) then chose from each
+  clone a representative sequence with the least number of mutations.
 \end{itemize}
 
 \begin{enumerate}
@@ -290,8 +298,8 @@ allele}. The user can set the anchor gene for haplotyping as well as the
 column for which a haplotype should be inferred.
 
 Prior to haplotyping, it is recommended to run TIgGER on the data, to
-detect new alleles and construct a genotype (TIgGER
-\href{https://tigger.readthedocs.io/en/0.3.1/}{{[}4{]}}).
+detect new alleles and construct a genotype
+(TIgGER{[}\protect\hyperlink{ref-gadala2018identification}{4}{]}).
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -387,11 +395,11 @@ usage}\label{infering-double-chromosome-deletion-by-relative-gene-usage}
 Gene usage tends to change between individuals, in some cases the
 relative gene usage of certain individuals are much lower than the rest
 of the population. To asses whether the low frequency arise from a
-deleted gene, a binomial test described in Gidoni \emph{et al.} (2018)
-(\href{https://doi.org/10.1101/314476}{{[}6{]}}) was implemented. They
-checked whether a certain relative gene usage of an individual is lower
-than the a chosen cutoff, for example for the \emph{IGHV} genes, the
-chosen cutoff was \(0.001\). The \texttt{deletionsByBinom} function
+deleted gene, a binomial test described in Gidoni \emph{et al.}
+(2018){[}\protect\hyperlink{ref-gidoni2018mosaic}{6}{]} was implemented.
+They checked whether a certain relative gene usage of an individual is
+lower than the a chosen cutoff, for example for the \emph{IGHV} genes,
+the chosen cutoff was \(0.001\). The \texttt{deletionsByBinom} function
 implements the binomial and return the detect gene deletion for a
 certain individual.
 
@@ -587,29 +595,49 @@ For help, questions, or suggestions, please contact:
   tracker}
 \end{itemize}
 
-\subsection{References}\label{references}
+\subsection*{References}\label{references}
+\addcontentsline{toc}{subsection}{References}
 
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\tightlist
-\item
-  \href{https://www.ncbi.nlm.nih.gov/pubmed/22205028}{Kidd \emph{et al.}
-  (2012)}.
-\item
-  \href{https://www.ncbi.nlm.nih.gov/pubmed/28388445}{Kirik \emph{et
-  al.} (2017)}.
-\item
-  \href{http://www.ncbi.nlm.nih.gov/pubmed/12477501}{Lefranc \emph{et
-  al.} (2003)}
-\item
-  \href{https://doi.org/10.1101/405704}{Gadala-Maria and Gidoni \emph{et
-  al.} (2018)}
-\item
-  \href{http://doi.org/10.1093/bioinformatics/btv359}{Gupta \emph{et
-  al.} (2015)}\\
-\item
-  \href{https://doi.org/10.1101/314476}{Gidoni \emph{et al.} (2018)}.
-\end{enumerate}
+\hypertarget{refs}{}
+\hypertarget{ref-kidd_inference_2012}{}
+{[}1{]} M. J. Kidd \emph{et al.}, ``The Inference of Phased Haplotypes
+for the Immunoglobulin H Chain V Region Gene Loci by Analysis of VDJ
+Gene Rearrangements,'' \emph{J Immunol}, vol. 188, no. 3, pp.
+1333--1340, Feb. 2012 {[}Online{]}. Available:
+\url{http://www.jimmunol.org/content/188/3/1333}. {[}Accessed:
+01-Mar-2013{]}
+
+\hypertarget{ref-kirik2017parallel}{}
+{[}2{]} U. Kirik, L. Greiff, F. Levander, and M. Ohlin, ``Parallel
+antibody germline gene and haplotype analyses support the validity of
+immunoglobulin germline gene inference and discovery,'' \emph{Molecular
+Immunology}, vol. 87, pp. 12--22, 2017.
+
+\hypertarget{ref-lefranc2003imgt}{}
+{[}3{]} M.-P. Lefranc \emph{et al.}, ``IMGT unique numbering for
+immunoglobulin and t cell receptor variable domains and ig superfamily
+v-like domains,'' \emph{Developmental \& Comparative Immunology}, vol.
+27, no. 1, pp. 55--77, 2003.
+
+\hypertarget{ref-gadala2018identification}{}
+{[}4{]} D. Gadala-Maria \emph{et al.}, ``Identification of
+subject-specific immunoglobulin alleles from expressed repertoire
+sequencing data,'' \emph{bioRxiv}, p. 405704, 2018 {[}Online{]}.
+Available: \url{https://tigger.readthedocs.io/en/0.3.1/}
+
+\hypertarget{ref-gupta2015change}{}
+{[}5{]} N. T. Gupta, J. A. Vander Heiden, M. Uduman, D. Gadala-Maria, G.
+Yaari, and S. H. Kleinstein, ``Change-o: A toolkit for analyzing
+large-scale b cell immunoglobulin repertoire sequencing data,''
+\emph{Bioinformatics}, vol. 31, no. 20, pp. 3356--3358, 2015
+{[}Online{]}. Available:
+\url{https://shazam.readthedocs.io/en/version-0.1.10/}
+
+\hypertarget{ref-gidoni2018mosaic}{}
+{[}6{]} M. Gidoni \emph{et al.}, ``Mosaic deletion patterns of the human
+antibody heavy chain gene locus as revealed by bayesian haplotyping,''
+\emph{bioRxiv}, p. 314476, 2018 {[}Online{]}. Available:
+\url{https://doi.org/10.1101/314476}
 
 
 \end{document}

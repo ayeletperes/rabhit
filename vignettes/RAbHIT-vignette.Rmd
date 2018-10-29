@@ -3,40 +3,47 @@ title: "RAbHIT: R Antibody Haplotype Infrence Tool"
 author: "Moriah Gidoni, Ayelet Peres, Gur Yaari"
 date: "Last modified `r Sys.Date()`"
 output:
-  pdf_document:
-    dev: pdf
-    fig_height: 20
-    fig_width: 15
-    highlight: pygments
-    toc: yes
   html_document:
     fig_height: 20
     fig_width: 15
     highlight: pygments
     theme: readable
     toc: yes
+    includes:
+      in_header: extLogo.html
+  pdf_document:
+    dev: pdf
+    fig_height: 20
+    fig_width: 15
+    highlight: pygments
+    toc: yes
+    includes:
+      in_header: header.tex
   md_document:
     fig_height: 20
     fig_width: 15
     preserve_yaml: no
     toc: yes
+bibliography: bibliography.bib
+csl: ieee-with-url.csl
+link-citations: yes
 urlcolor: blue
 geometry: margin=1in
 fontsize: 11pt
 vignette: >
-  %\VignetteEngine{knitr::rmarkdown} 
   %\VignetteIndexEntry{Haplotype infrence} 
   %\usepackage[utf8]{inputenc}
+  %\VignetteEngine{knitr::rmarkdown} 
 ---
   
 ## Introduction 
   
 Analysis of antibody repertoires by high throughput sequencing is of major importance in understanding adaptive immune responses. 
 Our knowledge of variations in the genomic loci encoding antibody genes is incomplete, mostly due to technical difficulties in aligning short reads to these highly repetitive loci. 
-The partial knowledge results in conflicting *V-D-J* gene assignments between different algorithms, and biased genotype and haplotype inference. Previous studies have shown that haplotypes can be inferred by taking advantage of *IGHJ6* heterozygosity, observed in approximately one third of the population([[1]][1],[[2]][2]).
+The partial knowledge results in conflicting *V-D-J* gene assignments between different algorithms, and biased genotype and haplotype inference. Previous studies have shown that haplotypes can be inferred by taking advantage of *IGHJ6* heterozygosity, observed in approximately one third of the population [[@kidd_inference_2012,@kirik2017parallel]].
 
 Here we provide a robust novel method for determining *V-D-J* haplotypes by adapting a Bayesian framework, **RAbHIT**. 
-Our method extends haplotype inference to *IGHD*- and *IGHV*-based analysis, thereby enabling inference of complex genetic events like deletions and copy number variations in the entire population. It calculates a Bayes factor, a number that indicates the certainty level of the inference, for each haplotyped gene. 
+Our method extends haplotype inference to *IGHD* and *IGHV* based analysis, thereby enabling inference of complex genetic events like deletions and copy number variations in the entire population. It calculates a Bayes factor, a number that indicates the certainty level of the inference, for each haplotyped gene. 
 
 More details can be found here:
   
@@ -68,8 +75,8 @@ An example dataset is provided with the `rabhit` package. It contains unique nai
 sequences, from a single individual.
 
 The database of germline sequences should be provided in FASTA format with 
-sequences gapped according to the IMGT numbering scheme ([[3]][3]). IGHV alleles in
-the IMGT database (build 201408-4) are provided with this package. (object name)
+sequences gapped according to the IMGT numbering scheme[@lefranc2003imgt]. IGHV alleles in
+the IMGT database (build 2014-08-4) are provided with this package. (object name)
 
 ```{r, eval=TRUE, message=FALSE, warning=FALSE}
 library(rabhit)
@@ -80,11 +87,11 @@ data(sample_db, HVGERM, HDGERM)
 
 To get the most reliable result we suggest to follow the data pre-processing steps below.
 
-1. Discover novel alleles (TIgGER [[4]][5])
-2. Infer genotype and reassign sequences accordingly (TIgGER [[4]][4]) 
+1. Discover novel alleles (TIgGER[@gadala2018identification])
+2. Infer genotype and reassign sequences accordingly (TIgGER[@gadala2018identification]) 
 3. Sequence filtration by cells type:
    + For naive cells sequences, use only *V* genes with <=3 mutation and no mutation in *D* gene.
-   + For PBMC cells sequences, first cluster sequences into clones (SHazaM [[5]][5]) then chose from each clone a representative sequence with the least number of mutations.
+   + For PBMC cells sequences, first cluster sequences into clones (SHazaM[@gupta2015change]) then chose from each clone a representative sequence with the least number of mutations.
 4. Preferably filter out non-functional sequences.
 
 
@@ -106,7 +113,7 @@ An individual's haplotype can be inferred using the functions `createFullHaploty
 The function infers the haplotype based on the provided anchor gene. Using this function a contingency table is created for each gene, *from which strand is inferred for each allele*.
 The user can set the anchor gene for haplotyping as well as the column for which a haplotype should be inferred.
 
-Prior to haplotyping, it is recommended to run TIgGER on the data, to detect new alleles and construct a genotype (TIgGER [[4]][4]).
+Prior to haplotyping, it is recommended to run TIgGER on the data, to detect new alleles and construct a genotype (TIgGER[@gadala2018identification]).
 
 ```{r, eval=TRUE, warning=FALSE}
 # Inferred haplotype summary table
@@ -117,18 +124,10 @@ haplo_db <- createFullHaplotype(sample_db, toHap_col=c("V_CALL","D_CALL"),
 head(haplo_db)
 ```
 
-```{r, eval=TRUE, warning=FALSE}
+```{r, eval=TRUE, warning=FALSE,fig.width=8,fig.height=10}
 # Plot the haplotype
 plotHaplotype(haplo_db)
 ```
-
-```{r, eval=TRUE, warning=FALSE}
-# Plot interactive haplotype plot
-p <- plotHaplotype(haplo_db, html_output = T)
-# Save plot to html output
-htmlwidgets::saveWidget(p, "haplotype.html", selfcontained = T)
-```
-
 
 For a group of individuals one can visualize the haplotype inferred using the `hapHeatmap` function. The function create a heatmap of the alleles genes inferred for each chromosome and.
 
@@ -145,7 +144,7 @@ hapHeatmap(haplo_db)
 
 ### Infering double chromosome deletion by relative gene usage
 
-Gene usage tends to change between individuals, in some cases the relative gene usage of certain individuals are much lower than the rest of the population. To asses whether the low frequency arise from a deleted gene, a binomial test described in  Gidoni *et al.* (2018) ([[6]][6]) was implemented. They checked whether a certain relative gene usage of an individual is lower than the a chosen cutoff, for example for the *IGHV* genes, the chosen cutoff was $0.001$. The `deletionsByBinom` function implements the binomial and return the detect gene deletion for a certain individual.
+Gene usage tends to change between individuals, in some cases the relative gene usage of certain individuals are much lower than the rest of the population. To asses whether the low frequency arise from a deleted gene, a binomial test described in  Gidoni *et al.* (2018)[@gidoni2018mosaic] was implemented. They checked whether a certain relative gene usage of an individual is lower than the a chosen cutoff, for example for the *IGHV* genes, the chosen cutoff was $0.001$. The `deletionsByBinom` function implements the binomial and return the detect gene deletion for a certain individual.
 
 
 ```{r, eval=TRUE, warning=FALSE}
@@ -167,13 +166,29 @@ plotDeletionsByBinom(del_binom_db)
 The detection of double chromosome deletion from the function can be then used for the haplotype inference, this prior knowledge of deletion can rise the certainty level of the inference of the genes where a deletion where a deletion was detected. The `createFullHaplotype` receives a vector of the deleted genes detected.
 V gene labels marked in red represent low expressed genes for which deletions are inferred with low certainty. D gene labels marked in purple represent indistinguishable genes due to high sequence similarity, therefore alignment call is less reliable.
 
+
+## Interactive Haplotype infrence with double chromosome deletions
+
+As mentioned above the double chromosome deletions can be used within the haplotype inference, prior to inferring the haplotype the `deletionsByBinom` summary table needs to be created. Next the haplotype can be inferred by giving the flag `deleted_genes` in the `createFullHaplotype` the deletion summary table.
+
+Another way to visualize the inferred haplotype is using the interactive HTML5 plot. This plot makes the haplotype inference information more accessible and interactive. To plot the HTML5 visualization the flag should be marked as `html_output=TRUE` in the `plotHaplotype` function. The function `saveWidget` from the `htmlwidgets` can be used to save the interactive plot to a html file.    
+
 ```{r, eval=TRUE, warning=FALSE}
 # Inferred deletion summary table
 del_binom_db <- deletionsByBinom(sample_db)
+# Input the summary table to the deleted_genes flag
 haplo_db <- createFullHaplotype(sample_db, toHap_col=c("V_CALL","D_CALL"),
                         hapBy_col="J_CALL", hapBy="IGHJ6", toHap_GERM=c(HVGERM, HDGERM),
                         deleted_genes = del_binom_db, supress_print = T)
-plotHaplotype(haplo_db)
+
+# Generate interactive haplotype plot
+p <- plotHaplotype(haplo_db, html_output = TRUE)
+
+# Save plot to html output
+htmlwidgets::saveWidget(p, "haplotype.html", selfcontained = T)
+
+# Plot the haplotype
+p
 ```
 
 
@@ -184,8 +199,9 @@ The function create a heatmap of the deletion inferred and colors them by the ce
 
 ```{r, eval=TRUE, warning=FALSE,fig.height=16,fig.width=15}
 # Inferred haplotype summary table for multiple subjects
-haplo_db <- createFullHaplotype(samples_db, toHap_col=c("V_CALL","D_CALL"),
-hapBy_col="J_CALL", hapBy="IGHJ6", toHap_GERM=c(HVGERM, HDGERM), supress_print = T)
+haplo_db <- createFullHaplotype(samples_db, toHap_col=c("V_CALL","D_CALL"), 
+                                hapBy_col="J_CALL", hapBy="IGHJ6", 
+                                toHap_GERM=c(HVGERM, HDGERM), supress_print = T)
 # plot deletion heatmap
 deletionHeatmap(haplo_db)
 ```
@@ -231,17 +247,10 @@ For help, questions, or suggestions, please contact:
 
 ## References
 
-1. [Kidd *et al.* (2012)](https://www.ncbi.nlm.nih.gov/pubmed/22205028).
-2. [Kirik *et al.* (2017)](https://www.ncbi.nlm.nih.gov/pubmed/28388445).
-3. [Lefranc *et al.* (2003)](http://www.ncbi.nlm.nih.gov/pubmed/12477501)
-4. [Gadala-Maria and Gidoni *et al.* (2018)](https://doi.org/10.1101/405704)
-5. [Gupta  *et al.* (2015)](http://doi.org/10.1093/bioinformatics/btv359)  
-6. [Gidoni *et al.* (2018)](https://doi.org/10.1101/314476).
-
-
 [1]: https://www.ncbi.nlm.nih.gov/pubmed/22205028 "Kidd *et al.* (2012)"
 [2]: https://www.ncbi.nlm.nih.gov/pubmed/28388445 "Kirik *et al.* (2017)" 
 [3]: http://www.ncbi.nlm.nih.gov/pubmed/12477501 "Lefranc et al. (2003)"
 [4]: https://tigger.readthedocs.io/en/0.3.1/ "Gadala-Maria and Gidoni *et al.* (2018)" 
 [5]: https://shazam.readthedocs.io/en/version-0.1.10/ "Gupta N *et al.* (2015)"
 [6]: https://doi.org/10.1101/314476 "Gidoni et al. (2018)"
+  

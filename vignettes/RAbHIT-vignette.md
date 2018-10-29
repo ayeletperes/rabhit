@@ -26,7 +26,8 @@ conflicting *V-D-J* gene assignments between different algorithms, and
 biased genotype and haplotype inference. Previous studies have shown
 that haplotypes can be inferred by taking advantage of *IGHJ6*
 heterozygosity, observed in approximately one third of the
-population([\[1\]](https://www.ncbi.nlm.nih.gov/pubmed/22205028 "Kidd *et al.* (2012)"),[\[2\]](https://www.ncbi.nlm.nih.gov/pubmed/28388445 "Kirik *et al.* (2017)")).
+population\[[1](#ref-kidd_inference_2012)\],
+\[[2](#ref-kirik2017parallel)\].
 
 Here we provide a robust novel method for determining *V-D-J* haplotypes
 by adapting a Bayesian framework, **RAbHIT**. Our method extends
@@ -93,10 +94,9 @@ An example dataset is provided with the `rabhit` package. It contains
 unique naive b-cell sequences, from a single individual.
 
 The database of germline sequences should be provided in FASTA format
-with sequences gapped according to the IMGT numbering scheme
-([\[3\]](http://www.ncbi.nlm.nih.gov/pubmed/12477501 "Lefranc et al. (2003)")).
-IGHV alleles in the IMGT database (build 201408-4) are provided with
-this package. (object name)
+with sequences gapped according to the IMGT numbering
+scheme\[[3](#ref-lefranc2003imgt)\]. IGHV alleles in the IMGT database
+(build 2014-08-4) are provided with this package. (object name)
 
     library(rabhit)
     # Load example sequence data and example germline database
@@ -107,19 +107,17 @@ this package. (object name)
 To get the most reliable result we suggest to follow the data
 pre-processing steps below.
 
-1.  Discover novel alleles (TIgGER
-    [\[4\]](https://shazam.readthedocs.io/en/version-0.1.10/ "Gupta N *et al.* (2015)"))
-2.  Infer genotype and reassign sequences accordingly (TIgGER
-    [\[4\]](https://tigger.readthedocs.io/en/0.3.1/ "Gadala-Maria and Gidoni *et al.* (2018)"))
+1.  Discover novel alleles
+    (TIgGER\[[4](#ref-gadala2018identification)\])
+2.  Infer genotype and reassign sequences accordingly
+    (TIgGER\[[4](#ref-gadala2018identification)\])
 3.  Sequence filtration by cells type:
 
 -   For naive cells sequences, use only *V* genes with &lt;=3 mutation
     and no mutation in *D* gene.
 -   For PBMC cells sequences, first cluster sequences into clones
-    (SHazaM
-    [\[5\]](https://shazam.readthedocs.io/en/version-0.1.10/ "Gupta N *et al.* (2015)"))
-    then chose from each clone a representative sequence with the least
-    number of mutations.
+    (SHazaM \[[5](#ref-gupta2015change)\]) then chose from each clone a
+    representative sequence with the least number of mutations.
 
 1.  Preferably filter out non-functional sequences.
 
@@ -145,8 +143,8 @@ can set the anchor gene for haplotyping as well as the column for which
 a haplotype should be inferred.
 
 Prior to haplotyping, it is recommended to run TIgGER on the data, to
-detect new alleles and construct a genotype (TIgGER
-[\[4\]](https://tigger.readthedocs.io/en/0.3.1/ "Gadala-Maria and Gidoni *et al.* (2018)")).
+detect new alleles and construct a genotype
+(TIgGER\[[4](#ref-gadala2018identification)\]).
 
     # Inferred haplotype summary table
     haplo_db <- createFullHaplotype(sample_db, toHap_col=c("V_CALL","D_CALL"),
@@ -217,13 +215,12 @@ alleles genes inferred for each chromosome and.
 Gene usage tends to change between individuals, in some cases the
 relative gene usage of certain individuals are much lower than the rest
 of the population. To asses whether the low frequency arise from a
-deleted gene, a binomial test described in Gidoni *et al.* (2018)
-([\[6\]](https://doi.org/10.1101/314476 "Gidoni et al. (2018)")) was
-implemented. They checked whether a certain relative gene usage of an
-individual is lower than the a chosen cutoff, for example for the *IGHV*
-genes, the chosen cutoff was 0.001. The `deletionsByBinom` function
-implements the binomial and return the detect gene deletion for a
-certain individual.
+deleted gene, a binomial test described in Gidoni *et al.*
+(2018)\[[6](#ref-gidoni2018mosaic)\] was implemented. They checked
+whether a certain relative gene usage of an individual is lower than the
+a chosen cutoff, for example for the *IGHV* genes, the chosen cutoff was
+0.001. The `deletionsByBinom` function implements the binomial and
+return the detect gene deletion for a certain individual.
 
     # Inferred deletion summary table
     del_binom_db <- deletionsByBinom(samples_db)
@@ -375,14 +372,35 @@ For help, questions, or suggestions, please contact:
 References
 ----------
 
-1.  [Kidd *et
-    al.* (2012)](https://www.ncbi.nlm.nih.gov/pubmed/22205028).
-2.  [Kirik *et
-    al.* (2017)](https://www.ncbi.nlm.nih.gov/pubmed/28388445).
-3.  [Lefranc *et
-    al.* (2003)](http://www.ncbi.nlm.nih.gov/pubmed/12477501)
-4.  [Gadala-Maria and Gidoni *et
-    al.* (2018)](https://doi.org/10.1101/405704)
-5.  [Gupta *et
-    al.* (2015)](http://doi.org/10.1093/bioinformatics/btv359)  
-6.  [Gidoni *et al.* (2018)](https://doi.org/10.1101/314476).
+\[1\] M. J. Kidd *et al.*, “The Inference of Phased Haplotypes for the
+Immunoglobulin H Chain V Region Gene Loci by Analysis of VDJ Gene
+Rearrangements,” *J Immunol*, vol. 188, no. 3, pp. 1333–1340, Feb. 2012
+\[Online\]. Available: <http://www.jimmunol.org/content/188/3/1333>
+
+\[2\] U. Kirik, L. Greiff, F. Levander, and M. Ohlin, “Parallel antibody
+germline gene and haplotype analyses support the validity of
+immunoglobulin germline gene inference and discovery,” *Molecular
+Immunology*, vol. 87, pp. 12–22, 2017 \[Online\]. Available:
+<https://www.ncbi.nlm.nih.gov/pubmed/28388445>
+
+\[3\] M.-P. Lefranc *et al.*, “IMGT unique numbering for immunoglobulin
+and t cell receptor variable domains and ig superfamily v-like domains,”
+*Developmental & Comparative Immunology*, vol. 27, no. 1, pp. 55–77,
+2003 \[Online\]. Available:
+<http://www.ncbi.nlm.nih.gov/pubmed/12477501>
+
+\[4\] D. Gadala-Maria *et al.*, “Identification of subject-specific
+immunoglobulin alleles from expressed repertoire sequencing data,”
+*bioRxiv*, p. 405704, 2018 \[Online\]. Available:
+<https://tigger.readthedocs.io/en/0.3.1/>
+
+\[5\] N. T. Gupta, J. A. Vander Heiden, M. Uduman, D. Gadala-Maria, G.
+Yaari, and S. H. Kleinstein, “Change-o: A toolkit for analyzing
+large-scale b cell immunoglobulin repertoire sequencing data,”
+*Bioinformatics*, vol. 31, no. 20, pp. 3356–3358, 2015 \[Online\].
+Available: <https://shazam.readthedocs.io/en/version-0.1.10/>
+
+\[6\] M. Gidoni *et al.*, “Mosaic deletion patterns of the human
+antibody heavy chain gene locus as revealed by bayesian haplotyping,”
+*bioRxiv*, p. 314476, 2018 \[Online\]. Available:
+<https://doi.org/10.1101/314476>

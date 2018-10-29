@@ -2,7 +2,13 @@
 
 Analysis of antibody repertoires by high throughput sequencing is of major importance in understanding adaptive immune responses. Our knowledge of variations in the genomic loci encoding antibody genes is incomplete, mostly due to technical difficulties in aligning short reads to these highly repetitive loci. The partial knowledge results in conflicting V-D-J gene assignments between different algorithms, and biased genotype and haplotype inference. Previous studies have shown that haplotypes can be inferred by taking advantage of IGHJ6 heterozygosity, observed in approximately one third of the population.
 
-**RAbHIT is a haplotype infrence tool based on a robust novel method for determining V-D-J haplotypes by adapting a Bayesian framework. Our method extends haplotype inference to IGHD, IGHV, IGKJ, IGKV, and IGLV based analysis, thereby enabling inference of complex genetic events like deletions and copy number variations in the entire population. Based on this method we developed an R package, which implements the method on sequences from naive B-cells, for both the heavy and the light chains. The package offers a haplotype and single chromosome deletion inference based on an anchor gene.  The inferred haplotypes and deletion patterns may have clinical implications for genetic predispositions to diseases. **
+**RAbHIT is a haplotype infrence tool based on a robust novel method for determining V-D-J haplotypes by adapting a Bayesian framework**. Our method extends haplotype inference to IGHD, IGHV, IGKJ, IGKV, and IGLV based analysis, thereby enabling inference of complex genetic events like deletions and copy number variations in the entire population. Based on this method we developed an R package, which implements the method on sequences from naive B-cells, for both the heavy and the light chains. The package offers a haplotype and single chromosome deletion inference based on an anchor gene.  The inferred haplotypes and deletion patterns may have clinical implications for genetic predispositions to diseases. 
+
+<center>
+
+![](./logo/RAbHIt4.png){width=350px}
+
+</center>
 
 ## Core Abilities ##
 
@@ -56,6 +62,7 @@ install()
 
 A complete documentation of RAbHIT is available at: https://yaarilab.bitbucket.io/RAbHIT/ or in your local repository at: ./vignettes/RAbHIT-vignette.html
 
+
 ## Contact ##
 
 For help, questions, or suggestions, please contact:
@@ -66,4 +73,6 @@ For help, questions, or suggestions, please contact:
 * [Issue tracker](https://bitbucket.org/yaarilab/rabhit/issues?status=new&status=open)
 
 
+## Copying ##
 
+RAbHIT is free for use under the [GNU General Public License version 3 (GPLv3)](https://www.gnu.org/licenses/quick-guide-gplv3.html)
