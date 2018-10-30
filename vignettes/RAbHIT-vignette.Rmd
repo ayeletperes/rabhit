@@ -40,7 +40,7 @@ vignette: >
   
 Analysis of antibody repertoires by high throughput sequencing is of major importance in understanding adaptive immune responses. 
 Our knowledge of variations in the genomic loci encoding antibody genes is incomplete, mostly due to technical difficulties in aligning short reads to these highly repetitive loci. 
-The partial knowledge results in conflicting *V-D-J* gene assignments between different algorithms, and biased genotype and haplotype inference. Previous studies have shown that haplotypes can be inferred by taking advantage of *IGHJ6* heterozygosity, observed in approximately one third of the population [[@kidd_inference_2012,@kirik2017parallel]].
+The partial knowledge results in conflicting *V-D-J* gene assignments between different algorithms, and biased genotype and haplotype inference. Previous studies have shown that haplotypes can be inferred by taking advantage of *IGHJ6* heterozygosity, observed in approximately one third of the population [@kidd_inference_2012;@kirik2017parallel].
 
 Here we provide a robust novel method for determining *V-D-J* haplotypes by adapting a Bayesian framework, **RAbHIT**. 
 Our method extends haplotype inference to *IGHD* and *IGHV* based analysis, thereby enabling inference of complex genetic events like deletions and copy number variations in the entire population. It calculates a Bayes factor, a number that indicates the certainty level of the inference, for each haplotyped gene. 
@@ -90,8 +90,8 @@ To get the most reliable result we suggest to follow the data pre-processing ste
 1. Discover novel alleles (TIgGER[@gadala2018identification])
 2. Infer genotype and reassign sequences accordingly (TIgGER[@gadala2018identification]) 
 3. Sequence filtration by cells type:
-   + For naive cells sequences, use only *V* genes with <=3 mutation and no mutation in *D* gene.
-   + For PBMC cells sequences, first cluster sequences into clones (SHazaM[@gupta2015change]) then chose from each clone a representative sequence with the least number of mutations.
+    * For naive cells sequences, use only *V* genes with <=3 mutation and no mutation in *D* gene.
+    * For PBMC cells sequences, first cluster sequences into clones (SHazaM[@gupta2015change]) then chose from each clone a representative sequence with the least number of mutations.
 4. Preferably filter out non-functional sequences.
 
 
@@ -120,8 +120,14 @@ Prior to haplotyping, it is recommended to run TIgGER on the data, to detect new
 haplo_db <- createFullHaplotype(sample_db, toHap_col=c("V_CALL","D_CALL"),
                                 hapBy_col="J_CALL", hapBy="IGHJ6", 
                                 toHap_GERM=c(HVGERM, HDGERM))
+```
 
+```{r, eval=FALSE, warning=FALSE}
 head(haplo_db)
+```
+
+```{r, eval=TRUE, warning=FALSE,echo=FALSE}
+head(haplo_db,3)
 ```
 
 ```{r, eval=TRUE, warning=FALSE,fig.width=8,fig.height=10}
@@ -129,7 +135,7 @@ head(haplo_db)
 plotHaplotype(haplo_db)
 ```
 
-For a group of individuals one can visualize the haplotype inferred using the `hapHeatmap` function. The function create a heatmap of the alleles genes inferred for each chromosome and.
+To further compare the haplotype inference between multiple individuals, the `hapHeatmap` function can be used. This function generate a heatmap of the alleles genes inferred for each chromosome and.
 
 ```{r, eval=TRUE, warning=FALSE, fig.width=12, fig.height=8}
 # Load example sequence data
@@ -144,7 +150,7 @@ hapHeatmap(haplo_db)
 
 ### Infering double chromosome deletion by relative gene usage
 
-Gene usage tends to change between individuals, in some cases the relative gene usage of certain individuals are much lower than the rest of the population. To asses whether the low frequency arise from a deleted gene, a binomial test described in  Gidoni *et al.* (2018)[@gidoni2018mosaic] was implemented. They checked whether a certain relative gene usage of an individual is lower than the a chosen cutoff, for example for the *IGHV* genes, the chosen cutoff was $0.001$. The `deletionsByBinom` function implements the binomial and return the detect gene deletion for a certain individual.
+Gene usage tends to vary between individuals, in certain cases the relative gene usage of certain individuals are much lower than the rest of the population. To asses whether the low frequency arise from a deleted gene, a binomial test described in  Gidoni *et al.* (2018)[@gidoni2018mosaic] was implemented. They checked whether a certain relative gene usage of an individual is lower than the a chosen cutoff, for example for the *IGHV* genes, the chosen cutoff was $0.001$. The `deletionsByBinom` function implements the binomial and return the detect gene deletion for a certain individual.
 
 
 ```{r, eval=TRUE, warning=FALSE}
@@ -169,9 +175,8 @@ V gene labels marked in red represent low expressed genes for which deletions ar
 
 ## Interactive Haplotype infrence with double chromosome deletions
 
-As mentioned above the double chromosome deletions can be used within the haplotype inference, prior to inferring the haplotype the `deletionsByBinom` summary table needs to be created. Next the haplotype can be inferred by giving the flag `deleted_genes` in the `createFullHaplotype` the deletion summary table.
+As mentioned above the double chromosome deletions can be used within the haplotype inference. First the double deletion summary table should be generated with `deletionsByBinom`. Next, the haplotype can be inferred imputing the deletion summary table to the `deleted_genes` flag in the `createFullHaplotype` function.
 
-Another way to visualize the inferred haplotype is using the interactive HTML5 plot. This plot makes the haplotype inference information more accessible and interactive. To plot the HTML5 visualization the flag should be marked as `html_output=TRUE` in the `plotHaplotype` function. The function `saveWidget` from the `htmlwidgets` can be used to save the interactive plot to a html file.    
 
 ```{r, eval=TRUE, warning=FALSE}
 # Inferred deletion summary table
@@ -180,7 +185,11 @@ del_binom_db <- deletionsByBinom(sample_db)
 haplo_db <- createFullHaplotype(sample_db, toHap_col=c("V_CALL","D_CALL"),
                         hapBy_col="J_CALL", hapBy="IGHJ6", toHap_GERM=c(HVGERM, HDGERM),
                         deleted_genes = del_binom_db, supress_print = T)
+```
 
+Another way to visualize the inferred haplotype is using the interactive HTML5 plot. To plot the HTML5 visualization, the `plotHaplotype` function should be used with the `html_output` flag marked `TRUE`. The function `saveWidget` from the `htmlwidgets` package can be used to save the interactive plot to a html file.    
+
+```{r, eval=TRUE, warning=FALSE}
 # Generate interactive haplotype plot
 p <- plotHaplotype(haplo_db, html_output = TRUE)
 

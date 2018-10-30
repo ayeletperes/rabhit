@@ -336,14 +336,14 @@ plotHaplotype <- function(hap_table,html_output=FALSE, gene_sort = c("name", "po
       p.l.c <- suppressWarnings(subplot(p2.l,p.l,pk.l,widths = c(0.4,0.2,0.2),shareY = T,titleX = TRUE,margin = 0.01,which_layout = 1))
       p.l.c$x$layout$annotations[[6]]$text = "log<sub>10</sub>(lK)"
       p.l.c$x$layout$annotations[[6]]$xanchor="center"
-      p.l.c$x$layout$annotations[[6]]$y=0.99-0.0233*(length(AlleleCol)+2.5)#0.52
-      p.l.c$x$layout$annotations[[6]]$x=1.02
+      p.l.c$x$layout$annotations[[6]]$y=0.99-0.0233*(length(AlleleCol)+2.4)#0.52
+      p.l.c$x$layout$annotations[[6]]$x=0.98
 
 
       p.l.c$x$layout$annotations[[3]] <- p.l.c$x$layout$annotations[[6]]
       p.l.c$x$layout$annotations[[3]]$text = "Alleles"
       p.l.c$x$layout$annotations[[3]]$y=0.99
-      p.l.c$x$layout$annotations[[3]]$x=1.02
+      p.l.c$x$layout$annotations[[3]]$x=0.98
       p.l.c$x$layout$annotations[[3]]$legendTitle=FALSE
 
       for(i in (length(AlleleCol)-2+1):(length(p.l.c$x$data)-(length(pk.l$x$data)+4))){
