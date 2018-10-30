@@ -1,4 +1,5 @@
-# RAbHIT: R Antibody Haplotype Infrence Tool # 
+# RAbHIT: R Antibody Haplotype Infrence Tool 
+
 ![](./logo/logo_rabhit.png)
 
 Analysis of antibody repertoires by high throughput sequencing is of major importance in understanding adaptive immune responses. Our knowledge of variations in the genomic loci encoding antibody genes is incomplete, mostly due to technical difficulties in aligning short reads to these highly repetitive loci. The partial knowledge results in conflicting V-D-J gene assignments between different algorithms, and biased genotype and haplotype inference. Previous studies have shown that haplotypes can be inferred by taking advantage of IGHJ6 heterozygosity, observed in approximately one third of the population.
