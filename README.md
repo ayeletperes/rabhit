@@ -31,6 +31,28 @@ Analysis of antibody repertoires by high throughput sequencing is of major impor
 
 For now, only the development version is available for installation.
 
+### Private repository installion ###
+
+To build from the source code, first install in shell:  
+
+```shell
+sudo apt-get install libssh2-1 libssh2-1-dev
+```
+
+Then install in R:
+
+```R
+install.packages(c("devtools","git2r"))
+```
+Lastly to install the latest version via devtools: replace username and password with your bibucket credential
+
+```R
+library(devtools)
+install_git('https://username@bitbucket.org/yaarilab/rabhit.git',credentials = git2r::cred_user_pass("username", "password"))
+```
+
+### Public repository installion ###
+
 To build from the source code, first install the build dependencies:  
 
 ```R
