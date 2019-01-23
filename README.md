@@ -9,7 +9,7 @@ Analysis of antibody repertoires by high throughput sequencing is of major impor
 
 ## Core Abilities ##
 
-* Haplotype infrence
+* Haplotype inference
 * Single chromosome deletion detection
 * Two chromosome deletion detection
 
@@ -29,7 +29,7 @@ Analysis of antibody repertoires by high throughput sequencing is of major impor
 
 ## Installation ##
 
-For now only the development version is avialble for installation.
+For now, only the development version is available for installation.
 
 To build from the source code, first install the build dependencies:  
 

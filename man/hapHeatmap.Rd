@@ -4,18 +4,24 @@
 \alias{hapHeatmap}
 \title{Graphical output of alleles division by chromosome}
 \usage{
-hapHeatmap(hap_table, chain = c("IGH", "IGK", "IGL"), ...)
+hapHeatmap(hap_table, chain = c("IGH", "IGK", "IGL"),
+  gene_sort = "position", removeIGH = TRUE, ...)
 }
 \arguments{
 \item{hap_table}{haplotype summary table. See details.}
 
 \item{chain}{the IG chain: IGH,IGK,IGL. Default is IGH.}
+
+\item{gene_sort}{If by 'name' the genes in the output are ordered lexicographically,
+if by 'position' only functional genes are used and are ordered by their chromosomal location. Default is 'position'.}
+
+\item{removeIGH}{if TRUE, 'IGH'\'IGK'\'IGL' prefix is removed from gene names.}
 }
 \value{
 a single chromosome deletion visualization.
 }
 \description{
-\code{deletionHeatmap} creates a graphical output of the alleles per gene in chromosome in multiple samples.
+\code{hapHeatmap} creates a graphical output of the alleles per gene in chromosome in multiple samples.
 }
 \details{
 A \code{data.frame} created by \code{createFullHaplotype}.

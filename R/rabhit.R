@@ -40,7 +40,9 @@
 #' @import   graphics
 #' @import   methods
 #' @import   utils
+#' @import   dendextend
 #' @importFrom  cowplot     get_legend plot_grid ggdraw draw_label background_grid
+#' @importFrom  gridExtra   arrangeGrob
 #' @importFrom  plotly      ggplotly subplot
 #' @importFrom  dplyr       do n desc funs %>%
 #'                          as_data_frame data_frame data_frame_
@@ -53,4 +55,6 @@
 #' @importFrom  reshape2    melt
 #' @importFrom  mltools     bin_data
 #' @importFrom  gtools      ddirichlet
+#' @importFrom  stats       hclust as.dendrogram
+#' @importFrom  ggdendro    dendro_data segment
 NULL

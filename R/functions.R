@@ -25,6 +25,7 @@ NULL
 #' @param    kThreshDel            The minimum lK (log10 of the Bayes factor) to call a deletion. Defualt is 3.
 #' @param    rmPseudo              if TRUE non-functional and pseudo genes are removed. Defualt is TRUE.
 #' @param    deleted_genes         Double chromosome deletion summary table. A \code{data.frame} created by \code{binom_test_deletion}.
+#' @param    nonRelaible_Vgenes     A list of known non reliable genes assignmnet. A \code{list} created by \code{nonReliableGenes}.
 #' @param    min_minor_fraction    the minimum minor allele fraction to be used as an anchor gene. Default is 0.3
 #' @param    chain                 the IG chain: IGH,IGK,IGL. Default is IGH.
 #' @param    supress_print         if TRUE the function does not print summary. Dufault FALSE
@@ -42,7 +43,7 @@ NULL
 #' @export
 
 createFullHaplotype <- function(clip_db,toHap_col=c("V_CALL","D_CALL"),hapBy_col="J_CALL",hapBy="IGHJ6",
-                              toHap_GERM,relative_freq_priors=TRUE,kThreshDel=3,rmPseudo=TRUE,deleted_genes=c(),
+                              toHap_GERM,relative_freq_priors=TRUE,kThreshDel=3,rmPseudo=TRUE,deleted_genes=c(),nonRelaible_Vgenes=c(),
                               min_minor_fraction=0.3,chain=c('IGH','IGK','IGL'),supress_print=FALSE){
 
   # Check if germline was inputed
@@ -53,21 +54,28 @@ createFullHaplotype <- function(clip_db,toHap_col=c("V_CALL","D_CALL"),hapBy_col
     }
   chain <- match.arg(chain)
 
-  if(!("SUBJECT" %in% names(clip_db))){clip_db$SUBJECT <- rep('S1',nrow(clip_db))}
-
-
-  PSEUDO <- PSEUDO[[chain]]
-  GENE.loc <- GENE.loc[[chain]]
+  if(!("SUBJECT" %in% names(clip_db))){clip_db$SUBJECT <- 'S1'}
 
   haplo_db <- c()
   for(sample_name in unique(clip_db$SUBJECT)){
       clip_db_sub = clip_db[clip_db$SUBJECT==sample_name,]
 
+      if(is.list(nonRelaible_Vgenes)) nonRelaible_Vgenes_vec <- nonRelaible_Vgenes[[sample_name]]
+      else nonRelaible_Vgenes_vec <-nonRelaible_Vgenes
 
-      if(is.data.frame(deleted_genes)) deleted_genes_vec <- deleted_genes %>% filter(SUBJECT==sample_name,DELETION=='Deletion') %>% select(GENE) %>% pull()
+
+      if(is.data.frame(deleted_genes)){
+        deleted_genes_vec <- deleted_genes %>% filter(SUBJECT==sample_name,DELETION=='Deletion') %>% select(GENE) %>% pull()
+        if(is.null(nonRelaible_Vgenes_vec)) nonRelaible_Vgenes_vec <- deleted_genes %>% filter(SUBJECT==sample_name,DELETION=='Non reliable') %>% select(GENE) %>% pull()
+      }
       else deleted_genes_vec <-c()
+
+
+
+
       #Number of iniial sequences
       nrows1 <- nrow(clip_db_sub)
+
       ### Check if haplotype can be infered by the specific gene in the data set.
       ### Only relevant genes with one assignment
       IND <- apply(clip_db_sub,1,function(x){sum(grep(',',x[c(toHap_col,hapBy_col)],invert = F))})
@@ -87,7 +95,7 @@ createFullHaplotype <- function(clip_db,toHap_col=c("V_CALL","D_CALL"),hapBy_col
 
 
       for(i in 1:length(toHap_col)){
-        ## Remove "none" in D assignments
+        ## Remove "none" in Gene Call assignments
         if(i > 1){
           GENES <- c(GENES,unique(sapply(strsplit(clip_db_sub[,paste(toHap_col[i])][clip_db_sub[,paste(hapBy_col)] %in% hapBy_alleles & grepl('IG',clip_db_sub[,paste(toHap_col[i])]) ],'*',fixed = T),'[',1)))
         } else {
@@ -106,15 +114,15 @@ createFullHaplotype <- function(clip_db,toHap_col=c("V_CALL","D_CALL"),hapBy_col
       if(rmPseudo){
         GENES <- GENES[!grepl('OR',GENES)]
         GENES <- GENES[!grepl('NL',GENES)]
-        GENES <- GENES[!(GENES %in% PSEUDO)]
+        GENES <- GENES[!(GENES %in% PSEUDO[[chain]])]
 
         GENES.ref <- GENES.ref[!grepl('OR',GENES.ref)]
         GENES.ref <- GENES.ref[!grepl('NL',GENES.ref)]
-        GENES.ref <- GENES.ref[!(GENES.ref %in% PSEUDO)]
+        GENES.ref <- GENES.ref[!(GENES.ref %in% PSEUDO[[chain]])]
 
         GENES.df <- GENES.df[!grepl('OR',GENES.df$GENE),]
         GENES.df <- GENES.df[!grepl('NL',GENES.df$GENE),]
-        GENES.df <- GENES.df[!(GENES.df$GENE %in% PSEUDO),]
+        GENES.df <- GENES.df[!(GENES.df$GENE %in% PSEUDO[[chain]]),]
       }
 
       GENES.df.num <- c()
@@ -229,6 +237,27 @@ createFullHaplotype <- function(clip_db,toHap_col=c("V_CALL","D_CALL"),hapBy_col
         }
         })
       }
+
+      if(length(nonRelaible_Vgenes_vec)!=0){
+        GENES.df.num[,5] <- sapply(1:nrow(GENES.df.num),function(i){if(GENES.df.num$GENE[i] %in% nonRelaible_Vgenes_vec){
+          return('NR')
+        } else {
+          return( GENES.df.num[i,5])
+        }})
+        GENES.df.num[,6] <- sapply(1:nrow(GENES.df.num),function(i){if(GENES.df.num$GENE[i] %in% nonRelaible_Vgenes_vec){
+          return('NR')
+        } else {
+          return( GENES.df.num[i,6])
+        }
+        })
+        GENES.df.num['K1'] <- sapply(1:nrow(GENES.df.num),function(i){if(GENES.df.num$GENE[i] %in% nonRelaible_Vgenes_vec){
+          return(NA)
+        } else {
+          return( GENES.df.num[i,'K1'])
+        }
+        })
+      }
+
     haplo_db <- rbind(haplo_db,GENES.df.num)
   }
 
@@ -251,6 +280,7 @@ createFullHaplotype <- function(clip_db,toHap_col=c("V_CALL","D_CALL"),hapBy_col
 #'
 #' @param    clip_db               a \code{data.frame} in Change-O format. See details.
 #' @param    chain                 the IG chain: IGH,IGK,IGL. Default is IGH.
+#' @param    nonRelaible_Vgenes     A list of known non reliable genes assignmnet. A \code{list} created by \code{nonReliableGenes}.
 #' @return  data frame with double chromosome gene deletions
 #'
 #'
@@ -263,21 +293,17 @@ createFullHaplotype <- function(clip_db,toHap_col=c("V_CALL","D_CALL"),hapBy_col
 #'
 #' @export
 
-deletionsByBinom <- function(clip_db,chain=c('IGH','IGK','IGL')){
+deletionsByBinom <- function(clip_db,chain=c('IGH','IGK','IGL'),nonRelaible_Vgenes=c()){
   if(missing(chain)) {
     chain='IGH'
   }
   chain <- match.arg(chain)
 
-  if(!("SUBJECT" %in% names(clip_db))){clip_db$SUBJECT <- rep('S1',nrow(clip_db))}
+  if(!("SUBJECT" %in% names(clip_db))){clip_db$SUBJECT <- 'S1'}
 
-
-  PSEUDO <- PSEUDO[[chain]]
-  GENE.loc <- GENE.loc[[chain]]
-
-  GENE.loc.NoPseudo <- GENE.loc[!grepl('OR',GENE.loc)]
+  GENE.loc.NoPseudo <- GENE.loc[[chain]][!grepl('OR',GENE.loc[[chain]])]
   GENE.loc.NoPseudo <- GENE.loc.NoPseudo[!grepl('NL',GENE.loc.NoPseudo)]
-  GENE.loc.NoPseudo <- GENE.loc.NoPseudo[!(GENE.loc.NoPseudo %in% PSEUDO)]
+  GENE.loc.NoPseudo <- GENE.loc.NoPseudo[!(GENE.loc.NoPseudo %in% PSEUDO[[chain]])]
 
   GENE.usage <-vector("list", length = 80)
   names(GENE.usage) <- GENE.loc.NoPseudo
@@ -286,7 +312,7 @@ deletionsByBinom <- function(clip_db,chain=c('IGH','IGK','IGL')){
     # V gene distribution
     V_CALLS <- table(sapply(strsplit(clip_db_sub$V_CALL,'*',fixed = T),'[',1))
     V_CALLS_freq <- V_CALLS/sum(V_CALLS)
-    for(v in GENE.loc){
+    for(v in GENE.loc[[chain]]){
       if(v %in% names(V_CALLS)){
         GENE.usage[[v]] <- c( GENE.usage[[v]],V_CALLS_freq[v])
         names(GENE.usage[[v]])[length(GENE.usage[[v]])] <- samp
@@ -302,7 +328,7 @@ deletionsByBinom <- function(clip_db,chain=c('IGH','IGK','IGL')){
       D_SINGLE <- grep(pattern = ',',clip_db_sub$D_CALL,invert = T)
       D_CALLS <- table(sapply(strsplit(clip_db_sub$D_CALL[D_SINGLE],'*',fixed = T),'[',1))
       D_CALLS_freq <- D_CALLS/sum(D_CALLS)
-      for(d in GENE.loc){
+      for(d in GENE.loc[[chain]]){
         if(d %in% names(D_CALLS)){
           GENE.usage[[d]] <- c( GENE.usage[[d]],D_CALLS_freq[d])
           names(GENE.usage[[d]])[length(GENE.usage[[d]])] <- samp
@@ -316,7 +342,7 @@ deletionsByBinom <- function(clip_db,chain=c('IGH','IGK','IGL')){
     # J gene distribution
     J_CALLS <- table(sapply(strsplit(clip_db_sub$J_CALL,'*',fixed = T),'[',1))
     J_CALLS_freq <- J_CALLS/sum(J_CALLS)
-    for(j in GENE.loc){
+    for(j in GENE.loc[[chain]]){
       if(j %in% names(J_CALLS)){
         GENE.usage[[j]] <- c( GENE.usage[[j]],J_CALLS_freq[j])
         names(GENE.usage[[j]])[length(GENE.usage[[j]])] <- samp
@@ -349,10 +375,8 @@ deletionsByBinom <- function(clip_db,chain=c('IGH','IGK','IGL')){
   GENE.usage.df <- GENE.usage.df %>% filter(GENE %in% GENE.loc.NoPseudo)
   GENE.usage.df$NREADS <- SAMPLE.SIZE[GENE.usage.df$SUBJECT]
 
-  Binom.test.gene.cutoff <- Binom.test.gene.cutoff[[chain]]
-
   GENE.usage.df$min_frac <- sapply(1:nrow(GENE.usage.df), function(x){
-    unique(Binom.test.gene.cutoff$min_frac[Binom.test.gene.cutoff$GENE==GENE.usage.df$GENE[x]])
+    unique(Binom.test.gene.cutoff[[chain]]$min_frac[Binom.test.gene.cutoff[[chain]]$GENE==GENE.usage.df$GENE[x]])
   })
 
   GENE.usage.df.V <- GENE.usage.df %>% filter(grepl(paste0(chain,'V'),GENE))
@@ -364,21 +388,55 @@ deletionsByBinom <- function(clip_db,chain=c('IGH','IGK','IGL')){
   GENE.usage.df.V$NREADS_SAMP <- SAMPLE.SIZE[GENE.usage.df.V$SUBJECT]
   GENE.usage.df.J$NREADS_SAMP <- SAMPLE.SIZE[GENE.usage.df.J$SUBJECT]
 
-  GENE.loc.V <- GENE.loc[grep('V',GENE.loc)]
+  GENE.loc.V <- GENE.loc[[chain]][grep('V',GENE.loc[[chain]])]
   GENE.usage.df.V <- binom_test_deletion(GENE.usage.df.V,cutoff=0.001,p.val.cutoff=0.01,chain=chain,GENE.loc.V)
-  GENE.loc.J <- GENE.loc[grep('J',GENE.loc)]
+
+  if(is.list(nonRelaible_Vgenes)){
+    for(sample_name in names(nonRelaible_Vgenes)){
+      levels(GENE.usage.df.V$col) <- c(levels(GENE.usage.df.V$col), "Non reliable")
+      idx <- which(GENE.usage.df.V$GENE[GENE.usage.df.V$SUBJECT==sample_name] %in% nonRelaible_Vgenes[[sample_name]])
+      GENE.usage.df.V$col[GENE.usage.df.V$SUBJECT==sample_name][idx] <- 'Non reliable'
+    }}
+  else{
+    if(!is.null(nonRelaible_Vgenes)){
+      levels(GENE.usage.df.V$col) <- c(levels(GENE.usage.df.V$col), "Non reliable")
+      idx <- which(GENE.usage.df.V$GENE[GENE.usage.df.V$SUBJECT==sample_name] %in% nonRelaible_Vgenes)
+      GENE.usage.df.V$col[GENE.usage.df.V$SUBJECT==sample_name][idx] <- 'Non reliable'
+      }
+  }
+
+
+
+
+  GENE.loc.J <- GENE.loc[[chain]][grep('J',GENE.loc[[chain]])]
   GENE.usage.df.J <- binom_test_deletion(GENE.usage.df.J,cutoff=0.005,p.val.cutoff=0.01,chain=chain,GENE.loc.J)
 
   if(chain=='IGH'){
     GENE.usage.df.D <- GENE.usage.df %>% filter(grepl(paste0(chain,'D'),GENE))
     GENE.usage.df.D$NREADS <- SAMPLE.SIZE.D[GENE.usage.df.D$SUBJECT]
     GENE.usage.df.D$NREADS_SAMP <- SAMPLE.SIZE[GENE.usage.df.D$SUBJECT]
-    GENE.loc.D <- GENE.loc[grep('D',GENE.loc)]
+    GENE.loc.D <- GENE.loc[[chain]][grep('D',GENE.loc[[chain]])]
     GENE.usage.df.D <- binom_test_deletion(GENE.usage.df.D,cutoff=0.005,p.val.cutoff=0.01,chain,GENE.loc.D)
+
+    GENE.usage.df.V$col <- factor(GENE.usage.df.V$col,levels = levels(GENE.usage.df.V$col))
+    GENE.usage.df.D$col <- factor(GENE.usage.df.D$col,levels = levels(GENE.usage.df.V$col))
+    GENE.usage.df.J$col <- factor(GENE.usage.df.J$col,levels = levels(GENE.usage.df.V$col))
+
+    GENE.usage.df.V$GENE <- factor(GENE.usage.df.V$GENE,levels = GENE.loc[[chain]])
+    GENE.usage.df.D$GENE <- factor(GENE.usage.df.D$GENE,levels = GENE.loc[[chain]])
+    GENE.usage.df.J$GENE <- factor(GENE.usage.df.J$GENE,levels = GENE.loc[[chain]])
     GENE.usage.df <- rbind(GENE.usage.df.V,GENE.usage.df.D,GENE.usage.df.J)
   }else{
+    GENE.usage.df.V$col <- factor(GENE.usage.df.V$col,levels = levels(GENE.usage.df.V$col))
+    GENE.usage.df.J$col <- factor(GENE.usage.df.J$col,levels = levels(GENE.usage.df.V$col))
+
+    GENE.usage.df.V$GENE <- factor(GENE.usage.df.V$GENE,levels = GENE.loc[[chain]])
+    GENE.usage.df.J$GENE <- factor(GENE.usage.df.J$GENE,levels = GENE.loc[[chain]])
     GENE.usage.df <- rbind(GENE.usage.df.V,GENE.usage.df.J)
   }
+
+
+
   GENE.usage.df <- GENE.usage.df %>% ungroup() %>% select(SUBJECT,GENE,FRAC,CUTOFF=min_frac,PVAL=pval_adj,DELETION=col)
   return(GENE.usage.df)
 }
@@ -417,7 +475,7 @@ deletionsByVpooled <- function(clip_db,deletion_col=c('D_CALL'),count_thresh=50,
                                gene_sort='position',kThreshDel=3){
 
 
-  if(!("SUBJECT" %in% names(clip_db))){clip_db$SUBJECT <- rep('S1',nrow(clip_db))}
+  if(!("SUBJECT" %in% names(clip_db))){clip_db$SUBJECT <- 'S1'}
 
   del.df <- c()
   for(sample_name in unique(clip_db$SUBJECT)){

@@ -13,8 +13,8 @@ plotHaplotype(hap_table, html_output = FALSE, gene_sort = c("name",
 
 \item{html_output}{If TRUE, a html5 interactive graph is outputed. Defualt is FALSE.}
 
-\item{gene_sort}{If by ‘name’ the genes in the output are ordered lexicographically,
-if by ‘position’ only functional genes are used and are ordered by their chromosomal location. Default is ‘position’.}
+\item{gene_sort}{If by 'name' the genes in the output are ordered lexicographically,
+if by 'position' only functional genes are used and are ordered by their chromosomal location. Default is 'position'.}
 
 \item{text_size}{the size of graph labels. Default is 14 (pts).}
 
