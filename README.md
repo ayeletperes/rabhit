@@ -44,11 +44,13 @@ Then install in R:
 ```R
 install.packages(c("devtools","git2r"))
 ```
-Lastly to install the latest version via devtools: replace username and password with your bibucket credential
+Lastly to install the latest version via devtools: 
 
 ```R
 library(devtools)
-install_git('https://username@bitbucket.org/yaarilab/rabhit.git',credentials = git2r::cred_user_pass("username", "password"))
+library(git2r)
+cred = cred_user_pass("username", "password") # replace username and password with your bitbucket credential
+install_git('https://username@bitbucket.org/yaarilab/rabhit.git',credentials = cred)
 ```
 
 ### Public repository installion ###
