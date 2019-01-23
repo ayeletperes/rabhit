@@ -31,7 +31,7 @@ Analysis of antibody repertoires by high throughput sequencing is of major impor
 
 For now, only the development version is available for installation.
 
-### Private repository installion ###
+### Private repository installation ###
 
 To build from the source code, first install in shell:  
 
@@ -53,7 +53,7 @@ cred = cred_user_pass("username", "password") # replace username and password wi
 install_git('https://username@bitbucket.org/yaarilab/rabhit.git',credentials = cred)
 ```
 
-### Public repository installion ###
+### Public repository installation ###
 
 To build from the source code, first install the build dependencies:  
 
