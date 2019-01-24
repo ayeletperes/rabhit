@@ -1,6 +1,6 @@
 ---
 title: "RAbHIT: R Antibody Haplotype Infrence Tool"
-author: "Moriah Gidoni, Ayelet Peres, Gur Yaari"
+author: "Ayelet Peres, Moriah Gidoni, Gur Yaari"
 date: "Last modified `r Sys.Date()`"
 output:
   html_document:

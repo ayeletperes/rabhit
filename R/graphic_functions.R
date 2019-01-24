@@ -258,7 +258,7 @@ plotHaplotype <- function(hap_table, html_output=FALSE, gene_sort = c("name", "p
 #' @param    hap_table            haplotype summary table. See details.
 #' @param    html_output          If TRUE, a html5 interactive graph is outputed insteaed of the normal plot. Defualt is FALSE
 #' @param    chain                the IG chain: IGH,IGK,IGL. Default is IGH.
-#'
+#' @param    kThreshDel           The minimum lK (log10 of the Bayes factor) used in \code{createFullHaplotype} to call a deletion. Indicates the color for strong deletion. Defualt is 3.
 #'
 #' @return   a single chromosome deletion visualization.
 #'
@@ -271,7 +271,7 @@ plotHaplotype <- function(hap_table, html_output=FALSE, gene_sort = c("name", "p
 #' deletionHeatmap(hap_df)
 #'
 #' @export
-deletionHeatmap <- function(hap_table,html_output=FALSE,chain=c('IGH','IGK','IGL'), ...){
+deletionHeatmap <- function(hap_table,html_output=FALSE,kTreshDel=3,chain=c('IGH','IGK','IGL'), ...){
 
   if(missing(chain)) {
     chain='IGH'
@@ -284,7 +284,7 @@ deletionHeatmap <- function(hap_table,html_output=FALSE,chain=c('IGH','IGK','IGL
 
   genes_hap <- unique(substr(hap_table$GENE,4,4))
 
-  GENE.loc <- GENE.loc[[chain]][grep(paste0(genes_hap,collapse = '|'),GENE.loc[[chain]])]
+  GENE.loc.tmp <- GENE.loc[[chain]][grep(paste0(genes_hap,collapse = '|'),GENE.loc[[chain]])]
 
   ALLELE_01_col = hapBy_cols[1]
   ALLELE_02_col = hapBy_cols[2]
@@ -310,10 +310,12 @@ deletionHeatmap <- function(hap_table,html_output=FALSE,chain=c('IGH','IGK','IGL
 
   hap_table.del.heatmap$K[hap_table.del.heatmap$K == Inf] <- 0
   hap_table.del.heatmap$K[hap_table.del.heatmap$K == -Inf] <- 0
-  hap_table.del.heatmap$DEL <- ifelse(hap_table.del.heatmap$ALLELE == 'Del'   ,2,0 )
-  hap_table.del.heatmap$DEL[hap_table.del.heatmap$ALLELE != 'Del' & hap_table.del.heatmap$K<=3] <- 4
-  hap_table.del.heatmap$DEL[hap_table.del.heatmap$ALLELE == 'Unk'] <- 1
-  hap_table.del.heatmap$DEL[hap_table.del.heatmap$ALLELE == 'NA'] <- 3
+
+  hap_table.del.heatmap$DEL <- ifelse(hap_table.del.heatmap$ALLELE == 'Del'&hap_table.del.heatmap$K>=kTreshDel,3,0 )
+  hap_table.del.heatmap$DEL[(! hap_table.del.heatmap$ALLELE  %in% c('Del','Unk','NA')) & hap_table.del.heatmap$K<3] <- 1
+  hap_table.del.heatmap$DEL[hap_table.del.heatmap$ALLELE == 'Del'&hap_table.del.heatmap$K<kTreshDel] <- 2
+  hap_table.del.heatmap$DEL[hap_table.del.heatmap$ALLELE == 'NA'] <- 4
+
 
 
   #manual reshape
@@ -326,22 +328,22 @@ deletionHeatmap <- function(hap_table,html_output=FALSE,chain=c('IGH','IGK','IGL
                                              levels = unique(hap_table.del.heatmap.02$SUBJECT))
 
   hap_table.del.heatmap.02$GENE2 <- factor(x = hap_table.del.heatmap.02$GENE2,
-                                           levels = gsub('IG[H|K|L]','',GENE.loc))
+                                           levels = gsub('IG[H|K|L]','',GENE.loc.tmp))
 
   hap_table.del.heatmap.03$SUBJECT <- factor(x = hap_table.del.heatmap.03$SUBJECT,
                                              levels = unique(hap_table.del.heatmap.03$SUBJECT))
 
   hap_table.del.heatmap.03$GENE2 <- factor(x = hap_table.del.heatmap.03$GENE2,
-                                           levels = gsub('IG[H|K|L]','',GENE.loc))
+                                           levels = gsub('IG[H|K|L]','',GENE.loc.tmp))
   heatmap.df <- rbind(hap_table.del.heatmap.02,hap_table.del.heatmap.03)
 
   ALLELE_01_col = gsub('_','*',gsub('IG[H|K|L]','',ALLELE_01_col))
   ALLELE_02_col = gsub('_','*',gsub('IG[H|K|L]','',ALLELE_02_col))
-
+  heatmap.df$DEL <- factor(heatmap.df$DEL,levels=c(0:4))
   heatmap.df$HapBy <- ifelse(heatmap.df$HapBy==ALLELE_01_num,ALLELE_01_col,ALLELE_02_col)
   heatmap.plot <- ggplot(data = heatmap.df, aes(x = GENE2, y = SUBJECT)) + theme_bw()+
-    geom_tile(aes(fill = as.character(DEL))) + facet_wrap(~HapBy,nrow=2)+ scale_x_discrete(drop=FALSE)+
-    scale_fill_manual(name='lK',labels=c('0','1','2','3','4'),values = c('white','lightblue','blue','grey40','grey90'))  + ylab('Subject') + xlab('Gene') +
+    geom_tile(aes(fill = DEL)) + facet_wrap(~HapBy,nrow=2)+ scale_x_discrete(drop=FALSE)+
+    scale_fill_manual(name='lK',labels=c('No deletion (lK>=3)','No deletion (lK<3)',paste0('Deletion (lK<',kTreshDel,')'),paste0('Deletion (lK>=',kTreshDel,')'),'NA'),values = c('white','lightgrey','lightblue','blue','gray40'),drop = FALSE)  + ylab('Subject') + xlab('Gene') +
     theme(strip.text = element_text(size=18),axis.title = element_text(size=18),axis.text = element_text(size = 14),
           axis.text.x = element_text(angle = 90,vjust = 0.5 ,hjust = 1),plot.margin = margin(b = 12),
           panel.grid.major = element_blank(),
@@ -373,7 +375,8 @@ deletionHeatmap <- function(hap_table,html_output=FALSE,chain=c('IGH','IGK','IGL
           panel.border = element_blank(),
           panel.background = element_blank()) +
     ylab('Number of individuals\nwith a deletion')+
-    scale_fill_manual(name = "Chromosome",values = c('darksalmon','deepskyblue','darkolivegreen3','grey50'))  + scale_x_discrete(drop=FALSE) + xlab('')
+    scale_fill_manual(name = "Chromosome",values = c('darksalmon','deepskyblue','darkolivegreen3','grey50'))  +
+    scale_x_discrete(drop=FALSE) + xlab('')
 
   if(html_output){
     m = list(l = 200,r = 40,b = 150,t = 50,pad = 0)
