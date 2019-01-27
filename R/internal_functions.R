@@ -357,12 +357,29 @@ sortDFByGene <- function(DATA, chain = c('IGH','IGK','IGL'), method = c("name", 
 #
 # @return   Jaacardian distance value
 #
-distJACC <- function(vecA,vecB, naRm = TRUE){
+distJACC <- function(vecA, vecB, naRm = TRUE){
   if((!is.na(vecA) & !is.na(vecB)) & (vecA != 'Unk' & vecB != 'Unk')){
     v1 <- unlist(strsplit(vecA,','))
     v2 <- unlist(strsplit(vecB,','))
 
-    dist <- length(intersect(v1,v2))/length(unique(c(v1,v2)))
+    if((any(grepl('_[0-9][0-9]',v1))|any(grepl('_[0-9][0-9]',v2)))&(length(intersect(v1,v2))!=length(unique(c(v1,v2))))){
+      inter = 0
+      tot = length((c(v1,v2)))
+      for(i in v1){
+        v1_n <- unlist(strsplit(i,'_'))
+        for(ii in v2){
+          v2_n <- unlist(strsplit(ii,'_'))
+          if(length(intersect(v1_n,v2_n))!=0){
+            inter = inter + 1
+            tot = tot - 1
+          }
+
+        }
+
+      }
+      dist <- inter/tot
+    }
+    else dist <- length(intersect(v1,v2))/length(unique(c(v1,v2)))
   } else {
     if(naRm){
       dist <- NA
@@ -380,7 +397,7 @@ distJACC <- function(vecA,vecB, naRm = TRUE){
 
 }
 
-calcJacc <- function(vec1A, vec1B, vec2A, vec2B, method=c('pooled', 'geneByGene'), naRm = TRUE, Kweight = FALSE, k1A, k1B, k2A, k2B){
+calcJacc <- function(vec1A, vec1B, vec2A, vec2B, method=c('pooled', 'geneByGene'), naRm = TRUE, Kweight = FALSE, k1A, k1B, k2A, k2B, special_jacc = FALSE){
   vec1A <- as.character(vec1A)
   vec1B <- as.character(vec1B)
   vec2A <- as.character(vec2A)

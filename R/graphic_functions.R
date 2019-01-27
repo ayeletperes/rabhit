@@ -640,7 +640,7 @@ plotDeletionsByVpooled <- function(del.df,K_ranges=c(3,7)){
 ########################################################################################################
 #' Hierarchical clustering of haplotypes graphical output
 #'
-#' \code{hapDendo} creates a graphical output of an hierarchical clustering based on the Jaccardian distance between multiple individuals haplotypes.
+#' \code{hapDendo} creates a graphical output of an hierarchical clustering based on the Jaccard distance between multiple individuals haplotypes.
 #'
 #' @details A \code{data.frame} created by \code{createFullHaplotype}.
 #'
@@ -715,7 +715,7 @@ hapDendo <- function(hap_table, chain = c('IGH','IGK','IGL'), gene_sort = c("nam
                        labels = samples_pos_table$gene,
                        limits = samples_axis_limits,
                        expand = c(0, 0)) +
-    labs(x = "Jaccardian distance", y = "", colour = "", size = "") +
+    labs(x = "Jaccard distance", y = "", colour = "", size = "") +
     theme_bw() +
     theme(panel.grid.minor = element_blank(),
           axis.ticks.y =  element_blank(),
