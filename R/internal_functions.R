@@ -504,7 +504,7 @@ binom_test_deletion <- function(GENE.usage.df,cutoff=0.001,p.val.cutoff=0.01,cha
 #
 # @return   Haplotype allele color palette
 #
-alleleHapPalette <- function(hap_alleles){
+alleleHapPalette <- function(hap_alleles,NRA=TRUE){
 
   AlleleCol <- grep('[012]',unique(hap_alleles),value = T,perl = T)
   AlleleCol.tmp <- sort(unique(sapply(strsplit(AlleleCol,'_'),'[',1)))
@@ -520,8 +520,15 @@ alleleHapPalette <- function(hap_alleles){
 
   }
 
-  AlleleCol<- names(c(alleles.comb,Unk='#dedede',Del='#6d6d6d',NR='#000000'))
-  names(AlleleCol) <- c(alleles.comb,Unk='#dedede',Del='#6d6d6d',NR='#000000')
+
+  if(NRA){
+    AlleleCol<- names(c(alleles.comb,Unk='#dedede',Del='#6d6d6d',NR='#000000',NRA='#fbf7f5'))
+    names(AlleleCol) <- c(alleles.comb,Unk='#dedede',Del='#6d6d6d',NR='#000000',NRA='#fbf7f5')
+  }else{
+    AlleleCol<- names(c(alleles.comb,Unk='#dedede',Del='#6d6d6d',NR='#000000'))
+    names(AlleleCol) <- c(alleles.comb,Unk='#dedede',Del='#6d6d6d',NR='#000000')
+
+  }
 
   transper <- sapply(AlleleCol,function(x){
     if(grepl('_',x)){
@@ -536,11 +543,58 @@ alleleHapPalette <- function(hap_alleles){
   names(transper) <- AlleleCol
 
   #remove 'mother' allele if added (when there is no germline allele but there is a novel)
-  AlleleCol <- AlleleCol[AlleleCol %in% c(sort(grep('[012]',unique(hap_alleles),value = T,perl = T)),'Unk','Del','NR')]
+
+  if(NRA){
+    AlleleCol <- AlleleCol[AlleleCol %in% c(sort(grep('[012]',unique(hap_alleles),value = T,perl = T)),'Unk','Del','NR','NRA')]
+  }else{
+    AlleleCol <- AlleleCol[AlleleCol %in% c(sort(grep('[012]',unique(hap_alleles),value = T,perl = T)),'Unk','Del','NR')]
+  }
+
 
   transper <- transper[names(transper) %in% AlleleCol ]
 
   return(list(transper=transper,AlleleCol=AlleleCol))
+}
+
+########################################################################################################
+# Creates the non reliable allele text annotation for plots
+#
+# \code{nonReliableAllelesText} Takes the haplotype data frame
+#
+# @param   hap_table          a data frame of the haplotypes.
+#
+# @return   Non reliable alleles text data frame for plots annotation.
+#
+nonReliableAllelesText <- function(hap_table,size=4){
+
+  if(nrow(hap_table)!=0){
+    non_reliable_alleles_text <- hap_table#[grep('[0-9][0-9]_[0-9][0-9]',hap_table$ALLELES),]
+  non_reliable_alleles_text$text <- non_reliable_alleles_text$ALLELES
+  non_reliable_alleles_text$pos <- ifelse(non_reliable_alleles_text$freq==1,0.5,0.25)
+  non_reliable_alleles_text$size <- sapply(1:nrow(non_reliable_alleles_text),function(i){
+    if(non_reliable_alleles_text$freq[i]==1){
+      if(length(strsplit(non_reliable_alleles_text$text[i],'_')[[1]])<5){
+        return(size)
+      }
+      else{
+        return(size-1)
+      }
+    }else{
+      if(length(strsplit(non_reliable_alleles_text$text[i],'_')[[1]])<5){
+        return(size-1)
+      }
+      else{
+        return(size-2)
+      }
+    }
+  })
+
+  non_reliable_alleles_text$ALLELES[grep('[0-9][0-9]_[0-9][0-9]',non_reliable_alleles_text$ALLELES)] <- 'NRA'
+  return(non_reliable_alleles_text)}
+  else{
+    return(setNames(data.frame(matrix(ncol = 8, nrow = 0)),
+                    c('GENE','ALLELES','hapBy','n','freq','text','pos','size')))
+  }
 }
 
 ########################################################################################################

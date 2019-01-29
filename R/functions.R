@@ -459,7 +459,7 @@ deletionsByBinom <- function(clip_db,chain=c('IGH','IGK','IGL'),nonRelaible_Vgen
 #' @param  count_thresh         integer, the minimun number of sequences mapped to a specific V gene to be included in the V pooled inference.
 #' @param  deleted_genes         Double chromosome deletion summary table. A \code{data.frame} created by \code{binom_test_deletion}.
 #' @param  min_minor_fraction   the minimum minor allele fraction to be used as an anchor gene. Default is 0.3
-#'
+#' @param    nonRelaible_Vgenes     A list of known non reliable genes assignmnet. A \code{list} created by \code{nonReliableGenes}.
 #'
 #' @return  data frame with single chromosome gene deletions
 #'
@@ -472,7 +472,7 @@ deletionsByBinom <- function(clip_db,chain=c('IGH','IGK','IGL'),nonRelaible_Vgen
 #' @export
 #not for light chain
 deletionsByVpooled <- function(clip_db,deletion_col=c('D_CALL'),count_thresh=50,deleted_genes="",min_minor_fraction=0.3,
-                               gene_sort='position',kThreshDel=3){
+                               gene_sort='position',kThreshDel=3,nonRelaible_Vgenes=c()){
 
 
   if(!("SUBJECT" %in% names(clip_db))){clip_db$SUBJECT <- 'S1'}
@@ -483,6 +483,10 @@ deletionsByVpooled <- function(clip_db,deletion_col=c('D_CALL'),count_thresh=50,
     clip_db_sub <- clip_db[clip_db$SUBJECT==sample_name,]
     if(is.data.frame(deleted_genes)) deleted_genes_df <- deleted_genes %>% filter(SUBJECT==sample_name,grepl('IGHD|IGHJ',GENE))
     else deleted_genes_df <-c()
+
+    if(is.list(nonRelaible_Vgenes)) nonRelaible_Vgenes_vec <- nonRelaible_Vgenes[[sample_name]]
+    else nonRelaible_Vgenes_vec <-nonRelaible_Vgenes
+
     ### Single V gene assignment
     #Number of iniial sequences
     nrows1 <- nrow(clip_db_sub)
@@ -497,6 +501,7 @@ deletionsByVpooled <- function(clip_db,deletion_col=c('D_CALL'),count_thresh=50,
     ### Test for heterozygous V genes
 
     VGENES <- unique(sapply(strsplit(clip_db_sub$V_CALL,split = '*',fixed=T),'[',1))
+    VGENES <- VGENES[!VGENES %in% nonRelaible_Vgenes_vec]
     GENES <- unlist(sapply(VGENES,function(x){
       gene_counts <- table(grep(clip_db_sub$V_CALL,pattern = paste0(x,'*'),fixed = T,value = T));
       if(length(gene_counts) ==2 & (min(gene_counts)/sum(gene_counts)) >= min_minor_fraction & sum(gene_counts) >= count_thresh){return(x)}
