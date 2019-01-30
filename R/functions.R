@@ -616,6 +616,7 @@ deletionsByVpooled <- function(clip_db,deletion_col=c('D_CALL'),count_thresh=50,
 #' @param   thresh             the threshold to consider non reliable gene. Defualt is 0.9
 #' @param   chain              the IG chain: IGH,IGK,IGL. Default is IGH.
 #' @param   appearance         the minimun fraction of gene appearance to be considered for reliability check. Defualt is 0.01.
+#'
 #' @return  a nested list of non reliable genes for all subject.
 #'
 #' @examples
