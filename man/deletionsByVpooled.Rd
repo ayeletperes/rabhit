@@ -6,7 +6,7 @@
 \usage{
 deletionsByVpooled(clip_db, deletion_col = c("D_CALL"),
   count_thresh = 50, deleted_genes = "", min_minor_fraction = 0.3,
-  gene_sort = "position", kThreshDel = 3)
+  kThreshDel = 3, nonRelaible_Vgenes = c())
 }
 \arguments{
 \item{clip_db}{a \code{data.frame} in Change-O format. See details.}
@@ -15,9 +15,13 @@ deletionsByVpooled(clip_db, deletion_col = c("D_CALL"),
 
 \item{count_thresh}{integer, the minimun number of sequences mapped to a specific V gene to be included in the V pooled inference.}
 
-\item{deleted_genes}{Double chromosome deletion summary table. A \code{data.frame} created by \code{binom_test_deletion}.}
+\item{deleted_genes}{Double chromosome deletion summary table. A \code{data.frame} created by \code{deletionsByBinom}.}
 
 \item{min_minor_fraction}{the minimum minor allele fraction to be used as an anchor gene. Default is 0.3}
+
+\item{kThreshDel}{The minimum lK (log10 of the Bayes factor) to call a deletion. Defualt is 3.}
+
+\item{nonRelaible_Vgenes}{A list of known non reliable genes assignmnet. A \code{list} created by \code{nonReliableVGenes}.}
 }
 \value{
 data frame with single chromosome gene deletions
@@ -26,12 +30,12 @@ data frame with single chromosome gene deletions
 \code{deletionsByVpooled} detects D and J gene single chromosomal deletion.
 }
 \details{
-Function accepts a \code{data.frame} in Change-O format (\link{https://changeo.readthedocs.io/en/version-0.4.1---airr-standards/standard.html}) containing the following columns:
+Function accepts a \code{data.frame} in Change-O format (\url{https://changeo.readthedocs.io/en/version-0.4.1---airr-standards/standard.html}) containing the following columns:
 \itemize{
-  \item \code{"SUBJECT"}: subject names
-  \item \code{"V_CALL"}: V allele call(s) (in an IMGT format)
-  \item \code{"D_CALL"}: D allele call(s) (in an IMGT format, only for heavy chains)
-  \item \code{"J_CALL"}: J allele call(s) (in an IMGT format)
+  \item \code{'SUBJECT'}: subject names
+  \item \code{'V_CALL'}: V allele call(s) (in an IMGT format)
+  \item \code{'D_CALL'}: D allele call(s) (in an IMGT format, only for heavy chains)
+  \item \code{'J_CALL'}: J allele call(s) (in an IMGT format)
 }
 }
 \examples{

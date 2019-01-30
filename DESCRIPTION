@@ -2,7 +2,7 @@ Package: rabhit
 Type: Package
 Title: RAbHIT: R Antibody Haplotype Infernce Tool
 Version: 0.1.0.9000
-Authors@R: c(person("Ayelet", "Peres", role=c("aut"), 
+Authors@R: c(person("Ayelet", "Peres", role=c("aut","cre"), 
                     email="peresay@biu.ac.il"),
             person("Moriah", "Gidoni", role=c("aut"), 
                     email="moriah.cohen@biu.ac.il"),
@@ -10,27 +10,33 @@ Authors@R: c(person("Ayelet", "Peres", role=c("aut"),
                     email="gur.yaari@biu.ac.il"))
 Description: Infers an individual haplotype from immunoglobulin (Ig)
     repertoire-sequencing (Rep-Seq) data.
-License: GPLv3
+License: GPL-3
 URL: https://yaarilab.bitbucket.io/RAbHIT/
 BugReports: https://bitbucket.org/yaarilab/haplotyper/issues
 LazyData: true
 BuildVignettes: true
 VignetteBuilder: knitr
 Depends: R (>= 3.2.5), ggplot2 (>= 2.0.0), plotly (>= 4.7.1)
-Imports: mltools, dplyr (>= 0.5.0), reshape2, gtools (>= 3.5.0), cowplot (>= 0.9.1), stats, dendextend (>= 1.9.0), ggdendro (>= 0.1.20)
+Imports: mltools, 
+    dplyr (>= 0.5.0), reshape2, 
+    gtools (>= 3.5.0), cowplot (>= 0.9.1), 
+    stats, dendextend (>= 1.9.0), 
+    ggdendro (>= 0.1.20), gridExtra, alakazam, tigger,
+    methods, htmlwidgets, gtable, grDevices, rlang
 Suggests: knitr,
     testthat,
     rmarkdown
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1
 NeedsCompilation: no
 Packaged: 
 Author: Aylet Peres [aut],
   Moriah Gidoni [aut],
   Gur Yaari [aut]
-Maintainer: Moriah Gidoni <moriahcohen@gmail.com>
+Maintainer: Ayelet Peres <peresay@biu.ac.il>
 Collate:
     'Data.R'
     'rabhit.R'
     'internal_functions.R'
     'functions.R'
     'graphic_functions.R'
+    'zzz.R'

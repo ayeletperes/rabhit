@@ -4,13 +4,13 @@
 \alias{deletionHeatmap}
 \title{Graphical output of single chromosome deletions}
 \usage{
-deletionHeatmap(hap_table, html_output = FALSE, chain = c("IGH", "IGK",
-  "IGL"), ...)
+deletionHeatmap(hap_table, kThreshDel = 3, chain = c("IGH", "IGK",
+  "IGL"))
 }
 \arguments{
 \item{hap_table}{haplotype summary table. See details.}
 
-\item{html_output}{If TRUE, a html5 interactive graph is outputed insteaed of the normal plot. Defualt is FALSE}
+\item{kThreshDel}{The minimum lK (log10 of the Bayes factor) used in \code{createFullHaplotype} to call a deletion. Indicates the color for strong deletion. Defualt is 3.}
 
 \item{chain}{the IG chain: IGH,IGK,IGL. Default is IGH.}
 }
@@ -28,7 +28,8 @@ A \code{data.frame} created by \code{createFullHaplotype}.
 data(samples_db, HVGERM, HDGERM)
 
 # Infering haplotype
-hap_df = createFullHaplotype(samples_db,toHap_col=c("V_CALL","D_CALL"),hapBy_col="J_CALL",hapBy="IGHJ6",toHap_GERM=c(HVGERM,HDGERM));
+hap_df = createFullHaplotype(samples_db,toHap_col=c('V_CALL','D_CALL'),
+hapBy_col='J_CALL',hapBy='IGHJ6',toHap_GERM=c(HVGERM,HDGERM))
 deletionHeatmap(hap_df)
 
 }

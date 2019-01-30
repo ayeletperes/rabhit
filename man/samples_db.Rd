@@ -5,22 +5,24 @@
 \alias{samples_db}
 \title{Example of IGH human naive b-cell data from multiple
 individuals}
-\format{A \code{data.frame} in Change-O format (\link{https://changeo.readthedocs.io/en/version-0.4.1---airr-standards/standard.html}) containing the following columns:
+\format{A \code{data.frame} in Change-O format (\url{https://changeo.readthedocs.io/en/version-0.4.1---airr-standards/standard.html}) containing the following columns:
 \itemize{
-  \item \code{"SUBJECT"}: subject names
-  \item \code{"V_CALL"}: V allele call(s) (in an IMGT format)
-  \item \code{"D_CALL"}: D allele call(s) (in an IMGT format, only for heavy chains)
-  \item \code{"J_CALL"}: J allele call(s) (in an IMGT format)
+  \item \code{'SUBJECT'}: subject names
+  \item \code{'V_CALL'}: V allele call(s) (in an IMGT format)
+  \item \code{'D_CALL'}: D allele call(s) (in an IMGT format, only for heavy chains)
+  \item \code{'J_CALL'}: J allele call(s) (in an IMGT format)
 }}
 \usage{
 samples_db
 }
 \description{
 Example IGH human naive b-cell data from multiple
-individuals (see \cite{XXX}).
+individuals (see references).
 }
 \references{
-\cite{XXX}.
+Gidoni, Moriah, \emph{et al}. Mosaic deletion patterns of the
+human antibody heavy chain gene locus as revealed by Bayesian haplotyping.
+\emph{bioRxiv}. (2018): 314476.
 }
 \keyword{AIRR}
 \keyword{NGS}

@@ -6,7 +6,7 @@
 \usage{
 plotHaplotype(hap_table, html_output = FALSE, gene_sort = c("name",
   "position"), text_size = 14, removeIGH = TRUE, plotYaxis = TRUE,
-  chain = c("IGH", "IGK", "IGL"), ...)
+  chain = c("IGH", "IGK", "IGL"))
 }
 \arguments{
 \item{hap_table}{haplotype summary table. See details.}
@@ -38,7 +38,8 @@ A \code{data.frame} in a haplotype format created by \code{createFullHaplotype} 
 data(sample_db, HVGERM, HDGERM)
 
 # Infering haplotype
-hap_df = createFullHaplotype(sample_db,toHap_col=c("V_CALL","D_CALL"),hapBy_col="J_CALL",hapBy="IGHJ6",toHap_GERM=c(HVGERM,HDGERM));
+hap_df = createFullHaplotype(sample_db,toHap_col=c('V_CALL','D_CALL'),
+hapBy_col='J_CALL',hapBy='IGHJ6',toHap_GERM=c(HVGERM,HDGERM))
 plotHaplotype(hap_df)
 
 }

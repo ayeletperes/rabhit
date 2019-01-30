@@ -6,7 +6,7 @@
 \usage{
 plotDeletionsByBinom(GENE.usage.df, chain = c("IGH", "IGK", "IGL"),
   genes.low.cer = c("IGHV3-43", "IGHV3-20"), genes.dup = c("IGHD4-11",
-  "IGHD5-18"), ...)
+  "IGHD5-18"))
 }
 \arguments{
 \item{GENE.usage.df}{Double chromosome deletion summary table. See details.}
@@ -31,7 +31,7 @@ A \code{data.frame} created by \code{binom_test_deletion}.
 data(samples_db)
 
 # Infering haplotype
-hap_df = binom_test_deletion(samples_db);
+hap_df = deletionsByBinom(samples_db);
 plotDeletionsByBinom(hap_df)
 
 }

@@ -5,7 +5,8 @@
 \title{Hierarchical clustering of haplotypes graphical output}
 \usage{
 hapDendo(hap_table, chain = c("IGH", "IGK", "IGL"),
-  gene_sort = c("name", "position"), removeIGH = TRUE, ...)
+  gene_sort = c("name", "position"), removeIGH = TRUE,
+  mark_low_lk = TRUE, lk_cutoff = 1)
 }
 \arguments{
 \item{hap_table}{haplotype summary table. See details.}
@@ -15,13 +16,17 @@ hapDendo(hap_table, chain = c("IGH", "IGK", "IGL"),
 \item{gene_sort}{If by 'name' the genes in the output are ordered lexicographically,
 if by 'position' only functional genes are used and are ordered by their chromosomal location. Default is 'position'.}
 
-\item{removeIGH}{if TRUE, 'IGH'\'IGK'\'IGL' prefix is removed from gene names.}
+\item{removeIGH}{if TRUE, 'IGH'\'IGK'\'IGL' prefix is removed from gene names. Defualt is TRUE.}
+
+\item{mark_low_lk}{if TRUE, a texture is add for low lK values. Defualt is TRUE.}
+
+\item{lk_cutoff}{the lK cutoff value to be considerd low for texture layer. Defualt is lK<1.}
 }
 \value{
 a single chromosome deletion visualization.
 }
 \description{
-\code{hapDendo} creates an hierarchical clustering graphical output of multiple individuals haplotypes.
+\code{hapDendo} creates a graphical output of an hierarchical clustering based on the Jaccard distance between multiple individuals haplotypes.
 }
 \details{
 A \code{data.frame} created by \code{createFullHaplotype}.
@@ -31,7 +36,8 @@ A \code{data.frame} created by \code{createFullHaplotype}.
 data(samples_db, HVGERM, HDGERM)
 
 # Infering haplotype
-hap_df = createFullHaplotype(samples_db,toHap_col=c("V_CALL","D_CALL"),hapBy_col="J_CALL",hapBy="IGHJ6",toHap_GERM=c(HVGERM,HDGERM));
+hap_df = createFullHaplotype(samples_db,toHap_col=c('V_CALL','D_CALL'),
+hapBy_col='J_CALL',hapBy='IGHJ6',toHap_GERM=c(HVGERM,HDGERM))
 hapDendo(hap_df)
 
 }

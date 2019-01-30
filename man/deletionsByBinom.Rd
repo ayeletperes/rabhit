@@ -4,12 +4,15 @@
 \alias{deletionsByBinom}
 \title{Double chromosome deletion by relative gene usage}
 \usage{
-deletionsByBinom(clip_db, chain = c("IGH", "IGK", "IGL"))
+deletionsByBinom(clip_db, chain = c("IGH", "IGK", "IGL"),
+  nonRelaible_Vgenes = c())
 }
 \arguments{
 \item{clip_db}{a \code{data.frame} in Change-O format. See details.}
 
 \item{chain}{the IG chain: IGH,IGK,IGL. Default is IGH.}
+
+\item{nonRelaible_Vgenes}{A list of known non reliable genes assignmnet. A \code{list} created by \code{nonReliableVGenes}.}
 }
 \value{
 data frame with double chromosome gene deletions
@@ -18,12 +21,12 @@ data frame with double chromosome gene deletions
 \code{deletionsByBinom} detects chromosomal deletion.
 }
 \details{
-Function accepts a \code{data.frame} in Change-O format (\link{https://changeo.readthedocs.io/en/version-0.4.1---airr-standards/standard.html}) containing the following columns:
+Function accepts a \code{data.frame} in Change-O format (\url{https://changeo.readthedocs.io/en/version-0.4.1---airr-standards/standard.html}) containing the following columns:
 \itemize{
-  \item \code{"SUBJECT"}: subject names
-  \item \code{"V_CALL"}: V allele call(s) (in an IMGT format)
-  \item \code{"D_CALL"}: D allele call(s) (in an IMGT format, only for heavy chains)
-  \item \code{"J_CALL"}: J allele call(s) (in an IMGT format)
+  \item \code{'SUBJECT'}: subject names
+  \item \code{'V_CALL'}: V allele call(s) (in an IMGT format)
+  \item \code{'D_CALL'}: D allele call(s) (in an IMGT format, only for heavy chains)
+  \item \code{'J_CALL'}: J allele call(s) (in an IMGT format)
 }
 }
 \examples{
@@ -31,6 +34,7 @@ Function accepts a \code{data.frame} in Change-O format (\link{https://changeo.r
 data(sample_db)
 
 # Infering haplotype
-del_binom_df = deletionsByBinom(sample_db);head(del_binom_df);
+del_binom_df = deletionsByBinom(sample_db)
+head(del_binom_df)
 
 }

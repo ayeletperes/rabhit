@@ -7,8 +7,9 @@
 createFullHaplotype(clip_db, toHap_col = c("V_CALL", "D_CALL"),
   hapBy_col = "J_CALL", hapBy = "IGHJ6", toHap_GERM,
   relative_freq_priors = TRUE, kThreshDel = 3, rmPseudo = TRUE,
-  deleted_genes = c(), min_minor_fraction = 0.3, chain = c("IGH",
-  "IGK", "IGL"), supress_print = FALSE)
+  deleted_genes = c(), nonRelaible_Vgenes = c(),
+  min_minor_fraction = 0.3, chain = c("IGH", "IGK", "IGL"),
+  supress_print = FALSE)
 }
 \arguments{
 \item{clip_db}{a \code{data.frame} in Change-O format. See details.}
@@ -27,7 +28,9 @@ createFullHaplotype(clip_db, toHap_col = c("V_CALL", "D_CALL"),
 
 \item{rmPseudo}{if TRUE non-functional and pseudo genes are removed. Defualt is TRUE.}
 
-\item{deleted_genes}{Double chromosome deletion summary table. A \code{data.frame} created by \code{binom_test_deletion}.}
+\item{deleted_genes}{Double chromosome deletion summary table. A \code{data.frame} created by \code{deletionsByBinom}.}
+
+\item{nonRelaible_Vgenes}{A list of known non reliable genes assignmnet. A \code{list} created by \code{nonReliableVGenes}.}
 
 \item{min_minor_fraction}{the minimum minor allele fraction to be used as an anchor gene. Default is 0.3}
 
@@ -42,12 +45,12 @@ a haplotype summary table
 \code{createFullHaplotype} infers haplotype based on an anchor gene.
 }
 \details{
-Function accepts a \code{data.frame} in Change-O format (\link{https://changeo.readthedocs.io/en/version-0.4.1---airr-standards/standard.html}) containing the following columns:
+Function accepts a \code{data.frame} in Change-O format (\url{https://changeo.readthedocs.io/en/version-0.4.1---airr-standards/standard.html}) containing the following columns:
 \itemize{
-  \item \code{"SUBJECT"}: subject names
-  \item \code{"V_CALL"}: V allele call(s) (in an IMGT format)
-  \item \code{"D_CALL"}: D allele call(s) (in an IMGT format, only for heavy chains)
-  \item \code{"J_CALL"}: J allele call(s) (in an IMGT format)
+  \item \code{'SUBJECT'}: subject names
+  \item \code{'V_CALL'}: V allele call(s) (in an IMGT format)
+  \item \code{'D_CALL'}: D allele call(s) (in an IMGT format, only for heavy chains)
+  \item \code{'J_CALL'}: J allele call(s) (in an IMGT format)
 }
 }
 \examples{
@@ -55,6 +58,8 @@ Function accepts a \code{data.frame} in Change-O format (\link{https://changeo.r
 data(sample_db, HVGERM, HDGERM)
 
 # Infering haplotype
-hap_df = createFullHaplotype(sample_db,toHap_col=c("V_CALL","D_CALL"),hapBy_col="J_CALL",hapBy="IGHJ6",toHap_GERM=c(HVGERM,HDGERM));head(hap_df);
+hap_df = createFullHaplotype(sample_db,toHap_col=c('V_CALL','D_CALL'),
+hapBy_col='J_CALL',hapBy='IGHJ6',toHap_GERM=c(HVGERM,HDGERM))
+head(hap_df)
 
 }

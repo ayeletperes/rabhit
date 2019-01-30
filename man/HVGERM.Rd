@@ -5,13 +5,13 @@
 \alias{HVGERM}
 \title{Human IGHV germlines}
 \format{Values correspond to IMGT-gaped nuceltoide sequences (with
-nucleotides capitalized and gaps represented by ".").}
+nucleotides capitalized and gaps represented by '.').}
 \usage{
 HVGERM
 }
 \description{
 A \code{character} vector of all 342 human IGHV germline gene segment alleles
-in IMGT Gene-db release 201408-4.
+in IMGT Gene-db release 2014-08-4.
 }
 \references{
 Xochelli \emph{et al}. (2014) Immunoglobulin heavy variable

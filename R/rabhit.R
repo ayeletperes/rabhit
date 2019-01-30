@@ -16,7 +16,7 @@
 #'   \item  \link{createFullHaplotype}:      Haplotypes inference and single chromosome deletions based on an anchor gene.
 #'   \item  \link{deletionsByVpooled}:       Single chromosomal deletion detection by pooling V genes.
 #'   \item  \link{deletionsByBinom}:         Single chromosomal deletion detection by pooling V genes.
-#'   \item  \link{nonReliableGenes}:         Non reliable gene assignment detection.
+#'   \item  \link{nonReliableVGenes}:         Non reliable gene assignment detection.
 #' }
 #'
 #' @section  Haplotype visualization:
@@ -52,10 +52,17 @@
 #'                          group_by group_by_ ungroup
 #'                          mutate mutate_ summarize summarize_
 #'                          mutate_at summarize_at count_
-#'                          rename rename_ transmute transmute_ pull
+#'                          rename rename_ transmute transmute_ pull ungroup
 #' @importFrom  reshape2    melt
 #' @importFrom  mltools     bin_data
 #' @importFrom  gtools      ddirichlet
-#' @importFrom  stats       hclust as.dendrogram
+#' @importFrom  stats       hclust as.dendrogram as.dist binom.test p.adjust setNames weighted.mean
 #' @importFrom  ggdendro    dendro_data segment
+#' @importFrom  htmlwidgets saveWidget
+#' @importFrom  gtable      gtable_filter
+#' @importFrom  grDevices   dev.off pdf
+#' @importFrom  alakazam    getGene
+#' @importFrom  rlang       .data
+#' @importFrom  tigger      sortAlleles
 NULL
+

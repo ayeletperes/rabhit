@@ -5,7 +5,8 @@
 \title{Graphical output of alleles division by chromosome}
 \usage{
 hapHeatmap(hap_table, chain = c("IGH", "IGK", "IGL"),
-  gene_sort = "position", removeIGH = TRUE, ...)
+  gene_sort = "position", removeIGH = TRUE, lk_cutoff = 1,
+  mark_low_lk = TRUE)
 }
 \arguments{
 \item{hap_table}{haplotype summary table. See details.}
@@ -16,6 +17,10 @@ hapHeatmap(hap_table, chain = c("IGH", "IGK", "IGL"),
 if by 'position' only functional genes are used and are ordered by their chromosomal location. Default is 'position'.}
 
 \item{removeIGH}{if TRUE, 'IGH'\'IGK'\'IGL' prefix is removed from gene names.}
+
+\item{lk_cutoff}{the lK cutoff value to be considerd low for texture layer. Defualt is lK<1.}
+
+\item{mark_low_lk}{if TRUE, a texture is add for low lK values. Defualt is TRUE.}
 }
 \value{
 a single chromosome deletion visualization.
@@ -31,7 +36,8 @@ A \code{data.frame} created by \code{createFullHaplotype}.
 data(samples_db, HVGERM, HDGERM)
 
 # Infering haplotype
-hap_df = createFullHaplotype(samples_db,toHap_col=c("V_CALL","D_CALL"),hapBy_col="J_CALL",hapBy="IGHJ6",toHap_GERM=c(HVGERM,HDGERM));
+hap_df = createFullHaplotype(samples_db,toHap_col=c('V_CALL','D_CALL'),
+hapBy_col='J_CALL',hapBy='IGHJ6',toHap_GERM=c(HVGERM,HDGERM))
 hapHeatmap(hap_df)
 
 }
