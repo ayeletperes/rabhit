@@ -13,9 +13,10 @@
 #' deletion detection based on relative gene usage, pooling v genes, and a single anchor gene.
 #'
 #' \itemize{
-#'   \item  \link{createFullHaplotype}:      Infer haplotypes and single chromosome deletions based on an anchor gene.
+#'   \item  \link{createFullHaplotype}:      Haplotypes inference and single chromosome deletions based on an anchor gene.
 #'   \item  \link{deletionsByVpooled}:       Single chromosomal deletion detection by pooling V genes.
-#'   \item  \link{deletionsByBinom}:       Single chromosomal deletion detection by pooling V genes.
+#'   \item  \link{deletionsByBinom}:         Single chromosomal deletion detection by pooling V genes.
+#'   \item  \link{nonReliableGenes}:         Non reliable gene assignment detection.
 #' }
 #'
 #' @section  Haplotype visualization:
