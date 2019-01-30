@@ -1,11 +1,11 @@
 Package: rabhit
 Type: Package
-Title: Antibody Haplotype Infrence
+Title: RAbHIT: R Antibody Haplotype Infernce Tool
 Version: 0.1.0.9000
-Authors@R: c(person("Moriah", "Gidoni", role=c("aut"), 
-                    email="moriah.cohen@biu.ac.il"),
-             person("Ayelet", "Peres", role=c("aut"), 
+Authors@R: c(person("Ayelet", "Peres", role=c("aut"), 
                     email="peresay@biu.ac.il"),
+            person("Moriah", "Gidoni", role=c("aut"), 
+                    email="moriah.cohen@biu.ac.il"),
              person("Gur", "Yaari", role=c("aut"), 
                     email="gur.yaari@biu.ac.il"))
 Description: Infers an individual haplotype from immunoglobulin (Ig)
@@ -24,8 +24,8 @@ Suggests: knitr,
 RoxygenNote: 6.1.0
 NeedsCompilation: no
 Packaged: 
-Author: Moriah Gidoni [aut],
-  Aylet Peres [aut],
+Author: Aylet Peres [aut],
+  Moriah Gidoni [aut],
   Gur Yaari [aut]
 Maintainer: Moriah Gidoni <moriahcohen@gmail.com>
 Collate:
