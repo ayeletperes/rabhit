@@ -787,7 +787,7 @@ hapDendo <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = c("n
     plt_dendr <- ggplot(segment_data) + geom_segment(aes_string(x = "x", y = "y", xend = "xend", yend = "yend")) + scale_x_continuous(expand = c(0, 0.01)) + scale_y_continuous(breaks = samples_pos_table$y_center,
         labels = samples_pos_table$gene, limits = samples_axis_limits, expand = c(0, 0)) + labs(x = "Jaccard distance", y = "", colour = "", size = "") +
         theme_bw() + theme(panel.grid.minor = element_blank(), axis.ticks.y = element_blank(), panel.grid = element_blank(), panel.border = element_blank(),
-        axis.text = element_text(size = 10, colour = "black"), axis.title.x = element_text(size = 14, colour = "black"))
+        axis.text = element_text(size = 10, colour = "black"), axis.title.x = element_text(size = 14, colour = "black")) + ylab('Subject')
 
     # Creating the haploype db for ploting
     haplo_db_clust <- c()
