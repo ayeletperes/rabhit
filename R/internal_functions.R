@@ -192,13 +192,14 @@ parseHapTab <- function(hap_table, chain = c("IGH", "IGK", "IGL"), df_ToReturn =
                 count.df <- rbind(count.df, data.frame(GENE = hap_table$GENE[i], hapBy = hapBy_alleles[panel], COUNT = 0))
             } else {
                 if (panel.alleles[i] == "Del") {
-                  count.df <- rbind(count.df, data.frame(GENE = hap_table$GENE[i], hapBy = hapBy_alleles[panel], COUNT = as.numeric(strsplit(hap_table$COUNTS1[i],
-                    ",")[[1]][panel])))
+                  count.df <- rbind(count.df, data.frame(GENE = hap_table$GENE[i], hapBy = hapBy_alleles[panel],
+                                                         COUNT = as.numeric(strsplit(hap_table$COUNTS1[i],",")[[1]][panel])))
                 } else {
                   alleles <- strsplit(panel.alleles[i], ",")[[1]]
                   for (j in 1:length(alleles)) {
-                    count.df <- rbind(count.df, data.frame(GENE = paste0(hap_table$GENE[i], "*", alleles[j]), hapBy = hapBy_alleles[panel], COUNT = as.numeric(strsplit(hap_table[i,
-                      paste0("COUNTS", j)], ",")[[1]][panel])))
+                    count_id <- which(strsplit(hap_table[i,'ALLELES'],',')[[1]]==alleles[j])
+                    count.df <- rbind(count.df, data.frame(GENE = paste0(hap_table$GENE[i], "*", alleles[j]), hapBy = hapBy_alleles[panel],
+                                                           COUNT = as.numeric(strsplit(hap_table[i,paste0("COUNTS", count_id)], ",")[[1]][panel])))
                   }
                 }
             }

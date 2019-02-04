@@ -226,16 +226,13 @@ plotHaplotype <- function(hap_table, html_output = FALSE, gene_sort = c("name", 
 
         } else {
             p.legend <- get_legend(p)
-            p = p + theme(legend.position = "none")
+            p = p + theme(legend.position = "none",axis.title.x = element_blank())
 
             pk = pk + scale_fill_brewer(name = expression("log"[10] * "(lK)"), drop = FALSE)
             pk.legend <- get_legend(pk)
-            pk = pk + theme(legend.position = "none")
+            pk = pk + theme(legend.position = "none",axis.title = element_blank())
 
-            p = p + theme(axis.title.x = element_blank())  #  + do.call(theme, list(...))
-            pk = pk + theme(axis.title = element_blank())  # + do.call(theme, list(...))
-
-            p.legends <- plot_grid(pk.legend, p.legend, ncol = 1, rel_heights = c(0.5, 0.5), align = "hv")
+            p.legends <- plot_grid(pk.legend, p.legend, ncol = 1, align = "hv")#plot_grid(pk.legend, p.legend, NULL, ncol = 1, rel_heights = c(1, 0.5, 1), align = "hv")
 
             p1 <- plot_grid(p2, p, pk, nrow = 1, rel_widths = c(0.35, 0.15, 0.05), align = "hv", axis = "b")
 
