@@ -55,10 +55,13 @@ Function accepts a \code{data.frame} in Change-O format (\url{https://changeo.re
 }
 \examples{
 # Load example data and germlines
-data(sample_db, HVGERM, HDGERM)
+data(samples_db, HVGERM, HDGERM)
+
+# Selecting a single individual
+clip_db = samples_db[samples_db$SUBJECT=='I5', ]
 
 # Infering haplotype
-hap_df = createFullHaplotype(sample_db,toHap_col=c('V_CALL','D_CALL'),
+hap_df = createFullHaplotype(clip_db,toHap_col=c('V_CALL','D_CALL'),
 hapBy_col='J_CALL',hapBy='IGHJ6',toHap_GERM=c(HVGERM,HDGERM))
 head(hap_df)
 

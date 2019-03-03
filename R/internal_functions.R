@@ -51,10 +51,6 @@ get_probabilites_with_priors <- function(X, alpha_dirichlet = c(0.5, 0.5) * 2, e
 #
 # @return  data frame with chromosomal associasions of alleles of a specific gene
 #
-# @examples
-# # Load example data and germlines
-# data(sample_db)
-# data(germline_igh)
 #
 #
 # @export
@@ -92,9 +88,12 @@ createHaplotypeTable <- function(df, HapByPriors = c(0.5, 0.5), toHapByCol = TRU
 
     counts.list <- list()
     res.list <- list()
-
     for (i in 1:nrow(df)) {
         allele <- rownames(df)[i]
+        if(sum(df[i,])==0){
+          tohap <- tohap[-which(tohap == allele)]
+          next
+        }
         gene <- strsplit(allele, "*", fixed = T)[[1]][1]
 
 
@@ -139,6 +138,8 @@ createHaplotypeTable <- function(df, HapByPriors = c(0.5, 0.5), toHapByCol = TRU
         counts.list[[i]] <- counts
         res.list[[i]] <- res
     }
+    counts.list[sapply(counts.list, is.null)] <- NULL
+    res.list[sapply(res.list, is.null)] <- NULL
 
     len.counts.list <- length(counts.list)
     GENES.df <- cbind(GENES.df, data.frame(ALLELES = paste(sapply(strsplit(tohap, "*", fixed = T), "[", 2), collapse = ","), PRIORS_ROW = paste(format(HapByPriors,
@@ -150,7 +151,7 @@ createHaplotypeTable <- function(df, HapByPriors = c(0.5, 0.5), toHapByCol = TRU
         2, max(res.list[[3]][1:2]), NA), K3 = ifelse(length(counts.list) > 2, max(res.list[[3]][1:2]) - min(res.list[[3]][1:2]), NA), ND3 = ifelse(length(counts.list) >
         2, res.list[[3]][3], NA), COUNTS4 = ifelse(length(counts.list) > 3, paste(counts.list[[4]][order(names(counts.list[[4]])[1:2])], collapse = ","),
         NA), MP4 = ifelse(length(counts.list) > 3, max(res.list[[4]][1:2]), NA), K4 = ifelse(length(counts.list) > 3, max(res.list[[4]][1:2]) - min(res.list[[4]][1:2]),
-        NA), ND4 = ifelse(length(counts.list) > 3, res.list[[4]][3], NA)))
+        NA), ND4 = ifelse(length(counts.list) > 3, res.list[[4]][3], NA), stringsAsFactors = F))
 
     return(GENES.df)
 }
@@ -166,40 +167,37 @@ createHaplotypeTable <- function(df, HapByPriors = c(0.5, 0.5), toHapByCol = TRU
 #
 # @return   list of data frames for plotting
 #
-parseHapTab <- function(hap_table, chain = c("IGH", "IGK", "IGL"), df_ToReturn = c("all", "geno.df", "kval.df", "count.df")) {
+parseHapTab <- function(hap_table, chain = c("IGH", "IGK", "IGL")) {
 
     if (missing(chain)) {
         chain = "IGH"
     }
     chain <- match.arg(chain)
 
-    if (missing(df_ToReturn)) {
-        df_ToReturn = "all"
-    }
-
     hap_table <- data.frame(lapply(hap_table, as.character), stringsAsFactors = FALSE)
     hapBy_cols = names(hap_table)[grep(chain, names(hap_table))]
     hapBy_alleles = gsub("_", "*", hapBy_cols)
 
-
-
+    # panels data frames
+    count.df <- setNames(data.frame(matrix(ncol = 6, nrow = 0), stringsAsFactors=FALSE),
+                         c("SUBJECT", "GENE", "hapBy", "COUNT", "ALLELES", "COUNT2"))
     # Count panel data frame
-    count.df <- c()
     for (panel in 1:2) {
         panel.alleles <- hap_table[[hapBy_cols[panel]]]
         for (i in 1:length(panel.alleles)) {
             if (panel.alleles[i] == "Unk" | panel.alleles[i] == "NR") {
-                count.df <- rbind(count.df, data.frame(GENE = hap_table$GENE[i], hapBy = hapBy_alleles[panel], COUNT = 0))
+                count.df <- rbind(count.df, data.frame(SUBJECT = unique(hap_table$SUBJECT), GENE = hap_table$GENE[i], hapBy = hapBy_alleles[panel], COUNT = 0, stringsAsFactors=FALSE))
             } else {
                 if (panel.alleles[i] == "Del") {
-                  count.df <- rbind(count.df, data.frame(GENE = hap_table$GENE[i], hapBy = hapBy_alleles[panel],
-                                                         COUNT = as.numeric(strsplit(hap_table$COUNTS1[i],",")[[1]][panel])))
+                  count.df <- rbind(count.df, data.frame(SUBJECT = unique(hap_table$SUBJECT), GENE = hap_table$GENE[i], hapBy = hapBy_alleles[panel],
+                                                         COUNT = as.numeric(strsplit(hap_table$COUNTS1[i],",")[[1]][panel], stringsAsFactors=FALSE)))
                 } else {
                   alleles <- strsplit(panel.alleles[i], ",")[[1]]
                   for (j in 1:length(alleles)) {
                     count_id <- which(strsplit(hap_table[i,'ALLELES'],',')[[1]]==alleles[j])
-                    count.df <- rbind(count.df, data.frame(GENE = paste0(hap_table$GENE[i], "*", alleles[j]), hapBy = hapBy_alleles[panel],
-                                                           COUNT = as.numeric(strsplit(hap_table[i,paste0("COUNTS", count_id)], ",")[[1]][panel])))
+                    count.df <- rbind(count.df, data.frame(SUBJECT = unique(hap_table$SUBJECT), GENE = paste0(hap_table$GENE[i], "*", alleles[j]), hapBy = hapBy_alleles[panel],
+                                                           COUNT = as.numeric(strsplit(hap_table[i,paste0("COUNTS", count_id)], ",")[[1]][panel],
+                                                                              stringsAsFactors=FALSE)))
                   }
                 }
             }
@@ -220,7 +218,7 @@ parseHapTab <- function(hap_table, chain = c("IGH", "IGK", "IGL"), df_ToReturn =
     panel1.alleles <- hap_table[[hapBy_cols[1]]]
     # minimum of Ks if there is more than one allele
 
-    hap_table[is.na(hap_table)] <- 0
+    hap_table[is.na(hap_table)] <- Inf
 
     panel1 <- sapply(1:length(panel1.alleles), function(i) {
         if (panel1.alleles[i] == "Unk" | panel1.alleles[i] == "Del" | panel1.alleles[i] == "NR") {
@@ -230,7 +228,7 @@ parseHapTab <- function(hap_table, chain = c("IGH", "IGK", "IGL"), df_ToReturn =
                 na.rm = T)
         }
     })
-    panel1[panel1 == Inf] <- 0
+    panel1[panel1 == Inf] <- "NA"
 
     panel2.alleles <- hap_table[[hapBy_cols[2]]]
     # minimum of Ks if there is more than one allele
@@ -241,20 +239,25 @@ parseHapTab <- function(hap_table, chain = c("IGH", "IGK", "IGL"), df_ToReturn =
             min(as.numeric(hap_table[i, paste0("K", match(unlist(strsplit(panel2.alleles[i], ",")), unlist(strsplit(as.character(hap_table$ALLELES[i]), ","))))]))
         }
     })
-    panel2[panel2 == Inf] <- 0
+    panel2[panel2 == Inf] <- "NA"
 
-    kval.df <- data.frame(GENE = c(hap_table$GENE, hap_table$GENE), K = c(panel1, panel2), hapBy = c(rep(hapBy_alleles[1], length(panel1)), rep(hapBy_alleles[2],
-        length(panel2))))
+    kval.df <- data.frame(SUBJECT = unique(hap_table$SUBJECT), GENE = c(hap_table$GENE, hap_table$GENE), K = c(panel1, panel2), hapBy = c(rep(hapBy_alleles[1], length(panel1)), rep(hapBy_alleles[2],
+        length(panel2))),stringsAsFactors=FALSE)
 
-    kval.df$K_GROUPED <- bin_data(kval.df$K, bins = c(0, 1, 2, 3, 4, 5, 10, 20, 50, Inf), binType = "explicit")
+    K_GROUPED <- levels(bin_data(kval.df$K[kval.df$K!='NA'], bins = c(0, 1, 2, 3, 4, 5, 10, 20, 50, Inf), binType = "explicit"))
+    kval.df$K_GROUPED[kval.df$K!='NA'] <- bin_data(kval.df$K[kval.df$K!='NA'], bins = c(0, 1, 2, 3, 4, 5, 10, 20, 50, Inf), binType = "explicit")
+    kval.df$K_GROUPED[kval.df$K!='NA'] <- K_GROUPED[kval.df$K_GROUPED[kval.df$K!='NA']]
+    kval.df$K_GROUPED[kval.df$K=='NA'] <- "NA"
+    kval.df$K_GROUPED <- factor(kval.df$K_GROUPED, levels = c("NA", K_GROUPED))
+
 
     # Alleles panel data frame
-    a <- hap_table[, c("GENE", hapBy_cols[1])]
-    b <- hap_table[, c("GENE", hapBy_cols[2])]
+    a <- hap_table[, c("SUBJECT", "GENE", hapBy_cols[1])]
+    b <- hap_table[, c("SUBJECT", "GENE", hapBy_cols[2])]
     a$hapBy <- rep(hapBy_cols[1], nrow(a))
     b$hapBy <- rep(hapBy_cols[2], nrow(b))
-    names(a)[2] <- "ALLELES"
-    names(b)[2] <- "ALLELES"
+    names(a)[3] <- "ALLELES"
+    names(b)[3] <- "ALLELES"
     genotype <- rbind(a, b)
 
     alleles = strsplit(genotype$ALLELES, ",")
@@ -270,8 +273,6 @@ parseHapTab <- function(hap_table, chain = c("IGH", "IGK", "IGL"), df_ToReturn =
     geno.df$hapBy <- gsub("_", "*", geno.df$hapBy, fixed = T)
 
     parsed_hap_table <- list(geno.df = geno.df, kval.df = kval.df, count.df = count.df)
-    if (df_ToReturn == "all")
-        return(parsed_hap_table) else parsed_hap_table[[df_ToReturn]]
 }
 
 ########################################################################################################
@@ -344,7 +345,7 @@ sortDFByGene <- function(DATA, chain = c("IGH", "IGK", "IGL"), method = c("name"
 # @return   Jaacardian distance value
 #
 distJACC <- function(vecA, vecB, naRm = TRUE) {
-    if ((!is.na(vecA) & !is.na(vecB)) & (vecA != "Unk" & vecB != "Unk")) {
+    if ((!is.na(vecA) & !is.na(vecB)) & (!vecA %in% c("Unk","NR") & !vecB %in% c("Unk","NR"))) {
         v1 <- unlist(strsplit(vecA, ","))
         v2 <- unlist(strsplit(vecB, ","))
 
@@ -369,7 +370,7 @@ distJACC <- function(vecA, vecB, naRm = TRUE) {
         if (naRm) {
             dist <- NA
         } else {
-            if ((is.na(vecA) & is.na(vecB)) || (vecA == "Unk" & vecB == "Unk")) {
+            if ((is.na(vecA) & is.na(vecB)) || (vecA %in% c("Unk","NR") & vecB %in% c("Unk","NR"))) {
                 dist <- NA
             } else {
                 dist <- 0
@@ -598,12 +599,12 @@ alleleHapPalette <- function(hap_alleles, NRA = TRUE) {
 #
 # @return   Non reliable alleles text data frame for plots annotation.
 #
-nonReliableAllelesText <- function(hap_table, size = 4) {
+nonReliableAllelesText <- function(non_reliable_alleles_text, size = 4) {
 
-    if (nrow(hap_table) != 0) {
-        non_reliable_alleles_text <- hap_table
+    if (nrow(non_reliable_alleles_text) != 0) {
         non_reliable_alleles_text$text <- non_reliable_alleles_text$ALLELES
         non_reliable_alleles_text$pos <- ifelse(non_reliable_alleles_text$freq == 1, 0.5, 0.25)
+        non_reliable_alleles_text <- non_reliable_alleles_text %>% ungroup() %>% group_by(.data$GENE, .data$SUBJECT, .data$hapBy) %>% mutate(pos = .data$pos + ifelse(dplyr::row_number()==2,dplyr::row_number()-1.5,dplyr::row_number()-1))
         non_reliable_alleles_text$size <- sapply(1:nrow(non_reliable_alleles_text), function(i) {
             if (non_reliable_alleles_text$freq[i] == 1) {
                 if (length(strsplit(non_reliable_alleles_text$text[i], "_")[[1]]) < 5) {
@@ -625,4 +626,45 @@ nonReliableAllelesText <- function(hap_table, size = 4) {
     } else {
         return(setNames(data.frame(matrix(ncol = 8, nrow = 0)), c("GENE", "ALLELES", "hapBy", "n", "freq", "text", "pos", "size")))
     }
+}
+
+########################################################################################################
+# Transform character column to numeric
+#
+asNum <- function(row, na.strings = c(NA,"NA")) {
+  na <- row %in% na.strings
+  row[na] <- 0
+  row2 <- row
+  ex_special <- !grepl('[_|,|-]|[A-Z]|[0-2][1-9]$',as.character(row))
+  numIDX <- grepl('[0-9]*[^,]',as.character(row)) & ex_special
+  row2[!numIDX] <- row[!numIDX]
+  row2[numIDX] <- as.numeric(row[numIDX])
+  row2[na] <- NA_real_
+  return(row2)
+}
+
+########################################################################################################
+# Get the number of unique genes assigned, modified from getSegment function from alakazam
+#
+getGeneCount <- function (segment_call, sep = ",")
+{
+  segment_regex <- "((IG[HLK]|TR[ABGD])[VDJ][A-Z0-9\\(\\)]+[-/\\w]*)"
+
+  edge_regex <- paste0("[^", sep, "]*")
+  r <- gsub(paste0(edge_regex, "(", segment_regex, ")", edge_regex),
+            "\\1", segment_call, perl = T)
+  r <- sapply(strsplit(r, sep), function(x) length(unique(x)))
+  return(r)
+}
+
+########################################################################################################
+# Collapse alleles, modified from getSegment and getAlleles functions from alakazam
+#
+alleleCollapse <- function(segment_call, sep = ",|_(?![A-Z])"){
+  r <- gsub("((IG[HLK]|TR[ABGD])[VDJ][A-Z0-9\\(\\)]+[-/\\w]*)[*]",
+            "", segment_call, perl = T)
+  r <- sapply(strsplit(r, sep, perl = T), function(x) paste(unique(x),
+                                                  collapse = '_'))
+  r <- paste0(getGene(segment_call, strip_d = F), "*", r)
+  return(r)
 }

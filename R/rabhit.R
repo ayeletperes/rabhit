@@ -42,27 +42,29 @@
 #' @import   methods
 #' @import   utils
 #' @import   dendextend
-#' @importFrom  cowplot     get_legend plot_grid ggdraw draw_label background_grid
-#' @importFrom  gridExtra   arrangeGrob
-#' @importFrom  plotly      ggplotly subplot
-#' @importFrom  dplyr       do n desc funs %>%
-#'                          as_data_frame data_frame data_frame_
-#'                          bind_cols bind_rows combine rowwise slice
-#'                          filter filter_ select select_ arrange arrange_
-#'                          group_by group_by_ ungroup
-#'                          mutate mutate_ summarize summarize_
-#'                          mutate_at summarize_at count_
-#'                          rename rename_ transmute transmute_ pull ungroup
-#' @importFrom  reshape2    melt
-#' @importFrom  mltools     bin_data
-#' @importFrom  gtools      ddirichlet
-#' @importFrom  stats       hclust as.dendrogram as.dist binom.test p.adjust setNames weighted.mean
-#' @importFrom  ggdendro    dendro_data segment
-#' @importFrom  htmlwidgets saveWidget
-#' @importFrom  gtable      gtable_filter
-#' @importFrom  grDevices   dev.off pdf
-#' @importFrom  alakazam    getGene
-#' @importFrom  rlang       .data
-#' @importFrom  tigger      sortAlleles
+#' @importFrom  cowplot      get_legend plot_grid ggdraw draw_label background_grid
+#' @importFrom  gridExtra    arrangeGrob
+#' @importFrom  plotly       ggplotly subplot
+#' @importFrom  dplyr        do n desc funs %>%
+#'                           as_data_frame data_frame data_frame_
+#'                           bind_cols bind_rows combine rowwise slice
+#'                           filter filter_ select select_ arrange arrange_
+#'                           group_by group_by_ ungroup
+#'                           mutate mutate_ summarize summarize_
+#'                           mutate_at summarize_at count_
+#'                           rename rename_ transmute transmute_ pull ungroup row_number
+#' @importFrom  data.table   :=
+#' @importFrom  reshape2     melt
+#' @importFrom  mltools      bin_data
+#' @importFrom  gtools       ddirichlet
+#' @importFrom  stats        hclust as.dendrogram as.dist binom.test p.adjust setNames weighted.mean
+#' @importFrom  ggdendro     dendro_data segment
+#' @importFrom  htmlwidgets  saveWidget
+#' @importFrom  gtable       gtable_filter
+#' @importFrom  grDevices    dev.off pdf
+#' @importFrom  alakazam     getGene
+#' @importFrom  rlang        .data
+#' @importFrom  tigger       sortAlleles
+#' @importFrom  RColorBrewer brewer.pal
 NULL
 

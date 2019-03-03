@@ -31,10 +31,12 @@ Function accepts a \code{data.frame} in Change-O format (\url{https://changeo.re
 }
 \examples{
 # Load example data and germlines
-data(sample_db)
+data(samples_db)
 
+# Selecting a single individual
+clip_db = samples_db[samples_db$SUBJECT=='I5', ]
 # Infering haplotype
-del_binom_df = deletionsByBinom(sample_db)
+del_binom_df = deletionsByBinom(clip_db)
 head(del_binom_df)
 
 }

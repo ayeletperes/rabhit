@@ -3,8 +3,10 @@
 \docType{data}
 \name{samples_db}
 \alias{samples_db}
-\title{Example of IGH human naive b-cell data from multiple
-individuals}
+\title{Example IGH human naive b-cell data from five
+individuals (see references). Overall, the data set includes 6 samples.
+A single individual has two samples (Individual I5),
+one is short read sequences from  BIOMED-2 protocol primeres for framework 1 region (The smaple is annotated I5_FR1).}
 \format{A \code{data.frame} in Change-O format (\url{https://changeo.readthedocs.io/en/version-0.4.1---airr-standards/standard.html}) containing the following columns:
 \itemize{
   \item \code{'SUBJECT'}: subject names
@@ -16,13 +18,15 @@ individuals}
 samples_db
 }
 \description{
-Example IGH human naive b-cell data from multiple
-individuals (see references).
+Example IGH human naive b-cell data from five
+individuals (see references). Overall, the data set includes 6 samples.
+A single individual has two samples (Individual I5),
+one is short read sequences from  BIOMED-2 protocol primeres for framework 1 region (The smaple is annotated I5_FR1).
 }
 \references{
-Gidoni, Moriah, \emph{et al}. Mosaic deletion patterns of the
-human antibody heavy chain gene locus as revealed by Bayesian haplotyping.
-\emph{bioRxiv}. (2018): 314476.
+Gidoni, Moriah, \emph{et al}. Mosaic deletion patterns of the human antibody heavy chain
+gene locus shown by Bayesian haplotyping.
+\emph{Nature Communications}. 10.1 (2019): 628.
 }
 \keyword{AIRR}
 \keyword{NGS}

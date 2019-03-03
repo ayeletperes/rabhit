@@ -36,10 +36,13 @@ NULL
 #'
 #' @examples
 #' # Load example data and germlines
-#' data(sample_db, HVGERM, HDGERM)
+#' data(samples_db, HVGERM, HDGERM)
+#'
+#' # Selecting a single individual
+#' clip_db = samples_db[samples_db$SUBJECT=='I5', ]
 #'
 #' # Infering haplotype
-#' hap_df = createFullHaplotype(sample_db,toHap_col=c('V_CALL','D_CALL'),
+#' hap_df = createFullHaplotype(clip_db,toHap_col=c('V_CALL','D_CALL'),
 #' hapBy_col='J_CALL',hapBy='IGHJ6',toHap_GERM=c(HVGERM,HDGERM))
 #' head(hap_df)
 #'
@@ -79,20 +82,17 @@ createFullHaplotype <- function(clip_db, toHap_col = c("V_CALL", "D_CALL"), hapB
 
 
         # Number of iniial sequences
-        nrows1 <- nrow(clip_db_sub)
+        #nrows1 <- nrow(clip_db_sub)
 
         ### Check if haplotype can be infered by the specific gene in the data set.  Only relevant genes with one assignment
-        IND <- apply(clip_db_sub, 1, function(x) {
-            sum(grep(",", x[c(toHap_col, hapBy_col)], invert = F))
-        })
-        IND <- names(IND[IND == 0])
-        clip_db_sub <- clip_db_sub[IND, ]
+        clip_db_sub <- clip_db_sub[!grepl(',',clip_db_sub[,hapBy_col]), ]
+
 
         # Number of post multiple assignment reduction sequences
-        nrows2 <- nrow(clip_db_sub)
+        #nrows2 <- nrow(clip_db_sub)
 
-        if (!supress_print)
-            cat(paste0("In sample ", sample_name, ", ", nrows1 - nrows2, " sequnces were removed due to multiple assignments,\n ", nrows2, " sequences left.\n"))
+        #if (!supress_print)
+        #    cat(paste0("In sample ", sample_name, ", ", nrows1 - nrows2, " sequnces were removed due to multiple assignments,\n ", nrows2, " sequences left.\n"))
 
         hapBy_alleles <- sort(unique(grep(pattern = paste0(hapBy, "*"), x = clip_db_sub[, paste(hapBy_col)], value = T, fixed = T)))
 
@@ -139,21 +139,28 @@ createFullHaplotype <- function(clip_db, toHap_col = c("V_CALL", "D_CALL"), hapB
         GENES.df.num <- c()
         GENES.df.num_ToPlot <- c()
 
-
+        col_names <- c("SUBJECT", "GENE", "MinorFraction",
+                                    "DoubleAllele", gsub(pattern = "*", "_", hapBy_alleles, fixed = T),
+                                    'ALLELES', 'PRIORS_ROW', 'PRIORS_COL',
+                                    'COUNTS1', 'MP1', 'K1', 'ND1',
+                                    'COUNTS2', 'MP2', 'K2', 'ND2',
+                                    'COUNTS3', 'MP3', 'K3', 'ND3',
+                                    'COUNTS4', 'MP4', 'K4', 'ND4')
         for (G in intersect(GENES, GENES.ref)) {
 
+            toHap_col_tmp <- toHap_col[grep(substr(G,4,4),toHap_col)]
 
-            if (grepl(paste0(chain, "V"), G))
-                toHap_col_tmp <- "V_CALL"
-            if (grepl(paste0(chain, "D"), G))
-                toHap_col_tmp <- "D_CALL"
-            if (grepl(paste0(chain, "J"), G))
-                toHap_col_tmp <- "J_CALL"
-
-            clip_db_sub.G <- clip_db_sub[grepl(paste0(G, "*"), clip_db_sub[, toHap_col_tmp], fixed = T) & (clip_db_sub[, hapBy_col] %in% hapBy_alleles),
-                ]
+            clip_db_sub.G <- clip_db_sub %>% filter(grepl(paste0(G,'[*]'),!!as.name(toHap_col_tmp)), !!as.name(hapBy_col) %in% hapBy_alleles)
+            if(substr(G,4,4)=='V') clip_db_sub.G <- as.data.frame(clip_db_sub.G %>%
+                                                    filter(getGeneCount(!!as.name(toHap_col_tmp))==1) %>%
+                                                    group_by(!!as.name(toHap_col_tmp))  %>%
+                                                    mutate(n=n()) %>% ungroup() %>%
+                                                    filter((grepl(',',!!as.name(toHap_col_tmp))&n/nrow(clip_db_sub.G) > 0.2)|(!grepl(',',!!as.name(toHap_col_tmp)))) %>%
+                                                    mutate(!!as.name(toHap_col_tmp) := alleleCollapse(!!as.name(toHap_col_tmp))))
+            else clip_db_sub.G <-  clip_db_sub.G %>% filter(!grepl(',', !!as.name(toHap_col_tmp)))
 
             tmp <- table(clip_db_sub.G[, toHap_col_tmp], clip_db_sub.G[, hapBy_col])
+            if(nrow(tmp)==0) next
             relFreq <- min(rowSums(tmp))/sum(rowSums(tmp))
             GENES.df.num_ToPlot <- rbind(GENES.df.num_ToPlot, reshape2::melt(tmp))
             # if one column add the second
@@ -170,6 +177,19 @@ createFullHaplotype <- function(clip_db, toHap_col = c("V_CALL", "D_CALL"), hapB
                 tmp <- as.matrix(tmp)
             }
 
+
+
+            if(G %in% deleted_genes_vec || G %in% nonRelaible_Vgenes_vec){
+
+              relFreqDf.tmp <- data.frame(matrix(c(sample_name, G, format(relFreq, digits = 3), NA,
+                                       rep(ifelse(G %in% nonRelaible_Vgenes_vec, 'NR',
+                                              ifelse(G %in% deleted_genes_vec, 'Del')), 2),
+                                       rep(NA, 19)),nrow = 1),stringsAsFactors = F)
+              names(relFreqDf.tmp) <- col_names
+              relFreqDf.tmp <- asNum(relFreqDf.tmp)
+              GENES.df.num <- rbind(GENES.df.num, relFreqDf.tmp)
+              next
+            }
 
             if (relative_freq_priors) {
 
@@ -194,16 +214,20 @@ createFullHaplotype <- function(clip_db, toHap_col = c("V_CALL", "D_CALL"), hapB
 
                 relFreqDf.tmp <- data.frame(c(sample_name, G, format(relFreq, digits = 3), sum(grepl(",", hap.df[1, 2:3], fixed = T)), hap.df[, 2:length(hap.df)]),
                   stringsAsFactors = F)
-                names(relFreqDf.tmp)[1:6] <- c("SUBJECT", "GENE", "MinorFraction", "DoubleAllele", gsub(pattern = "*", "_", hapBy_alleles, fixed = T))
+                relFreqDf.tmp <- asNum(relFreqDf.tmp)
+                names(relFreqDf.tmp) <- col_names
                 GENES.df.num <- rbind(GENES.df.num, relFreqDf.tmp)
             } else {
                 hap.df <- createHaplotypeTable(tmp)
                 relFreqDf.tmp <- data.frame(c(sample_name, G, format(relFreq, digits = 3), sum(grepl(",", hap.df[1, 2:3], fixed = T)), hap.df[, 2:length(hap.df)]),
-                  stringsAsFactors = F)
-                names(relFreqDf.tmp)[1:6] <- c("SUBJECT", "GENE", "MinorFraction", "DoubleAllele", gsub(pattern = "*", "_", hapBy_alleles, fixed = T))
+                                            stringsAsFactors = F)
+                relFreqDf.tmp <- asNum(relFreqDf.tmp)
+                names(relFreqDf.tmp) <- col_names
                 GENES.df.num <- rbind(GENES.df.num, relFreqDf.tmp)
 
             }
+
+
         }
 
         # Check if toHap_col genes are in toHap_GERM
@@ -212,16 +236,12 @@ createFullHaplotype <- function(clip_db, toHap_col = c("V_CALL", "D_CALL"), hapB
 
 
         ## Fill deleted according to a k thershold
-        delIDX <- which(GENES.df.num[paste(gsub("*", "_", hapBy_alleles[1], fixed = T))][, 1] == "Unk" & sapply(1:nrow(GENES.df.num), function(x) {
-            min(GENES.df.num[x, grepl("K[1-9]", names(GENES.df.num))], na.rm = T)
-        }) >= kThreshDel)
-
+        unkIDX <- which(GENES.df.num[gsub("*", "_", hapBy_alleles[1], fixed = T)][, 1] == "Unk")
+        delIDX <- unkIDX[which(sapply(unkIDX, function(i) min(GENES.df.num[i,paste0('K',1:4)], na.rm = T)) >= kThreshDel)]
         GENES.df.num[delIDX, paste(gsub("*", "_", hapBy_alleles[1], fixed = T))] <- "Del"
 
-        delIDX <- which(GENES.df.num[paste(gsub("*", "_", hapBy_alleles[2], fixed = T))][, 1] == "Unk" & sapply(1:nrow(GENES.df.num), function(x) {
-            min(GENES.df.num[x, grepl("K[1-9]", names(GENES.df.num))], na.rm = T)
-        }) >= kThreshDel)
-
+        unkIDX <- which(GENES.df.num[gsub("*", "_", hapBy_alleles[2], fixed = T)][, 1] == "Unk")
+        delIDX <- unkIDX[which(sapply(unkIDX, function(i) min(GENES.df.num[i,paste0('K',1:4)], na.rm = T)) >= kThreshDel)]
         GENES.df.num[delIDX, paste(gsub("*", "_", hapBy_alleles[2], fixed = T))] <- "Del"
 
         ## Add as iunknown genes that do not appear in the individual and mark them as unknown
@@ -237,58 +257,9 @@ createFullHaplotype <- function(clip_db, toHap_col = c("V_CALL", "D_CALL"), hapB
 
             sub.df$GENE <- GENES.MISSING
 
+            sub.df[,gsub("*", "_", hapBy_alleles, fixed = T)] <- matrix(rep(ifelse(GENES.MISSING %in% nonRelaible_Vgenes_vec,'NR',ifelse(GENES.MISSING %in% deleted_genes_vec, 'Del', 'Unk')), 2), ncol=2)
 
             GENES.df.num <- rbind(GENES.df.num, sub.df)
-        }
-
-        #### Remove deleted genes according to known list
-
-        if (length(deleted_genes_vec) != 0) {
-            GENES.df.num[, 5] <- sapply(1:nrow(GENES.df.num), function(i) {
-                if (GENES.df.num$GENE[i] %in% deleted_genes_vec) {
-                  return("Del")
-                } else {
-                  return(GENES.df.num[i, 5])
-                }
-            })
-            GENES.df.num[, 6] <- sapply(1:nrow(GENES.df.num), function(i) {
-                if (GENES.df.num$GENE[i] %in% deleted_genes_vec) {
-                  return("Del")
-                } else {
-                  return(GENES.df.num[i, 6])
-                }
-            })
-            GENES.df.num["K1"] <- sapply(1:nrow(GENES.df.num), function(i) {
-                if (GENES.df.num$GENE[i] %in% deleted_genes_vec) {
-                  return(NA)
-                } else {
-                  return(GENES.df.num[i, "K1"])
-                }
-            })
-        }
-
-        if (length(nonRelaible_Vgenes_vec) != 0) {
-            GENES.df.num[, 5] <- sapply(1:nrow(GENES.df.num), function(i) {
-                if (GENES.df.num$GENE[i] %in% nonRelaible_Vgenes_vec) {
-                  return("NR")
-                } else {
-                  return(GENES.df.num[i, 5])
-                }
-            })
-            GENES.df.num[, 6] <- sapply(1:nrow(GENES.df.num), function(i) {
-                if (GENES.df.num$GENE[i] %in% nonRelaible_Vgenes_vec) {
-                  return("NR")
-                } else {
-                  return(GENES.df.num[i, 6])
-                }
-            })
-            GENES.df.num["K1"] <- sapply(1:nrow(GENES.df.num), function(i) {
-                if (GENES.df.num$GENE[i] %in% nonRelaible_Vgenes_vec) {
-                  return(NA)
-                } else {
-                  return(GENES.df.num[i, "K1"])
-                }
-            })
         }
 
         haplo_db <- rbind(haplo_db, GENES.df.num)
@@ -319,10 +290,12 @@ createFullHaplotype <- function(clip_db, toHap_col = c("V_CALL", "D_CALL"), hapB
 #'
 #' @examples
 #' # Load example data and germlines
-#' data(sample_db)
+#' data(samples_db)
 #'
+#' # Selecting a single individual
+#' clip_db = samples_db[samples_db$SUBJECT=='I5', ]
 #' # Infering haplotype
-#' del_binom_df = deletionsByBinom(sample_db)
+#' del_binom_df = deletionsByBinom(clip_db)
 #' head(del_binom_df)
 #'
 #' @export
@@ -339,9 +312,9 @@ deletionsByBinom <- function(clip_db, chain = c("IGH", "IGK", "IGL"), nonRelaibl
 
     GENE.loc.NoPseudo <- GENE.loc[[chain]][!grepl("OR", GENE.loc[[chain]])]
     GENE.loc.NoPseudo <- GENE.loc.NoPseudo[!grepl("NL", GENE.loc.NoPseudo)]
-    GENE.loc.NoPseudo <- GENE.loc.NoPseudo[!(GENE.loc.NoPseudo %in% PSEUDO[[chain]])]
+    GENE.loc.NoPseudo <- GENE.loc.NoPseudo[!(GENE.loc.NoPseudo %in% PSEUDO[[chain]]) & ( GENE.loc.NoPseudo %in% Binom.test.gene.cutoff[[chain]]$GENE)]
 
-    GENE.usage <- vector("list", length = 80)
+    GENE.usage <- vector("list", length = length(GENE.loc.NoPseudo))
     names(GENE.usage) <- GENE.loc.NoPseudo
     for (samp in unique(clip_db$SUBJECT)) {
         clip_db_sub <- clip_db[clip_db$SUBJECT == samp, ]
@@ -513,8 +486,8 @@ deletionsByBinom <- function(clip_db, chain = c("IGH", "IGK", "IGL"), nonRelaibl
 #' @return  data frame with single chromosome gene deletions
 #'
 #' @examples
-#' # Load example data and germlines
-#' data(sample_db)
+#' data(samples_db)
+#'
 #' # Infering V pooled deletions
 #' del_db <- deletionsByVpooled(samples_db)
 #' head(del_db)

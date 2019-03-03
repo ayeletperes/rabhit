@@ -24,10 +24,13 @@ NULL
 #'
 #' @examples
 #' # Load example data and germlines
-#' data(sample_db, HVGERM, HDGERM)
+#' data(samples_db, HVGERM, HDGERM)
+#'
+#' # Selecting a single individual
+#' clip_db = samples_db[samples_db$SUBJECT=='I5', ]
 #'
 #' # Infering haplotype
-#' hap_df = createFullHaplotype(sample_db,toHap_col=c('V_CALL','D_CALL'),
+#' hap_df = createFullHaplotype(clip_db,toHap_col=c('V_CALL','D_CALL'),
 #' hapBy_col='J_CALL',hapBy='IGHJ6',toHap_GERM=c(HVGERM,HDGERM))
 #' plotHaplotype(hap_df)
 #'
@@ -89,17 +92,18 @@ plotHaplotype <- function(hap_table, html_output = FALSE, gene_sort = c("name", 
             xlab("") + ylab("") + facet_grid(paste0(".~", "hapBy"), switch = "x") + theme_bw() + theme(axis.ticks = element_blank(), axis.text.x = element_blank(),
             panel.grid.major = element_blank(), panel.grid.minor = element_blank(), text = element_text(size = text_size), strip.background = element_blank(),
             strip.text = element_text(face = "bold"), axis.text = element_text(colour = "black"), panel.spacing = unit(0, "cm"), strip.switch.pad.grid = unit(0,
-                "cm"), plot.margin = unit(c(0.25, 0, 0.2, 0), "cm")) + scale_fill_manual(values = alpha(names(AlleleCol), transper), name = "Alleles", drop = F)
+                "cm"), plot.margin = unit(c(0.25, 0, 0.2, 0), "cm"), legend.key = element_rect("#DCDCDC")) + scale_fill_manual(values = alpha(names(AlleleCol), transper), name = "Alleles", drop = F)
 
         if (!plotYaxis) {
             p = p + theme(axis.text.y = element_blank())
         }
 
         ## Right panel plot K values
+
         pk <- ggplot(kval.df, aes_string(x = "GENE", fill = "K_GROUPED")) + theme_bw() + theme(axis.ticks = element_blank(), axis.text = element_blank(), axis.title = element_blank(),
             panel.grid.major = element_blank(), panel.grid.minor = element_blank(), text = element_text(size = text_size), strip.background = element_blank(),
             strip.text = element_text(face = "bold"), panel.spacing = unit(0, "cm"), strip.switch.pad.grid = unit(0, "cm"), plot.margin = unit(c(0.25, 0,
-                0.2, 0), "cm")) + geom_bar(position = "fill", width = 0.7, na.rm = T) + coord_flip() + xlab("") + ylab("") + facet_grid(paste0(".~", "hapBy"),
+                0.2, 0), "cm"), legend.key = element_rect("#DCDCDC")) + geom_bar(position = "fill", width = 0.7, na.rm = T) + coord_flip() + xlab("") + ylab("") + facet_grid(paste0(".~", "hapBy"),
             switch = "x")
 
         count.df$ALLELES <- as.character(count.df$ALLELES)
@@ -111,7 +115,7 @@ plotHaplotype <- function(hap_table, html_output = FALSE, gene_sort = c("name", 
             na.rm = T, aes_string(colour = "border")) + coord_flip() + background_grid(minor = "none") + scale_fill_manual(values = alpha(names(AlleleCol),
             transper), name = "ALLELES", drop = F) + scale_color_manual(values = alpha(c("black", "white"), c(0.5, 0)), drop = F) + theme(legend.position = "none",
             strip.text = element_text(face = "bold"), axis.text = element_text(colour = "black"), text = element_text(size = text_size), plot.margin = unit(c(0.25,
-                0, -0.05, 0), "cm"), panel.background = element_blank()) + scale_y_continuous(breaks = seq(-3, 3, by = 1), labels = c(3:0, 1:3)) + ylab(expression("log"[10] *
+                0, -0.05, 0), "cm"), panel.background = element_blank(), legend.key = element_rect("#DCDCDC")) + scale_y_continuous(breaks = seq(-3, 3, by = 1), labels = c(3:0, 1:3)) + ylab(expression("log"[10] *
             "(Count+1)")) + xlab("Gene") + geom_hline(yintercept = c(0), linetype = "dotted")
 
         if (is.data.frame(non_reliable_alleles_text)) {
@@ -130,16 +134,16 @@ plotHaplotype <- function(hap_table, html_output = FALSE, gene_sort = c("name", 
             ## Prepare panels for html plot
 
             p = p + theme(axis.title.x = element_blank())  #do.call(theme, list(...))
-            p.l <- ggplotly(p, height = 1000, width = 700) %>% plotly::layout(showlegend = FALSE)
+            p.l <- ggplotly(p, height = 800, width = 400) %>% plotly::layout(showlegend = FALSE)
 
             pk = pk + theme(axis.title = element_blank())  # + do.call(theme, list(...))
-            pk <- pk + scale_fill_brewer(name = "log<sub>10</sub>(lK)", drop = FALSE)
-            pk.l <- ggplotly(pk, height = 1000, width = 700) %>% plotly::layout(showlegend = TRUE)
+            pk <- pk + scale_fill_manual(name = "log<sub>10</sub>(lK)", values = c('#FFFFFF',brewer.pal(9,'Blues')), drop = FALSE)
+            pk.l <- ggplotly(pk, height = 800, width = 400) %>% plotly::layout(showlegend = TRUE)
             pk.l$x$layout$annotations[[1]]$text = p.l$x$layout$annotations[[1]]$text
             pk.l$x$layout$annotations[[2]]$text = p.l$x$layout$annotations[[2]]$text
 
             p2 <- p2 + ylab("log<sub>10</sub>(Count+1)")
-            p2.l <- ggplotly(p2, height = 1300, width = 1000) %>% plotly::layout(margin = list(b = 50), yaxis = list(title = paste0(c(rep("&nbsp;", 3), "Gene",
+            p2.l <- ggplotly(p2, height = 1000, width = 700) %>% plotly::layout(margin = list(b = 50), yaxis = list(title = paste0(c(rep("&nbsp;", 3), "Gene",
                 rep("&nbsp;", 3), rep("\n&nbsp;", 1)), collapse = "")), showlegend = TRUE)
 
             p2.l$x$layout$xaxis$ticktext = c(lapply(p2.l$x$layout$xaxis$ticktext[1:match("0", p2.l$x$layout$xaxis$ticktext) - 1], function(x) paste0("-",
@@ -147,6 +151,22 @@ plotHaplotype <- function(hap_table, html_output = FALSE, gene_sort = c("name", 
 
             p2.l$x$data[[length(p2.l$x$data)]]$y[2] = p2.l$x$layout$yaxis$range[2]
 
+            add_border <- function(p_l){
+              p_l$x$attrs <- lapply(p_l$x$attrs,
+                                      function(x){
+                                        x$mode <- "markers"
+                                        x
+                                      })
+
+              for (i in 1:length(p_l$x$data)) {
+                p_l$x$data[[i]]$marker$line$width <- suppressMessages(0.2)
+                p_l$x$data[[i]]$marker$line$color <- ifelse(p_l$x$data[[i]]$marker$line$color=='transparent', 'black', p_l$x$data[[i]]$marker$line$color)
+              }
+              return(p_l)
+            }
+
+            p.l <- add_border(p.l)
+            pk.l <- add_border(pk.l)
             mgsub <- function(pattern, replacement, x, ...) {
                 if (length(pattern) != length(replacement)) {
                   stop("pattern and replacement do not have the same length.")
@@ -195,10 +215,29 @@ plotHaplotype <- function(hap_table, html_output = FALSE, gene_sort = c("name", 
 
 
             p.l.c <- suppressWarnings(subplot(p2.l, p.l, pk.l, widths = c(0.4, 0.2, 0.2), shareY = T, titleX = TRUE, margin = 0.01, which_layout = 1))
+            # if (!is.data.frame(non_reliable_alleles_text)) {
+            #   start <- length(grep('[0-9][0-9]',AlleleCol)) + 1 # plus 1 for space
+            #   end <- (length(p.l.c$x$data) - (length(pk.l$x$data) + 6))
+            # }else{
+            #   start <- length(grep('[0-9][0-9]',AlleleCol)) + 1 # plus 1 for NRA and space
+            #   end <- (length(p.l.c$x$data) - (length(pk.l$x$data) + 10))
+            # }
+            #
+
+
+            for (i in 1:length(p2.l$x$data)) {
+                p.l.c$x$data[[i]]$showlegend <- FALSE
+            }
+
+            for(i in 1:(length(p2.l$x$data)+length(p.l$x$data))){
+              p.l.c$x$data[[i]]$name <- gsub("[()|,]|white|black","",p.l.c$x$data[[i]]$name)
+            }
+
             p.l.c$x$layout$annotations[[6]]$text = "log<sub>10</sub>(lK)"
             p.l.c$x$layout$annotations[[6]]$xanchor = "center"
-            p.l.c$x$layout$annotations[[6]]$y = 0.99 - 0.0233 * (length(AlleleCol) + 2.4)  #0.52
+            p.l.c$x$layout$annotations[[6]]$y = 1 - 0.035 * (length(grep('[[]',grep('TRUE',p.l.c$x$data,value = T),invert = T))) #(length(AlleleCol) + 2.4)  #0.52
             p.l.c$x$layout$annotations[[6]]$x = 0.98
+            p.l.c$x$layout$annotations[[6]]$font$size = 16
 
 
             p.l.c$x$layout$annotations[[3]] <- p.l.c$x$layout$annotations[[6]]
@@ -206,30 +245,16 @@ plotHaplotype <- function(hap_table, html_output = FALSE, gene_sort = c("name", 
             p.l.c$x$layout$annotations[[3]]$y = 0.99
             p.l.c$x$layout$annotations[[3]]$x = 0.98
             p.l.c$x$layout$annotations[[3]]$legendTitle = FALSE
-
-            if (!is.data.frame(non_reliable_alleles_text)) {
-              start <- length(grep('[0-9][0-9]',AlleleCol)) + 1 # plus 1 for space
-              end <- (length(p.l.c$x$data) - (length(pk.l$x$data) + 6))
-            }else{
-              start <- length(grep('[0-9][0-9]',AlleleCol)) + 1 # plus 1 for NRA and space
-              end <- (length(p.l.c$x$data) - (length(pk.l$x$data) + 10))
-            }
-            for (i in start:end) {
-                p.l.c$x$data[[i]]$showlegend <- FALSE
-            }
-
-            for(i in 1:start){
-              p.l.c$x$data[[i]]$name <- gsub("[()|,|white|black]","",p.l.c$x$data[[i]]$name)
-            }
+            p.l.c$x$layout$annotations[[3]]$font$size = 16
 
             plot_list[[sample_name]] <- p.l.c
 
         } else {
-            p.legend <- get_legend(p)
+            p.legend <- get_legend(p + theme(legend.key = element_rect("#DCDCDC")))
             p = p + theme(legend.position = "none",axis.title.x = element_blank())
 
-            pk = pk + scale_fill_brewer(name = expression("log"[10] * "(lK)"), drop = FALSE)
-            pk.legend <- get_legend(pk)
+            pk = pk + scale_fill_manual(name = expression("log"[10] * "(lK)"), values = c('#FFFFFF',brewer.pal(9,'Blues')), drop = FALSE)
+            pk.legend <- get_legend(pk + theme(legend.key = element_rect("gray")))
             pk = pk + theme(legend.position = "none",axis.title = element_blank())
 
             p.legends <- plot_grid(pk.legend, p.legend, ncol = 1, align = "hv")#plot_grid(pk.legend, p.legend, NULL, ncol = 1, rel_heights = c(1, 0.5, 1), align = "hv")
@@ -242,7 +267,7 @@ plotHaplotype <- function(hap_table, html_output = FALSE, gene_sort = c("name", 
             # p <- plot_grid(p2 + theme(plot.margin = unit(c(0.5,0,0,0),'lines')), p1 + theme(plot.margin = unit(c(0,0,0.5,0),'lines')), nrow=1,rel_widths = c(1,2))
             # now add the title title <- ggdraw() + draw_label(sample_name, fontface='bold')
 
-            plot_list[[sample_name]] <- p  #plot_grid(title, p, ncol=1, rel_heights=c(0.05, 1))
+            plot_list[[sample_name]] <- p
         }
 
     }
@@ -449,15 +474,12 @@ hapHeatmap <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = "p
 
     haplo_db <- c()
     for (sample_name in samples) {
-        geno.df <- parseHapTab(hap_table[hap_table$SUBJECT == sample_name, ], chain = chain, df_ToReturn = "geno.df")
-        kval.df <- parseHapTab(hap_table[hap_table$SUBJECT == sample_name, ], chain = chain, df_ToReturn = "kval.df")
-        geno.df <- sortDFByGene(geno.df, chain = chain, method = gene_sort, removeIGH = removeIGH)
-        kval.df <- sortDFByGene(kval.df, chain = chain, method = gene_sort, removeIGH = removeIGH)
-        geno.df$K <- apply(geno.df[, c("GENE", "hapBy")], 1, function(x) {
-            kval.df$K[kval.df$GENE == x[[1]] & kval.df$hapBy == x[[2]]]
-        })
-        geno.df$SUBJECT <- sample_name
-        haplo_db <- rbind(haplo_db, geno.df)
+      haplo.db <- parseHapTab(hap_table[hap_table$SUBJECT == sample_name, ], chain = chain)
+      geno.df <- sortDFByGene(haplo.db$geno.df, chain = chain, method = gene_sort, removeIGH = removeIGH)
+      kval.df <- sortDFByGene(haplo.db$kval.df, chain = chain, method = gene_sort, removeIGH = removeIGH)
+      geno.df$K <- apply(geno.df[, c("GENE", "hapBy")], 1, function(x) {
+        asNum(kval.df$K[kval.df$GENE == x[[1]] & kval.df$hapBy == x[[2]]], na.strings = "NA")})
+      haplo_db <- rbind(haplo_db, geno.df)
     }
 
 
@@ -478,9 +500,7 @@ hapHeatmap <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = "p
     heatmap.df$freq <- ifelse(heatmap.df$n == 2, 0.5, ifelse(heatmap.df$n != 1, 0.25, 1))
     heatmap.df$GENE <- factor(heatmap.df$GENE, levels = gsub("IG[H|K|L]", "", GENE.loc[[chain]]))
     heatmap.df$title <- ifelse(heatmap.df$hapBy == hapBy_cols[1], hapBy_cols[1], hapBy_cols[2])
-    if (length(levels(hap_table$SUBJECT)) != 0) {
-        heatmap.df$SUBJECT <- factor(heatmap.df$SUBJECT, levels = levels(hap_table$SUBJECT))
-    }
+
 
     if (length(grep("[0-9][0-9]_[0-9][0-9]", heatmap.df$ALLELES)) != 0) {
         non_reliable_alleles_text <- nonReliableAllelesText(heatmap.df[grep("[0-9][0-9]_[0-9][0-9]", heatmap.df$ALLELES), ])
@@ -494,17 +514,23 @@ hapHeatmap <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = "p
 
     }
 
+    if (length(levels(hap_table$SUBJECT)) != 0) {
+        heatmap.df$SUBJECT <- factor(heatmap.df$SUBJECT, levels = levels(hap_table$SUBJECT))
+        haplo_db_texture$SUBJECT <- factor(haplo_db_texture$SUBJECT, levels = levels(hap_table$SUBJECT))
+        non_reliable_alleles_text$SUBJECT <- factor(non_reliable_alleles_text$SUBJECT, levels = levels(hap_table$SUBJECT))
+    }
+
     heatmap.df$ALLELES <- factor(heatmap.df$ALLELES, levels = allele_palette$AlleleCol)
-    col <- ifelse(c(1:(length(unique(heatmap.df[heatmap.df$hapBy == hapBy_cols[1], "SUBJECT"])) * 4))%%3 == 0, "black", "white")
+    col <- ifelse(c(1:(length(unique(heatmap.df[heatmap.df$hapBy == hapBy_cols[1], "SUBJECT"])) * 4))%%3 == 0, "black", "transparent")
     p <- ggplot() + geom_col(data = heatmap.df[heatmap.df$hapBy == hapBy_cols[1], ], mapping = aes_string(x = "GENE", y = "freq", fill = "ALLELES"), position = "fill", width = 0.95, na.rm = T) +
         scale_fill_manual(values = alpha(names(allele_palette$AlleleCol), allele_palette$transper), name = "Alleles", drop = FALSE) + facet_grid(SUBJECT ~
         title, as.table = FALSE, switch = "y") + scale_y_continuous(expand = c(0, 0)) + scale_x_discrete(expand = c(0, 0)) + theme(axis.text.x = element_text(angle = 90,
         vjust = 0.5, hjust = 1, size = 10, colour = "black"), strip.text.x = element_text(size = 14), strip.text.y = element_text(angle = 180, size = 10),
         strip.placement = "outside", axis.ticks.y = element_line(colour = col), axis.text.y = element_blank(), strip.background.y = element_blank(), legend.position = "bottom",
         legend.justification = "center", panel.spacing.y = unit(0.9, "pt")) + labs(y = "", x = "") + guides(fill = guide_legend(nrow = round(length(allele_palette$AlleleCol)/10),
-        order = 1))
+        order = 1, override.aes = list(color = "#DCDCDC")))
 
-    col <- ifelse(c(1:(length(unique(heatmap.df[heatmap.df$hapBy == hapBy_cols[2], "SUBJECT"])) * 4))%%3 == 0, "black", "white")
+    col <- ifelse(c(1:(length(unique(heatmap.df[heatmap.df$hapBy == hapBy_cols[2], "SUBJECT"])) * 4))%%3 == 0, "black", "transparent")
     p1 <- ggplot() + geom_col(data = heatmap.df[heatmap.df$hapBy == hapBy_cols[2], ], mapping = aes_string(x = "GENE", y = "freq", fill = "ALLELES"), position = "fill",
         width = 0.95, na.rm = T) + scale_fill_manual(values = alpha(names(allele_palette$AlleleCol), allele_palette$transper), name = "Alleles", drop = FALSE) +
         facet_grid(SUBJECT ~ title, as.table = FALSE, switch = "y") + scale_y_continuous(expand = c(0, 0)) + scale_x_discrete(expand = c(0, 0)) + theme(axis.text.x = element_text(angle = 90,
@@ -517,13 +543,13 @@ hapHeatmap <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = "p
 
         haplo_db_texture$ALLELES <- factor(haplo_db_texture$ALLELES, levels = allele_palette$AlleleCol)
 
-        if ("J6*02" %in% haplo_db_texture$hapBy) {
+        if (gsub(chain,"",hapBy_alleles[1]) %in% haplo_db_texture$hapBy) {
             # Get Allele legend
             gt1 = ggplotGrob(p)
 
-            p <- p + geom_segment(data = haplo_db_texture[haplo_db_texture$hapBy == hapBy_cols[1], ], mapping = aes_string(x = "x", xend = "xend", y = "points", yend = "yend", color = "col")) + scale_color_manual(values = c("white"), name = "lK", drop = FALSE) + guides(color = guide_legend(override.aes = list(size = 1),
-                order = 2), fill = "none") + theme(legend.justification = "center", legend.key = element_rect(fill = "gray"))
-            if ("J6*03" %in% haplo_db_texture$hapBy) {
+            p <- p + geom_segment(data = haplo_db_texture[haplo_db_texture$hapBy == hapBy_cols[1], ], mapping = aes_string(x = "x", xend = "xend", y = "points", yend = "yend", color = "col")) +
+              scale_color_manual(values = c("white"), name = "lK", drop = FALSE) + guides(color = guide_legend(override.aes = list(size = 1), order = 2), fill = "none") + theme(legend.justification = "center", legend.key = element_rect(fill = "gray"))
+            if (gsub(chain,"",hapBy_alleles[2]) %in% haplo_db_texture$hapBy) {
                 p1 <- p1 + geom_segment(data = haplo_db_texture[haplo_db_texture$hapBy == hapBy_cols[2], ], mapping = aes_string(x = "x", xend = "xend", y = "points", yend = "yend", color = "col")) + scale_color_manual(values = c("white"), name = "lK", drop = FALSE)
             }
             gt2 = ggplotGrob(p)
@@ -784,19 +810,16 @@ hapDendo <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = c("n
     plt_dendr <- ggplot(segment_data) + geom_segment(aes_string(x = "x", y = "y", xend = "xend", yend = "yend")) + scale_x_continuous(expand = c(0, 0.01)) + scale_y_continuous(breaks = samples_pos_table$y_center,
         labels = samples_pos_table$gene, limits = samples_axis_limits, expand = c(0, 0)) + labs(x = "Jaccard distance", y = "", colour = "", size = "") +
         theme_bw() + theme(panel.grid.minor = element_blank(), axis.ticks.y = element_blank(), panel.grid = element_blank(), panel.border = element_blank(),
-        axis.text = element_text(size = 10, colour = "black"), axis.title.x = element_text(size = 14, colour = "black")) + ylab('Subject')
+        axis.text = element_text(size = 10, colour = "black"), axis.title.x = element_text(size = 14, colour = "black")) + ylab('')
 
     # Creating the haploype db for ploting
     haplo_db_clust <- c()
     for (sample_name in samples) {
-        geno.df <- parseHapTab(hap_table[hap_table$SUBJECT == sample_name, ], chain = chain, df_ToReturn = "geno.df")
-        kval.df <- parseHapTab(hap_table[hap_table$SUBJECT == sample_name, ], chain = chain, df_ToReturn = "kval.df")
-        geno.df <- sortDFByGene(geno.df, chain = chain, method = gene_sort, removeIGH = removeIGH)
-        kval.df <- sortDFByGene(kval.df, chain = chain, method = gene_sort, removeIGH = removeIGH)
+        haplo.db <- parseHapTab(hap_table[hap_table$SUBJECT == sample_name, ], chain = chain)
+        geno.df <- sortDFByGene(haplo.db$geno.df, chain = chain, method = gene_sort, removeIGH = removeIGH)
+        kval.df <- sortDFByGene(haplo.db$kval.df, chain = chain, method = gene_sort, removeIGH = removeIGH)
         geno.df$K <- apply(geno.df[, c("GENE", "hapBy")], 1, function(x) {
-            kval.df$K[kval.df$GENE == x[[1]] & kval.df$hapBy == x[[2]]]
-        })
-        geno.df$SUBJECT <- sample_name
+          asNum(kval.df$K[kval.df$GENE == x[[1]] & kval.df$hapBy == x[[2]]], na.strings = "NA")})
         haplo_db_clust <- rbind(haplo_db_clust, geno.df)
     }
     allele_palette <- alleleHapPalette(haplo_db_clust$ALLELES)
@@ -864,14 +887,16 @@ hapDendo <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = c("n
 
     heatmap.df$ALLELES <- factor(heatmap.df$ALLELES, levels = allele_palette$AlleleCol)
 
-    hap_plot <- ggplot() + geom_col(data = heatmap.df, mapping = aes_string(x = "GENE", y = "freq", fill = "ALLELES"), position = "fill", width = 0.95,
+    heatmap.df$GENE_LOC <-  sapply(heatmap.df$GENE,function(i) {loc[as.character(i)]})
+
+    hap_plot <- ggplot() + geom_col(data = heatmap.df, mapping = aes_string(x = "GENE_LOC", y = "freq", fill = "ALLELES"), position = "fill", width = 0.95,
         na.rm = T) + scale_fill_manual(values = alpha(names(allele_palette$AlleleCol), allele_palette$transper), name = "Alleles", drop = FALSE) + facet_grid(grouper_y ~
-        grouper_x, as.table = FALSE, switch = "y", labeller = labeller(grouper_y = samples_label), drop = FALSE) + scale_y_continuous(expand = c(0, 0)) + scale_x_discrete(expand = c(0,
-        0)) + theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1, size = 10, colour = "black"), strip.text.x = element_blank(), strip.text.y = element_text(angle = 180,
+        grouper_x, as.table = FALSE, switch = "y", labeller = labeller(grouper_y = samples_label), drop = FALSE) + scale_y_continuous(expand = c(0, 0)) +# scale_x_discrete(expand = c(0,0))
+        theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1, size = 10, colour = "black"), strip.text.x = element_blank(), strip.text.y = element_text(angle = 180,
         size = 10), panel.grid = element_blank(), strip.placement = "outside", axis.ticks.y = element_line(colour = "white"), axis.line.y.left = element_blank(),
         axis.text.y = element_blank(), strip.background.y = element_blank(), strip.background.x = element_blank(), panel.spacing.y = unit(0.9, "pt"), legend.position = "bottom",
-        axis.title.x = element_text(size = 14, colour = "black"), legend.justification = "center") + labs(y = "", x = "Gene") + guides(fill = guide_legend(nrow = round(length(allele_palette$AlleleCol)/9),
-        order = 1))
+        axis.title.x = element_text(size = 14, colour = "black", ), legend.justification = "center") + labs(y = "", x = "Gene") + guides(fill = guide_legend(nrow = round(length(allele_palette$AlleleCol)/9),
+        order = 1, override.aes = list(color = "#DCDCDC"))) + scale_x_continuous(expand = c(0,0),breaks = 1:length(unique(heatmap.df$GENE)[order(match(unique(heatmap.df$GENE), levels(heatmap.df$GENE)))]),labels = unique(heatmap.df$GENE)[order(match(unique(heatmap.df$GENE), levels(heatmap.df$GENE)))], sec.axis = dup_axis(name = ""))
 
     if (mark_low_lk) {
         # Get Allele legend
@@ -880,12 +905,13 @@ hapDendo <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = c("n
         haplo_db_clust_texture$ALLELES <- factor(haplo_db_clust_texture$ALLELES, levels = allele_palette$AlleleCol)
 
         hap_plot <- hap_plot + geom_segment(data = haplo_db_clust_texture, mapping = aes_string(x = "x", xend = "xend", y = "points", yend = "yend", color = "col"))  +
-            scale_color_manual(values = c("white"), name = "lK", drop = FALSE) + guides(color = guide_legend(override.aes = list(size = 1), order = 2), fill = "none") +
+            scale_color_manual(values = c("white"), name = "lK", drop = FALSE) +
+          guides(color = guide_legend(override.aes = list(size = 1), order = 2), fill = "none") +
             theme(legend.justification = "center", legend.key = element_rect(fill = "gray"))
 
-
+        hap_plot_tmp <- hap_plot + geom_abline(intercept = 11.6, slope = 1, show.legend = T)
         # Get lK legend
-        gt2 = ggplotGrob(hap_plot)
+        gt2 = ggplotGrob(hap_plot_tmp)
 
         leg1 = gtable::gtable_filter(gt1, "guide-box")
         leg2 = gtable::gtable_filter(gt2, "guide-box")
@@ -900,9 +926,10 @@ hapDendo <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = c("n
     } else legend <- get_legend(hap_plot)
 
     if (is.data.frame(non_reliable_alleles_text)) {
-      hap_plot <- hap_plot + geom_text(data = non_reliable_alleles_text, aes_string(label = "text", x = "GENE", y = "pos"), angle = 90, size = non_reliable_alleles_text$size)
+      non_reliable_alleles_text$GENE_LOC <-  sapply(non_reliable_alleles_text$GENE,function(i) {loc[as.character(i)]})
+      hap_plot <- hap_plot + geom_text(data = non_reliable_alleles_text, aes_string(label = "text", x = "GENE_LOC", y = "pos"), angle = 90, size = non_reliable_alleles_text$size)
     }
 
-    dend_hap <- plot_grid(hap_plot + theme(legend.position = "none"), plt_dendr, nrow = 1, align = "h", axis = "b", rel_widths = c(1, 0.25))
+    dend_hap <- plot_grid(hap_plot + theme(legend.position = "none"), plt_dendr, nrow = 1, align = "h", axis = "bt", rel_widths = c(1, 0.25))
     plot(plot_grid(dend_hap, legend, ncol = 1, rel_heights = c(1, 0.1)))
 }

@@ -39,8 +39,8 @@ Function accepts a \code{data.frame} in Change-O format (\url{https://changeo.re
 }
 }
 \examples{
-# Load example data and germlines
-data(sample_db)
+data(samples_db)
+
 # Infering V pooled deletions
 del_db <- deletionsByVpooled(samples_db)
 head(del_db)

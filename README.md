@@ -1,7 +1,5 @@
 # RAbHIT: R Antibody Haplotype Infrence Tool 
 
-![](./logo/logo_rabhit.png)
-
 Analysis of antibody repertoires by high throughput sequencing is of major importance in understanding adaptive immune responses. Our knowledge of variations in the genomic loci encoding antibody genes is incomplete, mostly due to technical difficulties in aligning short reads to these highly repetitive loci. The partial knowledge results in conflicting V-D-J gene assignments between different algorithms, and biased genotype and haplotype inference. Previous studies have shown that haplotypes can be inferred by taking advantage of IGHJ6 heterozygosity, observed in approximately one third of the population.
 
 **RAbHIT is a haplotype infrence tool based on a robust novel method for determining V-D-J haplotypes by adapting a Bayesian framework**. Our method extends haplotype inference to IGHD, IGHV, IGKJ, IGKV, and IGLV based analysis, thereby enabling inference of complex genetic events like deletions and copy number variations in the entire population. Based on this method we developed an R package, which implements the method on sequences from naive B-cells, for both the heavy and the light chains. The package offers a haplotype and single chromosome deletion inference based on an anchor gene.  The inferred haplotypes and deletion patterns may have clinical implications for genetic predispositions to diseases. 
@@ -31,29 +29,7 @@ Analysis of antibody repertoires by high throughput sequencing is of major impor
 
 For now, only the development version is available for installation.
 
-### Private repository installation ###
-
-To build from the source code, first install in shell:  
-
-```shell
-sudo apt-get install libssh2-1 libssh2-1-dev
-```
-
-Then install in R:
-
-```R
-install.packages(c("devtools","git2r"))
-```
-Lastly to install the latest version via devtools: 
-
-```R
-library(devtools)
-library(git2r)
-cred = cred_user_pass("username", "password") # replace username and password with your bitbucket credential
-install_git('https://username@bitbucket.org/yaarilab/rabhit.git',credentials = cred)
-```
-
-### Public repository installation ###
+### RAbHIT repository installation ###
 
 To build from the source code, first install the build dependencies:  
 
@@ -88,12 +64,12 @@ A complete documentation of RAbHIT is available at: https://yaarilab.bitbucket.i
 
 For help, questions, or suggestions, please contact:
 
-* [Moriah Gidoni](mailto:moriah.cohen@biu.ac.il)
 * [Ayelet Peres](mailto:peresay@biu.ac.il)
+* [Moriah Gidoni](mailto:moriah.cohen@biu.ac.il)
 * [Gur Yaari](mailto:gur.yaari@biu.ac.il)
 * [Issue tracker](https://bitbucket.org/yaarilab/rabhit/issues?status=new&status=open)
 
 
 ## Copying ##
 
-RAbHIT is free for use under the [GNU General Public License version 3 (GPLv3)](https://www.gnu.org/licenses/quick-guide-gplv3.html)
+RAbHIT is free for use under the [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/legalcode)

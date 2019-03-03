@@ -2,33 +2,11 @@
 
 #### Data ####
 
-#' Example of a IGH human naive b-cell data
+#' Example IGH human naive b-cell data from five
+#' individuals (see references). Overall, the data set includes 6 samples.
+#' A single individual has two samples (Individual I5),
+#' one is short read sequences from  BIOMED-2 protocol primeres for framework 1 region (The smaple is annotated I5_FR1).
 #'
-#' Example IGH human naive b-cell data from a single
-#' individual (see references).
-#'
-#' @name sample_db
-#' @docType data
-#' @format A \code{data.frame} in Change-O format (\url{https://changeo.readthedocs.io/en/version-0.4.1---airr-standards/standard.html}) containing the following columns:
-#' \itemize{
-#'   \item \code{'SUBJECT'}: subject names
-#'   \item \code{'V_CALL'}: V allele call(s) (in an IMGT format)
-#'   \item \code{'D_CALL'}: D allele call(s) (in an IMGT format, only for heavy chains)
-#'   \item \code{'J_CALL'}: J allele call(s) (in an IMGT format)
-#' }
-#'
-#'
-#' @references Gidoni, Moriah, \emph{et al}. Mosaic deletion patterns of the
-#' human antibody heavy chain gene locus as revealed by Bayesian haplotyping.
-#' \emph{bioRxiv}. (2018): 314476.
-#' @keywords data antibody AIRR NGS
-"sample_db"
-
-#' Example of IGH human naive b-cell data from multiple
-#' individuals
-#'
-#' Example IGH human naive b-cell data from multiple
-#' individuals (see references).
 #'
 #' @name samples_db
 #' @docType data
@@ -41,16 +19,16 @@
 #' }
 #'
 #'
-#' @references Gidoni, Moriah, \emph{et al}. Mosaic deletion patterns of the
-#' human antibody heavy chain gene locus as revealed by Bayesian haplotyping.
-#' \emph{bioRxiv}. (2018): 314476.
+#' @references Gidoni, Moriah, \emph{et al}. Mosaic deletion patterns of the human antibody heavy chain
+#' gene locus shown by Bayesian haplotyping.
+#' \emph{Nature Communications}. 10.1 (2019): 628.
 #' @keywords data antibody AIRR NGS
 "samples_db"
 
 #' Human IGHV germlines
 #'
 #' A \code{character} vector of all 342 human IGHV germline gene segment alleles
-#' in IMGT Gene-db release 2014-08-4.
+#' in IMGT Gene-db release 2018-12-4.
 #'
 #' @name HVGERM
 #' @docType data
@@ -67,7 +45,7 @@
 #' Human IGHD germlines
 #'
 #' A \code{character} vector of all 37 human IGHD germline gene segment alleles
-#' in IMGT Gene-db release 201408-4.
+#' in IMGT Gene-db release 2018-12-4.
 #'
 #' @name HDGERM
 #' @docType data
@@ -83,7 +61,7 @@
 #' Human IGHJ germlines
 #'
 #' A \code{character} vector of all 13 human IGHJ germline gene segment alleles
-#' in IMGT Gene-db release 201408-4.
+#' in IMGT Gene-db release 2018-12-4.
 #'
 #' @name HJGERM
 #' @docType data

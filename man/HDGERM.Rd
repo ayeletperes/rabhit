@@ -10,7 +10,7 @@ HDGERM
 }
 \description{
 A \code{character} vector of all 37 human IGHD germline gene segment alleles
-in IMGT Gene-db release 201408-4.
+in IMGT Gene-db release 2018-12-4.
 }
 \references{
 Xochelli \emph{et al}. (2014) Immunoglobulin heavy variable
