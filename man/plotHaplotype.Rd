@@ -11,9 +11,9 @@ plotHaplotype(hap_table, html_output = FALSE, gene_sort = c("name",
 \arguments{
 \item{hap_table}{haplotype summary table. See details.}
 
-\item{html_output}{If TRUE, a html5 interactive graph is outputed. Defualt is FALSE.}
+\item{html_output}{if TRUE, a html5 interactive graph is outputed. Defualt is FALSE.}
 
-\item{gene_sort}{If by 'name' the genes in the output are ordered lexicographically,
+\item{gene_sort}{if by 'name' the genes in the output are ordered lexicographically,
 if by 'position' only functional genes are used and are ordered by their chromosomal location. Default is 'position'.}
 
 \item{text_size}{the size of graph labels. Default is 14 (pts).}
@@ -25,10 +25,10 @@ if by 'position' only functional genes are used and are ordered by their chromos
 \item{chain}{the Ig chain: IGH,IGK,IGL. Default is IGH.}
 }
 \value{
-a haplotype visualization graph. If more than one subject is visualized, a pdf is created. If html_output is TRUE, a folder named html_output is created with individual graphs.
+A haplotype map visualization. If more than one subject is visualized, a pdf is created. If html_output is TRUE, a folder named html_output is created with individual graphs.
 }
 \description{
-\code{plotHaplotype} visualizes an inferred haplotype.
+The \code{plotHaplotype} functions visualizes an inferred haplotype.
 }
 \details{
 A \code{data.frame} in a haplotype format created by \code{createFullHaplotype} function.

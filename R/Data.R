@@ -2,10 +2,12 @@
 
 #### Data ####
 
-#' Example IGH human naive b-cell data from five
+#' Example IGH human naive b-cell repertiore
+#'
+#' A \code{data.frame} of example IGH human naive b-cell repertiore data from five
 #' individuals (see references). Overall, the data set includes 6 samples.
 #' A single individual has two samples (Individual I5),
-#' one is short read sequences from  BIOMED-2 protocol primeres for framework 1 region (The smaple is annotated I5_FR1).
+#' one is short read sequences from  BIOMED-2 protocol primers for framework 2 region (The sample is annotated I5_FR2).
 #'
 #'
 #' @name samples_db

@@ -13,7 +13,7 @@ hapDendo(hap_table, chain = c("IGH", "IGK", "IGL"),
 
 \item{chain}{the IG chain: IGH,IGK,IGL. Default is IGH.}
 
-\item{gene_sort}{If by 'name' the genes in the output are ordered lexicographically,
+\item{gene_sort}{if by 'name' the genes in the output are ordered lexicographically,
 if by 'position' only functional genes are used and are ordered by their chromosomal location. Default is 'position'.}
 
 \item{removeIGH}{if TRUE, 'IGH'\'IGK'\'IGL' prefix is removed from gene names. Defualt is TRUE.}
@@ -23,10 +23,10 @@ if by 'position' only functional genes are used and are ordered by their chromos
 \item{lk_cutoff}{the lK cutoff value to be considerd low for texture layer. Defualt is lK<1.}
 }
 \value{
-a single chromosome deletion visualization.
+A multitple samples visualization of the distances between haplotypes.
 }
 \description{
-\code{hapDendo} creates a graphical output of an hierarchical clustering based on the Jaccard distance between multiple individuals haplotypes.
+The \code{hapDendo} function generates a graphical output of an hierarchical clustering based on the Jaccard distance between multiple samples' haplotypes.
 }
 \details{
 A \code{data.frame} created by \code{createFullHaplotype}.

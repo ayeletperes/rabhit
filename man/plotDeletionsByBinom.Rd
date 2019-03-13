@@ -9,7 +9,7 @@ plotDeletionsByBinom(GENE.usage.df, chain = c("IGH", "IGK", "IGL"),
   "IGHD5-18"))
 }
 \arguments{
-\item{GENE.usage.df}{Double chromosome deletion summary table. See details.}
+\item{GENE.usage.df}{double chromosome deletion summary table. See details.}
 
 \item{chain}{the IG chain: IGH,IGK,IGL. Default is IGH.}
 
@@ -18,10 +18,10 @@ plotDeletionsByBinom(GENE.usage.df, chain = c("IGH", "IGK", "IGL"),
 \item{genes.dup}{a vector of IGH genes known to have a duplicated gene. Default is IGHD4-11 that his duplicate is IGHD4-4 and IGHD5-18 that his duplicate is IGHD5-5}
 }
 \value{
-a double chromosome deletion visualization.
+A double chromosome deletion visualization.
 }
 \description{
-\code{plotDeletionsByBinom} creates a graphical output of the double chromosome deletions in multiple samples.
+The \code{plotDeletionsByBinom} function generates a graphical output of the double chromosome deletions in multiple samples.
 }
 \details{
 A \code{data.frame} created by \code{binom_test_deletion}.

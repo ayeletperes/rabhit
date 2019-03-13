@@ -7,9 +7,8 @@
 createFullHaplotype(clip_db, toHap_col = c("V_CALL", "D_CALL"),
   hapBy_col = "J_CALL", hapBy = "IGHJ6", toHap_GERM,
   relative_freq_priors = TRUE, kThreshDel = 3, rmPseudo = TRUE,
-  deleted_genes = c(), nonRelaible_Vgenes = c(),
-  min_minor_fraction = 0.3, chain = c("IGH", "IGK", "IGL"),
-  supress_print = FALSE)
+  deleted_genes = c(), nonReliable_Vgenes = c(),
+  min_minor_fraction = 0.3, chain = c("IGH", "IGK", "IGL"))
 }
 \arguments{
 \item{clip_db}{a \code{data.frame} in Change-O format. See details.}
@@ -24,30 +23,47 @@ createFullHaplotype(clip_db, toHap_col = c("V_CALL", "D_CALL"),
 
 \item{relative_freq_priors}{if TRUE, the priors for Bayesian inference are estimated from the relative frequencies in clip_db. Else, priors are set to \code{c(0.5,0.5)}. Defualt is TRUE}
 
-\item{kThreshDel}{The minimum lK (log10 of the Bayes factor) to call a deletion. Defualt is 3.}
+\item{kThreshDel}{the minimum lK (log10 of the Bayes factor) to call a deletion. Defualt is 3.}
 
 \item{rmPseudo}{if TRUE non-functional and pseudo genes are removed. Defualt is TRUE.}
 
-\item{deleted_genes}{Double chromosome deletion summary table. A \code{data.frame} created by \code{deletionsByBinom}.}
+\item{deleted_genes}{double chromosome deletion summary table. A \code{data.frame} created by \code{deletionsByBinom}.}
 
-\item{nonRelaible_Vgenes}{A list of known non reliable genes assignmnet. A \code{list} created by \code{nonReliableVGenes}.}
+\item{nonReliable_Vgenes}{a list of known non reliable gene assignments. A \code{list} created by \code{nonReliableVGenes}.}
 
 \item{min_minor_fraction}{the minimum minor allele fraction to be used as an anchor gene. Default is 0.3}
 
 \item{chain}{the IG chain: IGH,IGK,IGL. Default is IGH.}
-
-\item{supress_print}{if TRUE the function does not print summary. Dufault FALSE}
 }
 \value{
-a haplotype summary table
+A \code{data.frame}, in which each row is the haplotype inference summary of a gene from the column selected in \code{toHap_col}.
+
+The output containes the following columns:
+\itemize{
+ \item \code{SUBJECT}:        the subject name.
+ \item \code{GENE}:           the gene name.
+ \item Anchor gene allele 1:  the haplotype inference for chromosome one. The column name is the anchor gene with the first allele.
+ \item Anchor gene allele 2:  the haplotype inference for chromosome two. The column name is the anchor gene with the second allele.
+ \item \code{ALLELES}:        allele calls for the gene.
+ \item \code{PRIORS_ROW}:     priors based on relative allele usage of the anchor gene.
+ \item \code{PRIORS_COL}:     priors based on relative allele usage of the inferred gene.
+ \item \code{COUNTS1}:        the appereance count on each chromosome of the first allele from \code{ALLELES}, the counts are seperated by a comma.
+ \item \code{K1}:             the Bayesian factor value for the first allele (from \code{ALLELES}) inference.
+ \item \code{COUNTS2}:        the appereance count on each chromosome of the second allele from \code{ALLELES}, the counts are seperated by a comma.
+ \item \code{K2}:             the Bayesian factor value for the second allele (from \code{ALLELES}) inference.
+ \item \code{COUNTS3}:        the appereance count on each chromosome of the third allele from \code{ALLELES}, the counts are seperated by a comma.
+ \item \code{K3}:             the Bayesian factor value for the third allele (from \code{ALLELES}) inference.
+ \item \code{COUNTS4}:        the appereance count on each chromosome of the fourth allele from \code{ALLELES}, the counts are seperated by a comma.
+ \item \code{K4}:             the Bayesian factor value for the fourth allele (from \code{ALLELES}) inference.
+}
 }
 \description{
-\code{createFullHaplotype} infers haplotype based on an anchor gene.
+The \code{createFullHaplotype} functions infers haplotype based on an anchor gene.
 }
 \details{
 Function accepts a \code{data.frame} in Change-O format (\url{https://changeo.readthedocs.io/en/version-0.4.1---airr-standards/standard.html}) containing the following columns:
 \itemize{
-  \item \code{'SUBJECT'}: subject names
+  \item \code{'SUBJECT'}: The subject name
   \item \code{'V_CALL'}: V allele call(s) (in an IMGT format)
   \item \code{'D_CALL'}: D allele call(s) (in an IMGT format, only for heavy chains)
   \item \code{'J_CALL'}: J allele call(s) (in an IMGT format)
@@ -61,8 +77,8 @@ data(samples_db, HVGERM, HDGERM)
 clip_db = samples_db[samples_db$SUBJECT=='I5', ]
 
 # Infering haplotype
-hap_df = createFullHaplotype(clip_db,toHap_col=c('V_CALL','D_CALL'),
+haplo_db = createFullHaplotype(clip_db,toHap_col=c('V_CALL','D_CALL'),
 hapBy_col='J_CALL',hapBy='IGHJ6',toHap_GERM=c(HVGERM,HDGERM))
-head(hap_df)
+
 
 }

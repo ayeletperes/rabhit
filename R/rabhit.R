@@ -4,11 +4,11 @@
 #'
 #' The \code{rabhit} package provides a robust novel method for determining
 #' antibody heavy and light chain haplotypes by adapting a Bayesian framework.
-#' The key functions in \code{rabhit}, broken down topic, are
+#' The key functions in \code{rabhit}, broken down by topic, are
 #' described below.
 #'
 #'
-#' @section  Haplotype and deletion infrence:
+#' @section  Haplotype and deletions inference:
 #' \code{rabhit} provides tools to infer haplotypes based on given anchor genes,
 #' deletion detection based on relative gene usage, pooling v genes, and a single anchor gene.
 #'
@@ -16,25 +16,28 @@
 #'   \item  \link{createFullHaplotype}:      Haplotypes inference and single chromosome deletions based on an anchor gene.
 #'   \item  \link{deletionsByVpooled}:       Single chromosomal deletion detection by pooling V genes.
 #'   \item  \link{deletionsByBinom}:         Single chromosomal deletion detection by pooling V genes.
-#'   \item  \link{nonReliableVGenes}:         Non reliable gene assignment detection.
+#'   \item  \link{nonReliableVGenes}:        Non reliable gene assignment detection.
 #' }
 #'
-#' @section  Haplotype visualization:
+#' @section  Haplotype and deletions visualization:
 #' Functions for visualization of the inferred haplotypes and deletions
 #'
 #' \itemize{
-#'   \item  \link{plotHaplotype}:            Haplotype inference plot.
-#'   \item  \link{deletionHeatmap}:          Single chromosome deletion heatmap.
-#'   \item  \link{hapHeatmap}:               Alleles per genes by chromosome heatmap.
-#'   \item  \link{plotDeletionsByVpooled}:   V pooled based single chromosome deletion heatmap.
-#'   \item  \link{plotDeletionsByBinom}:     Double chromosome deletion heatmap.
+#'   \item  \link{plotHaplotype}:            Haplotype inference map.
+#'   \item  \link{deletionHeatmap}:          Single chromosome deletions heatmap.
+#'   \item  \link{hapHeatmap}:               Chromosome comparison of multiple samples.
+#'   \item  \link{hapDendo}:                 Hierarchical clustering of multiple haplotypes based on Jaccard distance.
+#'   \item  \link{plotDeletionsByVpooled}:   V pooled based single chromosome deletions heatmap.
+#'   \item  \link{plotDeletionsByBinom}:     Double chromosome deletions heatmap.
 #' }
 #'
 #' @name     rabhit
 #' @docType  package
 #' @references
 #' \enumerate{
-#'   \item  our paper
+#'   \item  Gidoni, M., Snir, O., Peres, A., Polak, P., Lindeman, I., Mikocziova, I., . . . Yaari, G. (2019).
+#'   Mosaic deletion patterns of the human antibody heavy chain gene locus shown by Bayesian haplotyping.
+#'   Nature Communications, 10(1). doi:10.1038/s41467-019-08489-3
 #'  }
 #'
 #' @import   ggplot2
@@ -51,7 +54,7 @@
 #'                           filter filter_ select select_ arrange arrange_
 #'                           group_by group_by_ ungroup
 #'                           mutate mutate_ summarize summarize_
-#'                           mutate_at summarize_at count_
+#'                           mutate_at summarize_at count_ count
 #'                           rename rename_ transmute transmute_ pull ungroup row_number
 #' @importFrom  data.table   :=
 #' @importFrom  reshape2     melt

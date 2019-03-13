@@ -6,7 +6,7 @@
 \usage{
 deletionsByVpooled(clip_db, deletion_col = c("D_CALL"),
   count_thresh = 50, deleted_genes = "", min_minor_fraction = 0.3,
-  kThreshDel = 3, nonRelaible_Vgenes = c())
+  kThreshDel = 3, nonReliable_Vgenes = c())
 }
 \arguments{
 \item{clip_db}{a \code{data.frame} in Change-O format. See details.}
@@ -15,24 +15,33 @@ deletionsByVpooled(clip_db, deletion_col = c("D_CALL"),
 
 \item{count_thresh}{integer, the minimun number of sequences mapped to a specific V gene to be included in the V pooled inference.}
 
-\item{deleted_genes}{Double chromosome deletion summary table. A \code{data.frame} created by \code{deletionsByBinom}.}
+\item{deleted_genes}{double chromosome deletion summary table. A \code{data.frame} created by \code{deletionsByBinom}.}
 
 \item{min_minor_fraction}{the minimum minor allele fraction to be used as an anchor gene. Default is 0.3}
 
-\item{kThreshDel}{The minimum lK (log10 of the Bayes factor) to call a deletion. Defualt is 3.}
+\item{kThreshDel}{the minimum lK (log10 of the Bayes factor) to call a deletion. Defualt is 3.}
 
-\item{nonRelaible_Vgenes}{A list of known non reliable genes assignmnet. A \code{list} created by \code{nonReliableVGenes}.}
+\item{nonReliable_Vgenes}{a list of known non reliable gene assignments. A \code{list} created by \code{nonReliableVGenes}.}
 }
 \value{
-data frame with single chromosome gene deletions
+A \code{data.frame}, in which each row is the single chomosome deletion inference of a gene.
+
+The output containes the following columns:
+\itemize{
+ \item \code{SUBJECT}:       the subject name.
+ \item \code{GENE}:          the gene call
+ \item \code{DELETION}:      chromosome deletions inferred. Encoded 1 for deletion and 0 for no deletion.
+ \item \code{K}:             the Bayesian factor value for the deletion inference.
+ \item \code{COUNTS}:        the appereance count of the gene on each chromosome, the counts are seperated by a comma.
+}
 }
 \description{
-\code{deletionsByVpooled} detects D and J gene single chromosomal deletion.
+The \code{deletionsByVpooled} function inferes single chromosomal deletion for D and J gene .
 }
 \details{
-Function accepts a \code{data.frame} in Change-O format (\url{https://changeo.readthedocs.io/en/version-0.4.1---airr-standards/standard.html}) containing the following columns:
+The function accepts a \code{data.frame} in Change-O format (\url{https://changeo.readthedocs.io/en/version-0.4.1---airr-standards/standard.html}) containing the following columns:
 \itemize{
-  \item \code{'SUBJECT'}: subject names
+  \item \code{'SUBJECT'}: The subject name
   \item \code{'V_CALL'}: V allele call(s) (in an IMGT format)
   \item \code{'D_CALL'}: D allele call(s) (in an IMGT format, only for heavy chains)
   \item \code{'J_CALL'}: J allele call(s) (in an IMGT format)

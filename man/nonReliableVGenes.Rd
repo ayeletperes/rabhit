@@ -18,10 +18,10 @@ a nested list of non reliable genes for all subject.
 }
 \description{
 \code{nonReliableVGenes} Takes a \code{data.frame} in Change-O format  and detect non reliable IGHV genes. A non reliable gene is
-when the ratio of the multiple assignment with a gene is below the threshold.
+when the ratio of the multiple assignments with a gene is below the threshold.
 }
 \details{
-Function accepts a \code{data.frame} in Change-O format (\url{https://changeo.readthedocs.io/en/version-0.4.1---airr-standards/standard.html}) containing the following columns:
+The function accepts a \code{data.frame} in Change-O format (\url{https://changeo.readthedocs.io/en/version-0.4.1---airr-standards/standard.html}) containing the following columns:
 \itemize{
   \item \code{'SUBJECT'}: subject names
   \item \code{'V_CALL'}: V allele call(s) (in an IMGT format)

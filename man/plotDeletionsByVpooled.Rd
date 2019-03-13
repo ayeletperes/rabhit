@@ -7,15 +7,15 @@
 plotDeletionsByVpooled(del.df, K_ranges = c(3, 7))
 }
 \arguments{
-\item{del.df}{A \code{data.frame} created by \code{deletionsByVpooled}.}
+\item{del.df}{a \code{data.frame} created by \code{deletionsByVpooled}.}
 
 \item{K_ranges}{vector of one or two integers for log(K) certainty level thresholds}
 }
 \value{
-a single chromosome deletion visualization.
+A single chromosome deletion visualization.
 }
 \description{
-\code{plotDeletionsByVpooled} graphical output for single chromosome D or J gene deletions (for heavy chain only).
+The \code{plotDeletionsByVpooled} function generates a graphical output for single chromosome D or J gene deletions (for heavy chain only).
 }
 \details{
 A \code{data.frame} created by \code{deletionsByVpooled}.

@@ -3,10 +3,7 @@
 \docType{data}
 \name{samples_db}
 \alias{samples_db}
-\title{Example IGH human naive b-cell data from five
-individuals (see references). Overall, the data set includes 6 samples.
-A single individual has two samples (Individual I5),
-one is short read sequences from  BIOMED-2 protocol primeres for framework 1 region (The smaple is annotated I5_FR1).}
+\title{Example IGH human naive b-cell repertiore}
 \format{A \code{data.frame} in Change-O format (\url{https://changeo.readthedocs.io/en/version-0.4.1---airr-standards/standard.html}) containing the following columns:
 \itemize{
   \item \code{'SUBJECT'}: subject names
@@ -18,10 +15,10 @@ one is short read sequences from  BIOMED-2 protocol primeres for framework 1 reg
 samples_db
 }
 \description{
-Example IGH human naive b-cell data from five
+A \code{data.frame} of example IGH human naive b-cell repertiore data from five
 individuals (see references). Overall, the data set includes 6 samples.
 A single individual has two samples (Individual I5),
-one is short read sequences from  BIOMED-2 protocol primeres for framework 1 region (The smaple is annotated I5_FR1).
+one is short read sequences from  BIOMED-2 protocol primers for framework 2 region (The sample is annotated I5_FR2).
 }
 \references{
 Gidoni, Moriah, \emph{et al}. Mosaic deletion patterns of the human antibody heavy chain

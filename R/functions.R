@@ -7,15 +7,8 @@ NULL
 ##########################################################################
 #' Anchor gene haplotype inference
 #'
-#' \code{createFullHaplotype} infers haplotype based on an anchor gene.
+#' The \code{createFullHaplotype} functions infers haplotype based on an anchor gene.
 #'
-#' @details Function accepts a \code{data.frame} in Change-O format (\url{https://changeo.readthedocs.io/en/version-0.4.1---airr-standards/standard.html}) containing the following columns:
-#' \itemize{
-#'   \item \code{'SUBJECT'}: subject names
-#'   \item \code{'V_CALL'}: V allele call(s) (in an IMGT format)
-#'   \item \code{'D_CALL'}: D allele call(s) (in an IMGT format, only for heavy chains)
-#'   \item \code{'J_CALL'}: J allele call(s) (in an IMGT format)
-#' }
 #'
 #' @param    clip_db               a \code{data.frame} in Change-O format. See details.
 #' @param    toHap_col             a vector of column names for which a haplotype should be inferred. Default is V_CALL and D_CALL.
@@ -23,16 +16,43 @@ NULL
 #' @param    hapBy                 a string of the anchor gene name. Default is IGHJ6.
 #' @param    toHap_GERM            a vector of named nucleotide germline sequences matching the allele calls in \code{toHap_col} columns in clip_db.
 #' @param    relative_freq_priors  if TRUE, the priors for Bayesian inference are estimated from the relative frequencies in clip_db. Else, priors are set to \code{c(0.5,0.5)}. Defualt is TRUE
-#' @param    kThreshDel            The minimum lK (log10 of the Bayes factor) to call a deletion. Defualt is 3.
+#' @param    kThreshDel            the minimum lK (log10 of the Bayes factor) to call a deletion. Defualt is 3.
 #' @param    rmPseudo              if TRUE non-functional and pseudo genes are removed. Defualt is TRUE.
-#' @param    deleted_genes         Double chromosome deletion summary table. A \code{data.frame} created by \code{deletionsByBinom}.
-#' @param    nonRelaible_Vgenes     A list of known non reliable genes assignmnet. A \code{list} created by \code{nonReliableVGenes}.
+#' @param    deleted_genes         double chromosome deletion summary table. A \code{data.frame} created by \code{deletionsByBinom}.
+#' @param    nonReliable_Vgenes    a list of known non reliable gene assignments. A \code{list} created by \code{nonReliableVGenes}.
 #' @param    min_minor_fraction    the minimum minor allele fraction to be used as an anchor gene. Default is 0.3
 #' @param    chain                 the IG chain: IGH,IGK,IGL. Default is IGH.
-#' @param    supress_print         if TRUE the function does not print summary. Dufault FALSE
 #'
-#' @return   a haplotype summary table
+#' @return
+#' A \code{data.frame}, in which each row is the haplotype inference summary of a gene from the column selected in \code{toHap_col}.
 #'
+#'The output containes the following columns:
+#' \itemize{
+#'  \item \code{SUBJECT}:        the subject name.
+#'  \item \code{GENE}:           the gene name.
+#'  \item Anchor gene allele 1:  the haplotype inference for chromosome one. The column name is the anchor gene with the first allele.
+#'  \item Anchor gene allele 2:  the haplotype inference for chromosome two. The column name is the anchor gene with the second allele.
+#'  \item \code{ALLELES}:        allele calls for the gene.
+#'  \item \code{PRIORS_ROW}:     priors based on relative allele usage of the anchor gene.
+#'  \item \code{PRIORS_COL}:     priors based on relative allele usage of the inferred gene.
+#'  \item \code{COUNTS1}:        the appereance count on each chromosome of the first allele from \code{ALLELES}, the counts are seperated by a comma.
+#'  \item \code{K1}:             the Bayesian factor value for the first allele (from \code{ALLELES}) inference.
+#'  \item \code{COUNTS2}:        the appereance count on each chromosome of the second allele from \code{ALLELES}, the counts are seperated by a comma.
+#'  \item \code{K2}:             the Bayesian factor value for the second allele (from \code{ALLELES}) inference.
+#'  \item \code{COUNTS3}:        the appereance count on each chromosome of the third allele from \code{ALLELES}, the counts are seperated by a comma.
+#'  \item \code{K3}:             the Bayesian factor value for the third allele (from \code{ALLELES}) inference.
+#'  \item \code{COUNTS4}:        the appereance count on each chromosome of the fourth allele from \code{ALLELES}, the counts are seperated by a comma.
+#'  \item \code{K4}:             the Bayesian factor value for the fourth allele (from \code{ALLELES}) inference.
+#'}
+#'
+#' @details
+#' Function accepts a \code{data.frame} in Change-O format (\url{https://changeo.readthedocs.io/en/version-0.4.1---airr-standards/standard.html}) containing the following columns:
+#' \itemize{
+#'   \item \code{'SUBJECT'}: The subject name
+#'   \item \code{'V_CALL'}: V allele call(s) (in an IMGT format)
+#'   \item \code{'D_CALL'}: D allele call(s) (in an IMGT format, only for heavy chains)
+#'   \item \code{'J_CALL'}: J allele call(s) (in an IMGT format)
+#' }
 #'
 #' @examples
 #' # Load example data and germlines
@@ -42,14 +62,14 @@ NULL
 #' clip_db = samples_db[samples_db$SUBJECT=='I5', ]
 #'
 #' # Infering haplotype
-#' hap_df = createFullHaplotype(clip_db,toHap_col=c('V_CALL','D_CALL'),
+#' haplo_db = createFullHaplotype(clip_db,toHap_col=c('V_CALL','D_CALL'),
 #' hapBy_col='J_CALL',hapBy='IGHJ6',toHap_GERM=c(HVGERM,HDGERM))
-#' head(hap_df)
+#'
 #'
 #' @export
 
 createFullHaplotype <- function(clip_db, toHap_col = c("V_CALL", "D_CALL"), hapBy_col = "J_CALL", hapBy = "IGHJ6", toHap_GERM, relative_freq_priors = TRUE,
-    kThreshDel = 3, rmPseudo = TRUE, deleted_genes = c(), nonRelaible_Vgenes = c(), min_minor_fraction = 0.3, chain = c("IGH", "IGK", "IGL"), supress_print = FALSE) {
+    kThreshDel = 3, rmPseudo = TRUE, deleted_genes = c(), nonReliable_Vgenes = c(), min_minor_fraction = 0.3, chain = c("IGH", "IGK", "IGL")) {
 
     # Check if germline was inputed
     if (missing(toHap_GERM))
@@ -68,31 +88,19 @@ createFullHaplotype <- function(clip_db, toHap_col = c("V_CALL", "D_CALL"), hapB
     for (sample_name in unique(clip_db$SUBJECT)) {
         clip_db_sub = clip_db[clip_db$SUBJECT == sample_name, ]
 
-        if (is.list(nonRelaible_Vgenes))
-            nonRelaible_Vgenes_vec <- nonRelaible_Vgenes[[sample_name]] else nonRelaible_Vgenes_vec <- nonRelaible_Vgenes
+        if (is.list(nonReliable_Vgenes))
+            nonReliable_Vgenes_vec <- nonReliable_Vgenes[[sample_name]] else nonReliable_Vgenes_vec <- nonReliable_Vgenes
 
 
         if (is.data.frame(deleted_genes)) {
             deleted_genes_vec <- deleted_genes %>% filter(.data$SUBJECT == sample_name, .data$DELETION == "Deletion") %>% select(.data$GENE) %>% pull()
-            if (is.null(nonRelaible_Vgenes_vec))
-                nonRelaible_Vgenes_vec <- deleted_genes %>% filter(.data$SUBJECT == sample_name, .data$DELETION == "Non reliable") %>% select(.data$GENE) %>% pull()
+            if (is.null(nonReliable_Vgenes_vec))
+                nonReliable_Vgenes_vec <- deleted_genes %>% filter(.data$SUBJECT == sample_name, .data$DELETION == "Non reliable") %>% select(.data$GENE) %>% pull()
         } else deleted_genes_vec <- c()
 
 
-
-
-        # Number of iniial sequences
-        #nrows1 <- nrow(clip_db_sub)
-
         ### Check if haplotype can be infered by the specific gene in the data set.  Only relevant genes with one assignment
         clip_db_sub <- clip_db_sub[!grepl(',',clip_db_sub[,hapBy_col]), ]
-
-
-        # Number of post multiple assignment reduction sequences
-        #nrows2 <- nrow(clip_db_sub)
-
-        #if (!supress_print)
-        #    cat(paste0("In sample ", sample_name, ", ", nrows1 - nrows2, " sequnces were removed due to multiple assignments,\n ", nrows2, " sequences left.\n"))
 
         hapBy_alleles <- sort(unique(grep(pattern = paste0(hapBy, "*"), x = clip_db_sub[, paste(hapBy_col)], value = T, fixed = T)))
 
@@ -139,13 +147,12 @@ createFullHaplotype <- function(clip_db, toHap_col = c("V_CALL", "D_CALL"), hapB
         GENES.df.num <- c()
         GENES.df.num_ToPlot <- c()
 
-        col_names <- c("SUBJECT", "GENE", "MinorFraction",
-                                    "DoubleAllele", gsub(pattern = "*", "_", hapBy_alleles, fixed = T),
+        col_names <- c("SUBJECT", "GENE", gsub(pattern = "*", "_", hapBy_alleles, fixed = T),
                                     'ALLELES', 'PRIORS_ROW', 'PRIORS_COL',
-                                    'COUNTS1', 'MP1', 'K1', 'ND1',
-                                    'COUNTS2', 'MP2', 'K2', 'ND2',
-                                    'COUNTS3', 'MP3', 'K3', 'ND3',
-                                    'COUNTS4', 'MP4', 'K4', 'ND4')
+                                    'COUNTS1', 'K1',
+                                    'COUNTS2', 'K2',
+                                    'COUNTS3', 'K3',
+                                    'COUNTS4', 'K4')
         for (G in intersect(GENES, GENES.ref)) {
 
             toHap_col_tmp <- toHap_col[grep(substr(G,4,4),toHap_col)]
@@ -179,12 +186,12 @@ createFullHaplotype <- function(clip_db, toHap_col = c("V_CALL", "D_CALL"), hapB
 
 
 
-            if(G %in% deleted_genes_vec || G %in% nonRelaible_Vgenes_vec){
+            if(G %in% deleted_genes_vec || G %in% nonReliable_Vgenes_vec){
 
-              relFreqDf.tmp <- data.frame(matrix(c(sample_name, G, format(relFreq, digits = 3), NA,
-                                       rep(ifelse(G %in% nonRelaible_Vgenes_vec, 'NR',
+              relFreqDf.tmp <- data.frame(matrix(c(sample_name, G,
+                                       rep(ifelse(G %in% nonReliable_Vgenes_vec, 'NR',
                                               ifelse(G %in% deleted_genes_vec, 'Del')), 2),
-                                       rep(NA, 19)),nrow = 1),stringsAsFactors = F)
+                                       rep(NA, 11)),nrow = 1),stringsAsFactors = F)
               names(relFreqDf.tmp) <- col_names
               relFreqDf.tmp <- asNum(relFreqDf.tmp)
               GENES.df.num <- rbind(GENES.df.num, relFreqDf.tmp)
@@ -212,14 +219,14 @@ createFullHaplotype <- function(clip_db, toHap_col = c("V_CALL", "D_CALL"), hapB
 
                 hap.df <- createHaplotypeTable(tmp, HapByPriors = hapBy_priors, toHapByCol = TRUE, toHapPriors = toHap_priors)
 
-                relFreqDf.tmp <- data.frame(c(sample_name, G, format(relFreq, digits = 3), sum(grepl(",", hap.df[1, 2:3], fixed = T)), hap.df[, 2:length(hap.df)]),
+                relFreqDf.tmp <- data.frame(c(sample_name, G, hap.df[, 2:length(hap.df)]),
                   stringsAsFactors = F)
                 relFreqDf.tmp <- asNum(relFreqDf.tmp)
                 names(relFreqDf.tmp) <- col_names
                 GENES.df.num <- rbind(GENES.df.num, relFreqDf.tmp)
             } else {
                 hap.df <- createHaplotypeTable(tmp)
-                relFreqDf.tmp <- data.frame(c(sample_name, G, format(relFreq, digits = 3), sum(grepl(",", hap.df[1, 2:3], fixed = T)), hap.df[, 2:length(hap.df)]),
+                relFreqDf.tmp <- data.frame(c(sample_name, G, hap.df[, 2:length(hap.df)]),
                                             stringsAsFactors = F)
                 relFreqDf.tmp <- asNum(relFreqDf.tmp)
                 names(relFreqDf.tmp) <- col_names
@@ -251,13 +258,13 @@ createFullHaplotype <- function(clip_db, toHap_col = c("V_CALL", "D_CALL"), hapB
             m <- length(GENES.MISSING)
 
             sub.df <- data.frame(do.call(rbind, lapply(1:m, function(x) {
-                c(sample_name, NA, 0, 0, "Unk", "Unk", rep(NA, ncol(GENES.df.num) - 6))
+                c(sample_name, NA, "Unk", "Unk", rep(NA, ncol(GENES.df.num) - 4))
             })))
             names(sub.df) <- names(GENES.df.num)
 
             sub.df$GENE <- GENES.MISSING
 
-            sub.df[,gsub("*", "_", hapBy_alleles, fixed = T)] <- matrix(rep(ifelse(GENES.MISSING %in% nonRelaible_Vgenes_vec,'NR',ifelse(GENES.MISSING %in% deleted_genes_vec, 'Del', 'Unk')), 2), ncol=2)
+            sub.df[,gsub("*", "_", hapBy_alleles, fixed = T)] <- matrix(rep(ifelse(GENES.MISSING %in% nonReliable_Vgenes_vec,'NR',ifelse(GENES.MISSING %in% deleted_genes_vec, 'Del', 'Unk')), 2), ncol=2)
 
             GENES.df.num <- rbind(GENES.df.num, sub.df)
         }
@@ -272,21 +279,33 @@ createFullHaplotype <- function(clip_db, toHap_col = c("V_CALL", "D_CALL"), hapB
 ##########################################################################
 #' Double chromosome deletion by relative gene usage
 #'
-#' \code{deletionsByBinom} detects chromosomal deletion.
+#' The \code{deletionsByBinom} function inferes double chromosome deletion events by relative gene usage.
 #'
-#' @details Function accepts a \code{data.frame} in Change-O format (\url{https://changeo.readthedocs.io/en/version-0.4.1---airr-standards/standard.html}) containing the following columns:
+#'
+#' @param    clip_db               a \code{data.frame} in Change-O format. See details.
+#' @param    chain                 the IG chain: IGH,IGK,IGL. Default is IGH.
+#' @param    nonReliable_Vgenes    a list of known non reliable gene assignments. A \code{list} created by \code{nonReliableVGenes}.
+#'
+#' @return  A \code{data.frame}, in which each row is the double chomosome deletion inference of a gene.
+#'
+#'The output containes the following columns:
 #' \itemize{
-#'   \item \code{'SUBJECT'}: subject names
+#'  \item \code{SUBJECT}:       the subject name.
+#'  \item \code{GENE}:          the gene call
+#'  \item \code{FRAC}:          the relative gene usage of the gene
+#'  \item \code{CUTOFF}:        the the cutoff of for the binomial test
+#'  \item \code{PVAL}:          the p-value of the binomial test
+#'  \item \code{DELETION}:      if a double chromosome deletion event of a gene occured.
+#'}
+#'
+#' @details
+#' The function accepts a \code{data.frame} in Change-O format (\url{https://changeo.readthedocs.io/en/version-0.4.1---airr-standards/standard.html}) containing the following columns:
+#' \itemize{
+#'   \item \code{'SUBJECT'}: The subject name
 #'   \item \code{'V_CALL'}: V allele call(s) (in an IMGT format)
 #'   \item \code{'D_CALL'}: D allele call(s) (in an IMGT format, only for heavy chains)
 #'   \item \code{'J_CALL'}: J allele call(s) (in an IMGT format)
 #' }
-#'
-#' @param    clip_db               a \code{data.frame} in Change-O format. See details.
-#' @param    chain                 the IG chain: IGH,IGK,IGL. Default is IGH.
-#' @param    nonRelaible_Vgenes     A list of known non reliable genes assignmnet. A \code{list} created by \code{nonReliableVGenes}.
-#' @return  data frame with double chromosome gene deletions
-#'
 #'
 #' @examples
 #' # Load example data and germlines
@@ -300,7 +319,7 @@ createFullHaplotype <- function(clip_db, toHap_col = c("V_CALL", "D_CALL"), hapB
 #'
 #' @export
 
-deletionsByBinom <- function(clip_db, chain = c("IGH", "IGK", "IGL"), nonRelaible_Vgenes = c()) {
+deletionsByBinom <- function(clip_db, chain = c("IGH", "IGK", "IGL"), nonReliable_Vgenes = c()) {
     if (missing(chain)) {
         chain = "IGH"
     }
@@ -411,16 +430,16 @@ deletionsByBinom <- function(clip_db, chain = c("IGH", "IGK", "IGL"), nonRelaibl
     GENE.loc.V <- GENE.loc[[chain]][grep("V", GENE.loc[[chain]])]
     GENE.usage.df.V <- binomTestDeletion(GENE.usage.df.V, cutoff = 0.001, p.val.cutoff = 0.01, chain = chain, GENE.loc.V)
 
-    if (is.list(nonRelaible_Vgenes)) {
-        for (sample_name in names(nonRelaible_Vgenes)) {
+    if (is.list(nonReliable_Vgenes)) {
+        for (sample_name in names(nonReliable_Vgenes)) {
             levels(GENE.usage.df.V$col) <- c(levels(GENE.usage.df.V$col), "Non reliable")
-            idx <- which(GENE.usage.df.V$GENE[GENE.usage.df.V$SUBJECT == sample_name] %in% nonRelaible_Vgenes[[sample_name]])
+            idx <- which(GENE.usage.df.V$GENE[GENE.usage.df.V$SUBJECT == sample_name] %in% nonReliable_Vgenes[[sample_name]])
             GENE.usage.df.V$col[GENE.usage.df.V$SUBJECT == sample_name][idx] <- "Non reliable"
         }
     } else {
-        if (!is.null(nonRelaible_Vgenes)) {
+        if (!is.null(nonReliable_Vgenes)) {
             levels(GENE.usage.df.V$col) <- c(levels(GENE.usage.df.V$col), "Non reliable")
-            idx <- which(GENE.usage.df.V$GENE[GENE.usage.df.V$SUBJECT == sample_name] %in% nonRelaible_Vgenes)
+            idx <- which(GENE.usage.df.V$GENE[GENE.usage.df.V$SUBJECT == sample_name] %in% nonReliable_Vgenes)
             GENE.usage.df.V$col[GENE.usage.df.V$SUBJECT == sample_name][idx] <- "Non reliable"
         }
     }
@@ -464,26 +483,38 @@ deletionsByBinom <- function(clip_db, chain = c("IGH", "IGK", "IGL"), nonRelaibl
 ##########################################################################
 #' Single chromosomal D or J gene deletions inferred by the V pooled method
 #'
-#' \code{deletionsByVpooled} detects D and J gene single chromosomal deletion.
+#' The \code{deletionsByVpooled} function inferes single chromosomal deletion for D and J gene .
 #'
-#' @details Function accepts a \code{data.frame} in Change-O format (\url{https://changeo.readthedocs.io/en/version-0.4.1---airr-standards/standard.html}) containing the following columns:
-#' \itemize{
-#'   \item \code{'SUBJECT'}: subject names
-#'   \item \code{'V_CALL'}: V allele call(s) (in an IMGT format)
-#'   \item \code{'D_CALL'}: D allele call(s) (in an IMGT format, only for heavy chains)
-#'   \item \code{'J_CALL'}: J allele call(s) (in an IMGT format)
-#' }
 #'
 #' @param  clip_db                  a \code{data.frame} in Change-O format. See details.
 #' @param  deletion_col             a vector of column names for which single chromosome deletions should be inferred. Default is J_CALL and D_CALL.
 #' @param  count_thresh             integer, the minimun number of sequences mapped to a specific V gene to be included in the V pooled inference.
-#' @param  deleted_genes            Double chromosome deletion summary table. A \code{data.frame} created by \code{deletionsByBinom}.
+#' @param  deleted_genes            double chromosome deletion summary table. A \code{data.frame} created by \code{deletionsByBinom}.
 #' @param  min_minor_fraction       the minimum minor allele fraction to be used as an anchor gene. Default is 0.3
 #'
-#' @param  kThreshDel               The minimum lK (log10 of the Bayes factor) to call a deletion. Defualt is 3.
-#' @param  nonRelaible_Vgenes       A list of known non reliable genes assignmnet. A \code{list} created by \code{nonReliableVGenes}.
+#' @param  kThreshDel               the minimum lK (log10 of the Bayes factor) to call a deletion. Defualt is 3.
+#' @param  nonReliable_Vgenes       a list of known non reliable gene assignments. A \code{list} created by \code{nonReliableVGenes}.
 #'
-#' @return  data frame with single chromosome gene deletions
+#' @return
+#' A \code{data.frame}, in which each row is the single chomosome deletion inference of a gene.
+#'
+#'The output containes the following columns:
+#' \itemize{
+#'  \item \code{SUBJECT}:       the subject name.
+#'  \item \code{GENE}:          the gene call
+#'  \item \code{DELETION}:      chromosome deletions inferred. Encoded 1 for deletion and 0 for no deletion.
+#'  \item \code{K}:             the Bayesian factor value for the deletion inference.
+#'  \item \code{COUNTS}:        the appereance count of the gene on each chromosome, the counts are seperated by a comma.
+#'}
+#'
+#' @details
+#' The function accepts a \code{data.frame} in Change-O format (\url{https://changeo.readthedocs.io/en/version-0.4.1---airr-standards/standard.html}) containing the following columns:
+#' \itemize{
+#'   \item \code{'SUBJECT'}: The subject name
+#'   \item \code{'V_CALL'}: V allele call(s) (in an IMGT format)
+#'   \item \code{'D_CALL'}: D allele call(s) (in an IMGT format, only for heavy chains)
+#'   \item \code{'J_CALL'}: J allele call(s) (in an IMGT format)
+#' }
 #'
 #' @examples
 #' data(samples_db)
@@ -494,7 +525,7 @@ deletionsByBinom <- function(clip_db, chain = c("IGH", "IGK", "IGL"), nonRelaibl
 #' @export
 # not for light chain
 deletionsByVpooled <- function(clip_db, deletion_col = c("D_CALL"), count_thresh = 50, deleted_genes = "", min_minor_fraction = 0.3,
-    kThreshDel = 3, nonRelaible_Vgenes = c()) {
+    kThreshDel = 3, nonReliable_Vgenes = c()) {
 
 
     if (!("SUBJECT" %in% names(clip_db))) {
@@ -508,25 +539,21 @@ deletionsByVpooled <- function(clip_db, deletion_col = c("D_CALL"), count_thresh
         if (is.data.frame(deleted_genes))
             deleted_genes_df <- deleted_genes %>% filter(.data$SUBJECT == sample_name, grepl("IGHD|IGHJ", .data$GENE)) else deleted_genes_df <- c()
 
-        if (is.list(nonRelaible_Vgenes))
-            nonRelaible_Vgenes_vec <- nonRelaible_Vgenes[[sample_name]] else nonRelaible_Vgenes_vec <- nonRelaible_Vgenes
+        ### remove non reliable V genes prior to pooling
+        if (is.list(nonReliable_Vgenes))
+            nonReliable_Vgenes_vec <- nonReliable_Vgenes[[sample_name]] else nonReliable_Vgenes_vec <- nonReliable_Vgenes
 
-        ### Single V gene assignment Number of iniial sequences
-        nrows1 <- nrow(clip_db_sub)
         ### Only relevant genes with one assignment
         IND <- apply(clip_db_sub, 1, function(x) {
             sum(grep(",", x[c("V_CALL", deletion_col)], invert = F))
         })
-        # IND <- names(IND[IND==0])
+
         clip_db_sub <- clip_db_sub[IND == 0, ]
-        # Number of post multiple assignment reduction sequences
-        nrows2 <- nrow(clip_db_sub)
-        print(paste0(nrows1 - nrows2, " sequnces were removed due to multiple assignments, ", nrows2, " sequences left"))
 
         ### Test for heterozygous V genes
 
         VGENES <- unique(sapply(strsplit(clip_db_sub$V_CALL, split = "*", fixed = T), "[", 1))
-        VGENES <- VGENES[!VGENES %in% nonRelaible_Vgenes_vec]
+        VGENES <- VGENES[!VGENES %in% nonReliable_Vgenes_vec]
         GENES <- unlist(sapply(VGENES, function(x) {
             gene_counts <- table(grep(clip_db_sub$V_CALL, pattern = paste0(x, "*"), fixed = T, value = T))
             if (length(gene_counts) == 2 & (min(gene_counts)/sum(gene_counts)) >= min_minor_fraction & sum(gene_counts) >= count_thresh) {
@@ -542,14 +569,15 @@ deletionsByVpooled <- function(clip_db, deletion_col = c("D_CALL"), count_thresh
                 HDGERM else HJGERM
             for (g in GENES) {
 
-                full.hap <- createFullHaplotype(clip_db_sub, toHap_col = deletion_col, hapBy_col = "V_CALL", hapBy = g, toHap_GERM = toHapGerm, relative_freq_priors = T,
-                  kThreshDel = kThreshDel, rmPseudo = T, deleted_genes = deleted_genes_df, chain = "IGH", supress_print = T)
+                full.hap <- createFullHaplotype(clip_db_sub, toHap_col = deletion_col, hapBy_col = "V_CALL", hapBy = g,
+                                                toHap_GERM = toHapGerm, relative_freq_priors = T,
+                  kThreshDel = kThreshDel, rmPseudo = T, deleted_genes = deleted_genes_df, chain = "IGH")
 
-                full.hap$V_ALLELE_1 <- strsplit(names(full.hap)[5], "_")[[1]][2]
-                full.hap$V_ALLELE_2 <- strsplit(names(full.hap)[6], "_")[[1]][2]
+                full.hap$V_ALLELE_1 <- strsplit(names(full.hap)[3], "_")[[1]][2]
+                full.hap$V_ALLELE_2 <- strsplit(names(full.hap)[4], "_")[[1]][2]
 
-                names(full.hap)[5] <- paste0(g, "_", 1)
-                names(full.hap)[6] <- paste0(g, "_", 2)
+                names(full.hap)[3] <- paste0(g, "_", 1)
+                names(full.hap)[4] <- paste0(g, "_", 2)
                 V.df[[g]] <- rbind(V.df[[g]], full.hap)
 
             }
@@ -557,41 +585,40 @@ deletionsByVpooled <- function(clip_db, deletion_col = c("D_CALL"), count_thresh
             stop("No heterozygous V genes found for deletion detection, try changing the parameters")
         }
 
-        df.compare <- c()
-
         GENES <- unlist(sapply(names(V.df), function(g) {
             if (sample_name %in% V.df[[g]]$SUBJECT) {
                 return(g)
             }
         }))
+
         if (!is.null(GENES)) {
             d.del.df <- c()
 
             for (g in GENES) {
-                tmp <- V.df[[g]] %>% filter(.data$SUBJECT == sample_name, grepl("IGHD", .data$GENE))
+                tmp <- V.df[[g]] %>% filter(.data$SUBJECT == sample_name, grepl("IGHD|IGHJ", .data$GENE))
                 tmp$DELETION <- apply(tmp, 1, function(x) {
-                  if (x[5] == "Unk" & x[6] != "Unk" | x[5] != "Unk" & x[6] == "Unk") {
+                  if (x[3] == "Unk" & x[4] != "Unk" | x[3] != "Unk" & x[4] == "Unk") {
                     return(1)
                   }
-                  if (x[5] == "Del" & x[6] != "Del" | x[5] != "Del" & x[6] == "Del") {
+                  if (x[3] == "Del" & x[4] != "Del" | x[3] != "Del" & x[4] == "Del") {
                     return(2)
                   }
-                  if (x[5] == "Unk" & x[6] == "Unk") {
+                  if (x[3] == "Unk" & x[4] == "Unk") {
                     return(3)
                   }
-                  if (x[5] == "Del" & x[6] == "Del") {
+                  if (x[3] == "Del" & x[4] == "Del") {
                     return(4)
                   }
                   return(0)
                 })
-                tmp$K1_NEW <- sapply(1:nrow(tmp), function(i) {
+                tmp$K <- sapply(1:nrow(tmp), function(i) {
                   if (!is.na(tmp$COUNTS2[i])) {
-                    return(max(tmp$K1[i], tmp$K2[i]))
+                    return(max(tmp$K1[i], tmp$K2[i], na.rm = T))
                   } else {
                     return(tmp$K1[i])
                   }
                 })
-                tmp$COUNTS1_NEW <- sapply(1:nrow(tmp), function(i) {
+                tmp$COUNTS <- sapply(1:nrow(tmp), function(i) {
                   if (!is.na(tmp$COUNTS2[i])) {
                     cnt1 <- as.numeric(strsplit(as.character(tmp$COUNTS1[i]), ",")[[1]])
                     cnt2 <- as.numeric(strsplit(as.character(tmp$COUNTS2[i]), ",")[[1]])
@@ -602,7 +629,7 @@ deletionsByVpooled <- function(clip_db, deletion_col = c("D_CALL"), count_thresh
                   }
                 })
 
-                tmp <- tmp %>% select(.data$GENE, .data$DELETION, .data$K1_NEW, .data$COUNTS1_NEW)
+                tmp <- tmp %>% mutate(SUBJECT = sample_name) %>% select(.data$SUBJECT, .data$GENE, .data$DELETION, .data$K, .data$COUNTS)
                 tmp$V_GENE <- rep(g, nrow(tmp))
                 tmp$DELETION2 <- ifelse(tmp$DELETION == 0, 0, 1)
                 d.del.df <- rbind(d.del.df, tmp)
@@ -611,12 +638,12 @@ deletionsByVpooled <- function(clip_db, deletion_col = c("D_CALL"), count_thresh
 
 
             tmp.df <- do.call("rbind", lapply(unique(d.del.df$GENE), function(x) {
-                x.df <- d.del.df %>% filter(.data$GENE == x) %>% mutate(minCOUNT = (sapply(strsplit(as.character(.data$COUNTS1_NEW), ","), function(x) {
+                x.df <- d.del.df %>% filter(.data$GENE == x) %>% mutate(minCOUNT = (sapply(strsplit(as.character(.data$COUNTS), ","), function(x) {
                   min(as.numeric(x))
-                })), maxCOUNT = (sapply(strsplit(as.character(.data$COUNTS1_NEW), ","), function(x) {
+                })), maxCOUNT = (sapply(strsplit(as.character(.data$COUNTS), ","), function(x) {
                   max(as.numeric(x))
                 })))
-                x.df <- x.df %>% filter(!is.na(.data$K1_NEW))
+                x.df <- x.df %>% filter(!is.na(.data$K))
                 if (nrow(x.df) != 0) {
 
                   x.df <- x.df %>% group_by(.data$DELETION2) %>% mutate(minCOUNTsum = sum(.data$minCOUNT), maxCOUNTsum = sum(.data$maxCOUNT)) %>% slice(1) %>% mutate(DELETION3 = which.max(get_probabilites_with_priors(c(.data$maxCOUNTsum, .data$minCOUNTsum))[1:2]),
@@ -627,9 +654,9 @@ deletionsByVpooled <- function(clip_db, deletion_col = c("D_CALL"), count_thresh
             }))
 
 
-            tmp.df.slct <- tmp.df %>% mutate(COUNTS2 = paste0(.data$minCOUNTsum, ",", .data$maxCOUNTsum)) %>% select(.data$GENE, .data$DELETION2, .data$DELETION3, .data$K2, .data$COUNTS2, .data$V_GENE)
+            tmp.df.slct <- tmp.df %>% mutate(COUNTS2 = paste0(.data$minCOUNTsum, ",", .data$maxCOUNTsum)) %>% select(.data$SUBJECT, .data$GENE, .data$DELETION2, .data$DELETION3, .data$K2, .data$COUNTS2, .data$V_GENE)
             tmp.df.slct$V_GENE <- ifelse(tmp.df.slct$DELETION2 != 0, "POOLED_UNK", "POOLED_KNOWN")
-            tmp.df.slct <- tmp.df.slct[, -1]
+            tmp.df.slct <- tmp.df.slct[names(tmp.df.slct) != "DELETION2"]
             d.del.df <- d.del.df[names(d.del.df) != "DELETION2"]
             names(tmp.df.slct) <- names(d.del.df)
             tmp.df.slct$DELETION <- ifelse(tmp.df.slct$DELETION == 2, 0, 1)
@@ -637,15 +664,13 @@ deletionsByVpooled <- function(clip_db, deletion_col = c("D_CALL"), count_thresh
             tmp.df.slct.all <- tmp.df %>% ungroup() %>% group_by(.data$GENE) %>% mutate(minCOUNTsum = sum(.data$minCOUNTsum), maxCOUNTsum = sum(.data$maxCOUNTsum)) %>% slice(1) %>%
                 mutate(DELETION3 = which.max(get_probabilites_with_priors(c(.data$maxCOUNTsum, .data$minCOUNTsum))[1:2]), K2 = max(get_probabilites_with_priors(c(.data$maxCOUNTsum,
                 .data$minCOUNTsum))[1:2]) - min(get_probabilites_with_priors(c(.data$maxCOUNTsum, .data$minCOUNTsum))[1:2]))
-            tmp.df.slct.all <- tmp.df.slct.all %>% mutate(COUNTS2 = paste0(.data$minCOUNTsum, ",", .data$maxCOUNTsum)) %>% select(.data$GENE, .data$DELETION3, .data$K2, .data$COUNTS2, .data$V_GENE)
+            tmp.df.slct.all <- tmp.df.slct.all %>% mutate(SUBJECT = sample_name, COUNTS = paste0(.data$minCOUNTsum, ",", .data$maxCOUNTsum)) %>% select(.data$SUBJECT, .data$GENE, .data$DELETION3, .data$K2, .data$COUNTS) %>% rename(DELETION = .data$DELETION3, K = .data$K2)
             tmp.df.slct.all$V_GENE <- "V(pooled)"
-            names(tmp.df.slct.all) <- names(d.del.df)
             tmp.df.slct.all$DELETION <- ifelse(tmp.df.slct.all$DELETION == 2, 0, 1)
             d.del.df <- rbind(d.del.df, tmp.df.slct)
             d.del.df <- rbind(d.del.df, as.data.frame(tmp.df.slct.all))
-            d.del.df.pooled <- d.del.df %>% filter(.data$V_GENE == "V(pooled)")
-            d.del.df.pooled$K1 <- round(as.numeric(d.del.df.pooled$K1), digits = 2)
-            d.del.df.pooled$SUBJECT <- sample_name
+            d.del.df.pooled <- d.del.df %>% filter(.data$V_GENE == "V(pooled)") %>% select(- .data$V_GENE)
+            d.del.df.pooled$K <- round(as.numeric(d.del.df.pooled$K), digits = 2)
             d.del.df.pooled$GENE <- factor(x = d.del.df.pooled$GENE, levels = GENE.loc[["IGH"]])
         }
         del.df <- rbind(del.df, d.del.df.pooled)
@@ -658,19 +683,21 @@ deletionsByVpooled <- function(clip_db, deletion_col = c("D_CALL"), count_thresh
 #' Detect non reliable gene assignment
 #'
 #' \code{nonReliableVGenes} Takes a \code{data.frame} in Change-O format  and detect non reliable IGHV genes. A non reliable gene is
-#' when the ratio of the multiple assignment with a gene is below the threshold.
-#'
-#' @details Function accepts a \code{data.frame} in Change-O format (\url{https://changeo.readthedocs.io/en/version-0.4.1---airr-standards/standard.html}) containing the following columns:
-#' \itemize{
-#'   \item \code{'SUBJECT'}: subject names
-#'   \item \code{'V_CALL'}: V allele call(s) (in an IMGT format)
-#' }
+#' when the ratio of the multiple assignments with a gene is below the threshold.
 #'
 #' @param  clip_db              a \code{data.frame} in Change-O format. See details.
 #' @param  thresh               the threshold to consider non reliable gene. Defualt is 0.9
 #' @param  appearance           the minimun fraction of gene appearance to be considered for reliability check. Defualt is 0.01.
 #'
 #' @return  a nested list of non reliable genes for all subject.
+#'
+#' @details
+#'
+#' The function accepts a \code{data.frame} in Change-O format (\url{https://changeo.readthedocs.io/en/version-0.4.1---airr-standards/standard.html}) containing the following columns:
+#' \itemize{
+#'   \item \code{'SUBJECT'}: subject names
+#'   \item \code{'V_CALL'}: V allele call(s) (in an IMGT format)
+#' }
 #'
 #' @examples
 #' # Example IGHV call data frame
@@ -695,7 +722,7 @@ nonReliableVGenes <- function(clip_db, thresh = 0.9, appearance = 0.01) {
     GENE.loc.NoPseudo <- GENE.loc.NoPseudo[!(GENE.loc.NoPseudo %in% PSEUDO[[chain]])]
     GENE.loc.NoPseudo <- GENE.loc.NoPseudo[grepl("V", GENE.loc.NoPseudo)]
 
-    non_reliable_genes <- c()
+    non_reliable_genes <- list()
     for (sample_name in unique(clip_db$SUBJECT)) {
         clip_db_sub = clip_db[clip_db$SUBJECT == sample_name, ]
         gene_call <- getGene(clip_db_sub$V_CALL, first = F, strip_d = F)
@@ -709,8 +736,7 @@ nonReliableVGenes <- function(clip_db, thresh = 0.9, appearance = 0.01) {
                   NR_tmp <- c(NR_tmp, gene)
         }
 
-        if (!is.null(NR_tmp))
-            non_reliable_genes[[sample_name]] <- NR_tmp
+        if (!is.null(NR_tmp)) non_reliable_genes[[sample_name]] <- NR_tmp
     }
     return(non_reliable_genes)
 }

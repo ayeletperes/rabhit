@@ -144,14 +144,11 @@ createHaplotypeTable <- function(df, HapByPriors = c(0.5, 0.5), toHapByCol = TRU
     len.counts.list <- length(counts.list)
     GENES.df <- cbind(GENES.df, data.frame(ALLELES = paste(sapply(strsplit(tohap, "*", fixed = T), "[", 2), collapse = ","), PRIORS_ROW = paste(format(HapByPriors,
         digits = 2), collapse = ","), PRIORS_COL = paste(format(toHapPriors, digits = 2), collapse = ","), COUNTS1 = paste(counts.list[[1]][order(names(counts.list[[1]])[1:2])],
-        collapse = ","), MP1 = max(res.list[[1]][1:2]), K1 = max(res.list[[1]][1:2]) - min(res.list[[1]][1:2]), ND1 = res.list[[1]][3], COUNTS2 = ifelse(length(counts.list) >
-        1, paste(counts.list[[2]][order(names(counts.list[[2]])[1:2])], collapse = ","), NA), MP2 = ifelse(length(counts.list) > 1, max(res.list[[2]][1:2]),
-        NA), K2 = ifelse(length(counts.list) > 1, max(res.list[[2]][1:2]) - min(res.list[[2]][1:2]), NA), ND2 = ifelse(length(counts.list) > 1, res.list[[2]][3],
-        NA), COUNTS3 = ifelse(length(counts.list) > 2, paste(counts.list[[3]][order(names(counts.list[[3]])[1:2])], collapse = ","), NA), MP3 = ifelse(length(counts.list) >
-        2, max(res.list[[3]][1:2]), NA), K3 = ifelse(length(counts.list) > 2, max(res.list[[3]][1:2]) - min(res.list[[3]][1:2]), NA), ND3 = ifelse(length(counts.list) >
-        2, res.list[[3]][3], NA), COUNTS4 = ifelse(length(counts.list) > 3, paste(counts.list[[4]][order(names(counts.list[[4]])[1:2])], collapse = ","),
-        NA), MP4 = ifelse(length(counts.list) > 3, max(res.list[[4]][1:2]), NA), K4 = ifelse(length(counts.list) > 3, max(res.list[[4]][1:2]) - min(res.list[[4]][1:2]),
-        NA), ND4 = ifelse(length(counts.list) > 3, res.list[[4]][3], NA), stringsAsFactors = F))
+        collapse = ","), K1 = max(res.list[[1]][1:2]) - min(res.list[[1]][1:2]), COUNTS2 = ifelse(length(counts.list) >
+        1, paste(counts.list[[2]][order(names(counts.list[[2]])[1:2])], collapse = ","), NA), K2 = ifelse(length(counts.list) > 1, max(res.list[[2]][1:2]) - min(res.list[[2]][1:2]), NA),
+        COUNTS3 = ifelse(length(counts.list) > 2, paste(counts.list[[3]][order(names(counts.list[[3]])[1:2])], collapse = ","), NA), K3 = ifelse(length(counts.list) > 2, max(res.list[[3]][1:2]) - min(res.list[[3]][1:2]), NA), COUNTS4 = ifelse(length(counts.list) > 3, paste(counts.list[[4]][order(names(counts.list[[4]])[1:2])], collapse = ","),
+        NA), K4 = ifelse(length(counts.list) > 3, max(res.list[[4]][1:2]) - min(res.list[[4]][1:2]),
+        NA), stringsAsFactors = F))
 
     return(GENES.df)
 }
@@ -175,7 +172,7 @@ parseHapTab <- function(hap_table, chain = c("IGH", "IGK", "IGL")) {
     chain <- match.arg(chain)
 
     hap_table <- data.frame(lapply(hap_table, as.character), stringsAsFactors = FALSE)
-    hapBy_cols = names(hap_table)[grep(chain, names(hap_table))]
+    hapBy_cols = names(hap_table)[c(3,4)]
     hapBy_alleles = gsub("_", "*", hapBy_cols)
 
     # panels data frames
@@ -667,4 +664,16 @@ alleleCollapse <- function(segment_call, sep = ",|_(?![A-Z])"){
                                                   collapse = '_'))
   r <- paste0(getGene(segment_call, strip_d = F), "*", r)
   return(r)
+}
+
+
+
+########################################################################################################
+# Get diagonal line for legend
+#
+getDigLegend <- function(color){
+
+  return(ggplotGrob(ggplot(data.frame(x=c(1,2),y=c(3,4)), aes_string("x","y")) + geom_abline(aes_string(colour="color", intercept = 1, slope = 1), show.legend = T) +
+                      scale_color_manual(values = c("white"), name = "lK", drop = FALSE) + guides(color = guide_legend(override.aes = list(size = 0.5), order = 2)) +
+                      theme(legend.justification = "center", legend.key = element_rect(fill = "gray"), legend.position = "bottom")))
 }

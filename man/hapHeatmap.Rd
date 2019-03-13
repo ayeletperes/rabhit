@@ -13,7 +13,7 @@ hapHeatmap(hap_table, chain = c("IGH", "IGK", "IGL"),
 
 \item{chain}{the IG chain: IGH,IGK,IGL. Default is IGH.}
 
-\item{gene_sort}{If by 'name' the genes in the output are ordered lexicographically,
+\item{gene_sort}{if by 'name' the genes in the output are ordered lexicographically,
 if by 'position' only functional genes are used and are ordered by their chromosomal location. Default is 'position'.}
 
 \item{removeIGH}{if TRUE, 'IGH'\'IGK'\'IGL' prefix is removed from gene names.}
@@ -23,10 +23,10 @@ if by 'position' only functional genes are used and are ordered by their chromos
 \item{mark_low_lk}{if TRUE, a texture is add for low lK values. Defualt is TRUE.}
 }
 \value{
-a single chromosome deletion visualization.
+A heat-map visualization of the haplotype inference for multiple samples.
 }
 \description{
-\code{hapHeatmap} creates a graphical output of the alleles per gene in chromosome in multiple samples.
+The \code{hapHeatmap} function generates a graphical output of the alleles per gene in multiple samples.
 }
 \details{
 A \code{data.frame} created by \code{createFullHaplotype}.

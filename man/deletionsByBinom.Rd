@@ -5,25 +5,35 @@
 \title{Double chromosome deletion by relative gene usage}
 \usage{
 deletionsByBinom(clip_db, chain = c("IGH", "IGK", "IGL"),
-  nonRelaible_Vgenes = c())
+  nonReliable_Vgenes = c())
 }
 \arguments{
 \item{clip_db}{a \code{data.frame} in Change-O format. See details.}
 
 \item{chain}{the IG chain: IGH,IGK,IGL. Default is IGH.}
 
-\item{nonRelaible_Vgenes}{A list of known non reliable genes assignmnet. A \code{list} created by \code{nonReliableVGenes}.}
+\item{nonReliable_Vgenes}{a list of known non reliable gene assignments. A \code{list} created by \code{nonReliableVGenes}.}
 }
 \value{
-data frame with double chromosome gene deletions
+A \code{data.frame}, in which each row is the double chomosome deletion inference of a gene.
+
+The output containes the following columns:
+\itemize{
+ \item \code{SUBJECT}:       the subject name.
+ \item \code{GENE}:          the gene call
+ \item \code{FRAC}:          the relative gene usage of the gene
+ \item \code{CUTOFF}:        the the cutoff of for the binomial test
+ \item \code{PVAL}:          the p-value of the binomial test
+ \item \code{DELETION}:      if a double chromosome deletion event of a gene occured.
+}
 }
 \description{
-\code{deletionsByBinom} detects chromosomal deletion.
+The \code{deletionsByBinom} function inferes double chromosome deletion events by relative gene usage.
 }
 \details{
-Function accepts a \code{data.frame} in Change-O format (\url{https://changeo.readthedocs.io/en/version-0.4.1---airr-standards/standard.html}) containing the following columns:
+The function accepts a \code{data.frame} in Change-O format (\url{https://changeo.readthedocs.io/en/version-0.4.1---airr-standards/standard.html}) containing the following columns:
 \itemize{
-  \item \code{'SUBJECT'}: subject names
+  \item \code{'SUBJECT'}: The subject name
   \item \code{'V_CALL'}: V allele call(s) (in an IMGT format)
   \item \code{'D_CALL'}: D allele call(s) (in an IMGT format, only for heavy chains)
   \item \code{'J_CALL'}: J allele call(s) (in an IMGT format)

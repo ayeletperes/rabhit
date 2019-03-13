@@ -10,15 +10,15 @@ deletionHeatmap(hap_table, kThreshDel = 3, chain = c("IGH", "IGK",
 \arguments{
 \item{hap_table}{haplotype summary table. See details.}
 
-\item{kThreshDel}{The minimum lK (log10 of the Bayes factor) used in \code{createFullHaplotype} to call a deletion. Indicates the color for strong deletion. Defualt is 3.}
+\item{kThreshDel}{the minimum lK (log10 of the Bayes factor) used in \code{createFullHaplotype} to call a deletion. Indicates the color for strong deletion. Defualt is 3.}
 
 \item{chain}{the IG chain: IGH,IGK,IGL. Default is IGH.}
 }
 \value{
-a single chromosome deletion visualization.
+A single chromosome deletion visualization.
 }
 \description{
-\code{deletionHeatmap} creates a graphical output of the single chromosome deletions in multiple samples.
+The \code{deletionHeatmap} function generates a graphical output of the single chromosome deletions in multiple samples.
 }
 \details{
 A \code{data.frame} created by \code{createFullHaplotype}.
