@@ -1,6 +1,6 @@
 Package: rabhit
 Type: Package
-Title: R Antibody Haplotype Inference Tool (RAbHIT)
+Title: Inference Tool for Antibody Haplotype
 Version: 0.1.0.0
 Authors@R: c(person("Ayelet", "Peres", role=c("aut","cre"), 
                     email="peresay@biu.ac.il"),
@@ -8,7 +8,7 @@ Authors@R: c(person("Ayelet", "Peres", role=c("aut","cre"),
                     email="moriah.cohen@biu.ac.il"),
              person("Gur", "Yaari", role=c("aut","cph"), 
                     email="gur.yaari@biu.ac.il"))
-Description: RAbHIT infers V-D-J haplotypes and gene deletions from AIRR-seq data, 
+Description: Infers V-D-J haplotypes and gene deletions from AIRR-seq data, 
     based on IGHJ, IGHD or IGHV as anchor, by adapting a Bayesian framework.
     It also calculates a Bayes factor, a number that indicates the certainty level of the inference, for each haplotyped gene.
     Citation:
@@ -21,12 +21,11 @@ BuildVignettes: true
 VignetteBuilder: knitr
 Encoding: UTF-8
 Depends: R (>= 3.2.5), ggplot2 (>= 2.0.0)
-Imports: mltools, 
-    dplyr (>= 0.5.0), reshape2,  plotly (>= 4.7.1),
+Imports: dplyr (>= 0.5.0), reshape2,  plotly (>= 4.7.1),
     gtools (>= 3.5.0), cowplot (>= 0.9.1), 
     stats, dendextend (>= 1.9.0), data.table,
     ggdendro (>= 0.1.20), gridExtra, alakazam (>= 0.2.10), tigger (>= 0.2.11),
-    methods, htmlwidgets, gtable, grDevices, rlang, RColorBrewer
+    methods, htmlwidgets, gtable, grDevices, rlang, RColorBrewer, tidyr
 Suggests: knitr,
     rmarkdown
 RoxygenNote: 6.1.1

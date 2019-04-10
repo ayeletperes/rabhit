@@ -27,6 +27,26 @@
 #' @keywords data antibody AIRR NGS
 "samples_db"
 
+#' Example haplotype inference results
+#'
+#' A \code{data.frame} of example haplotype infrence results from \link{createFullHaplotype} after double chromosome deletion inference via \link{deletionsByBinom} and non reliable V genes detection via \link{nonReliableVGenes}.
+#' Source data is a colletion of IGH human naive b-cell repertiore data from five
+#' individuals (see references). Overall, the data set includes 6 samples.
+#' A single individual has two samples (Individual I5),
+#' one is short read sequences from  BIOMED-2 protocol primers for framework 2 region (The sample is annotated I5_FR2).
+#'
+#'
+#' @name samplesHaplotype
+#' @docType data
+#' @format A \code{data.frame}, in which each row is the haplotype inference summary of a gene of an individual, from the column selected to prefrom the haplptype infrence on.
+#' @seealso See \link{createFullHaplotype} for detailed column descriptions.
+#'
+#' @references Gidoni, Moriah, \emph{et al}. Mosaic deletion patterns of the human antibody heavy chain
+#' gene locus shown by Bayesian haplotyping.
+#' \emph{Nature Communications}. 10.1 (2019): 628.
+#' @keywords data antibody AIRR NGS haplotype
+"samplesHaplotype"
+
 #' Human IGHV germlines
 #'
 #' A \code{character} vector of all 342 human IGHV germline gene segment alleles

@@ -21,8 +21,10 @@ The \code{plotDeletionsByVpooled} function generates a graphical output for sing
 A \code{data.frame} created by \code{deletionsByVpooled}.
 }
 \examples{
+\donttest{
 # Load example data and germlines
 data(samples_db)
 del_db <- deletionsByVpooled(samples_db)
 plotDeletionsByVpooled(del_db)
+}
 }

@@ -2,6 +2,19 @@
 
 #### Default Gene location ####
 
+## Get the tables from imgt
+imgt_igk = "http://www.imgt.org/IMGTrepertoire/index.php?section=LocusGenes&repertoire=GeneOrder&species=human&group=IGK"
+imgt_igk  = XML::readHTMLTable(imgt_igk, header=T, which=1,stringsAsFactors=F, skip.rows = 1)
+cat(paste0('"',rev(imgt_igk$`IMGT gene name`),'"',collapse = ','))
+
+imgt_igL = "http://www.imgt.org/IMGTrepertoire/index.php?section=LocusGenes&repertoire=GeneOrder&species=human&group=IGL"
+imgt_igL  = XML::readHTMLTable(imgt_igL, header=T, which=1,stringsAsFactors=F, skip.rows = 1)
+cat(paste0('"',rev(imgt_igL$`IMGT gene name`),'"',collapse = ','))
+
+imgt_igH = "http://www.imgt.org/IMGTrepertoire/index.php?section=LocusGenes&repertoire=GeneOrder&species=human&group=IGH"
+imgt_igH  = XML::readHTMLTable(imgt_igH, header=T, which=1,stringsAsFactors=F, skip.rows = 1)
+cat(paste0('"',rev(imgt_igH$`IMGT gene name`),'"',collapse = ','))
+
 GENE.loc <- list(
 
   IGH = c("IGHV7-81", "IGHV5-78", "IGHV3-74", "IGHV3-73", "IGHV3-72", "IGHV3-71","IGHV2-70", "IGHV1-69D", "IGHV1-f","IGHV2-70D", "IGHV1-69", "IGHV1-68","IGHV1-69-2", "IGHV3-69-1",
@@ -19,10 +32,19 @@ GENE.loc <- list(
           "IGHD4-23" ,  "IGHD5-24" ,  "IGHD6-25"  , "IGHD1-26","IGHD7-27",
           "IGHJ1", "IGHJ2","IGHJ3","IGHJ4","IGHJ5","IGHJ6"),
 
-  IGK =  c("IGKJ5","IGKJ4","IGKJ3","IGKJ2","IGKJ1","IGKV4-1","IGKV5-2","IGKV1-5","IGKV1-6","IGKV1-8","IGKV1-9","IGKV3-11",
-           "IGKV1E-12","IGKV1E-13","V3-15","IGKV1-16","IGKV1-17","IGKV3-20","IGKV6E-21","IGKV2-24","IGKV1-27","IGKV2E-28","IGKV2-29","IGKV2-30",
-           "IGKV1E-33","IGKV1E-39","V2E-40","IGKV2D-30","IGKV2D-29",
-           "IGKV2D-26","IGKV3D-20","V1D-17","IGKV1D-16","IGKV3D-15","IGKV3D-11","IGKV1D-43","IGKV1D-8","IGKV3D-7"),
+  # IGK =  c("IGKJ5","IGKJ4","IGKJ3","IGKJ2","IGKJ1","IGKV4-1","IGKV5-2","IGKV1-5","IGKV1-6","IGKV1-8","IGKV1-9","IGKV3-11",
+  #          "IGKV1E-12","IGKV1E-13","V3-15","IGKV1-16","IGKV1-17","IGKV3-20","IGKV6E-21","IGKV2-24","IGKV1-27","IGKV2E-28","IGKV2-29","IGKV2-30",
+  #          "IGKV1E-33","IGKV1E-39","V2E-40","IGKV2D-30","IGKV2D-29",
+  #          "IGKV2D-26","IGKV3D-20","V1D-17","IGKV1D-16","IGKV3D-15","IGKV3D-11","IGKV1D-43","IGKV1D-8","IGKV3D-7"),
+
+  IGK =  c("IGKJ5","IGKJ4","IGKJ3","IGKJ2","IGKJ1","IGKV4-1","IGKV5-2","IGKV7-3","IGKV2-4","IGKV1-5","IGKV1-6","IGKV3-7",
+           "IGKV1-8","IGKV1-9","IGKV2-10","IGKV3-11","IGKV1-12","IGKV1-13","IGKV2-14","IGKV3-15","IGKV1-16","IGKV1-17","IGKV2-18",
+           "IGKV2-19","IGKV3-20","IGKV6-21","IGKV1-22","IGKV2-23","IGKV2-24","IGKV3-25","IGKV2-26","IGKV1-27","IGKV2-28","IGKV2-29",
+           "IGKV2-30","IGKV3-31","IGKV1-32","IGKV1-33","IGKV3-34","IGKV1-35","IGKV2-36","IGKV1-37","IGKV2-38","IGKV1-39","IGKV2-40",
+           "IGKV2D-40","IGKV1D-39","IGKV2D-38","IGKV1D-37","IGKV2D-36","IGKV1D-35","IGKV3D-34","IGKV1D-33","IGKV1D-32","IGKV3D-31",
+           "IGKV2D-30","IGKV2D-29","IGKV2D-28","IGKV1D-27","IGKV2D-26","IGKV3D-25","IGKV2D-24","IGKV2D-23","IGKV1D-22","IGKV6D-21",
+           "IGKV3D-20","IGKV2D-19","IGKV2D-18","IGKV6D-41","IGKV1D-17","IGKV1D-16","IGKV3D-15","IGKV2D-14","IGKV1D-13","IGKV1D-12",
+           "IGKV3D-11","IGKV2D-10","IGKV1D-42","IGKV1D-43","IGKV1D-8","IGKV3D-7","IGKV1-NL1"),
 
   IGL =  c("IGLV4-69","IGLV8-61","IGLV4-60","IGLV6-57","IGLV10-54","IGLV5-52","IGLV1-51","IGLV9-49",
            "IGLV1-47","IGLV7-46","IGLV5-45","IGLV1-44","IGLV7-43","IGLV1-40","IGLV5-37","IGLV1-36",
@@ -33,19 +55,39 @@ GENE.loc <- list(
 
 #### Known Pseudo Gene####
 
+library(rvest)
+imgt = "http://www.imgt.org/genedb/GENElect?query=4.2+IG&species=Homo+sapiens"
+pseudo <- html_nodes(webpage, "table") %>% html_table()
+pseudo_IGK <- pseudo[[1]] %>% filter(`IMGT gene functionality`%in% c("ORF", "P"), grepl('IGK', `IMGT/GENE-DB`))
+cat(paste0('"',rev(pseudo_IGK$`IMGT/GENE-DB`),'"',collapse = ','))
+
+pseudo_IGL <- pseudo[[1]] %>% filter(`IMGT gene functionality`%in% c("ORF", "P"), grepl('IGL', `IMGT/GENE-DB`))
+cat(paste0('"',rev(pseudo_IGL$`IMGT/GENE-DB`),'"',collapse = ','))
+
+
 PSEUDO <- list(
 
   IGH = c("IGHV2-10","IGHV3-52","IGHV3-47","IGHV3-71","IGHV3-22","IGHV4-55","IGHV1-68","IGHV2-10","IGHV5-78","IGHV3-32","IGHV3-33-2","IGHV3-38-3",
           "IGHV3-25","IGHV3-19","IGHV7-40","IGHV3-63","IGHV3-62","IGHV3-29","IGHV3-54","IGHV1-38-4","IGHV7-34-1","IGHV1-38-4","IGHV3-30-2","IGHV3-69-1","IGHV3-30-22",
           "IGHV1-f","IGHV3-30-33","IGHV3-38","IGHV7-81","IGHV3-35","IGHV3-16","IGHV3-30-52","IGHV1-69D", "IGHD1-14", "IGHV3-30-42"),
 
-  IGK = c("IGKV1-22","IGKV1-35","IGKV1-39","IGKV1D-22","IGHV3-22","IGKV1D-27","IGKV1D-32","IGKV1D-35","IGKV2-10","IGKV2-14","IGKV2-18","IGKV2-19",
-          "IGKV2-23","IGKV2-26","IGKV2-36","IGKV2-38","IGKV2-4","IGKV2D-10","IGKV2D-14","IGKV2D-18","IGKV2D-19","IGKV2D-23","IGKV2D-24","IGKV1D-42","IGKV2D-36","IGKV2D-38","IGKV3-25",
-          "IGKV3-31","IGKV3-34","IGKV3-7","IGKV3D-25","IGKV3D-31","IGKV3D-34","IGKV6D-41","IGKV7-3","IGKV1D-42","IGKV1D-37","IGKV1E-37"),
+  # IGK = c("IGKV1-22","IGKV1-35","IGKV1-39","IGKV1D-22","IGHV3-22","IGKV1D-27","IGKV1D-32","IGKV1D-35","IGKV2-10","IGKV2-14","IGKV2-18","IGKV2-19",
+  #         "IGKV2-23","IGKV2-26","IGKV2-36","IGKV2-38","IGKV2-4","IGKV2D-10","IGKV2D-14","IGKV2D-18","IGKV2D-19","IGKV2D-23","IGKV2D-24","IGKV1D-42","IGKV2D-36","IGKV2D-38","IGKV3-25",
+  #         "IGKV3-31","IGKV3-34","IGKV3-7","IGKV3D-25","IGKV3D-31","IGKV3D-34","IGKV6D-41","IGKV7-3","IGKV1D-42","IGKV1D-37","IGKV1E-37"),
 
-  IGL = c("IGLV3-32","IGLV5-48","IGLV1-50","IGLV11-55","IGLV1-41","IGLV1-62","IGLV10-54*03","IGLV10-67","IGLV2-28","IGLV2-34","IGLV2-5",
-          "IGLV2-NL1","IGLV3-13","IGLV3-15","IGLV3-17","IGLV3-2","IGLV3-22*02","IGLV3-24","IGLV3-26","IGLV3-29","IGLV3-30","IGLV3-31",
-          "IGLV3-4","IGLV3-6","IGLV3-7","IGLV3-9*03","IGLV5-48","IGLV7-35","IGLV7-46*03","IGLV8/OR8-1","IGLV2-33","IGLJ4","IGLJ5")
+  IGK = c("IGKV7-3","IGKV6D-41","IGKV3D-34","IGKV3D-31","IGKV3D-25","IGKV3/OR22-2","IGKV3/OR2-5","IGKV3/OR2-268","IGKV3-34","IGKV3-31","IGKV3-25",
+          "IGKV2D-38","IGKV2D-36","IGKV2D-24","IGKV2D-23","IGKV2D-19","IGKV2D-18","IGKV2D-14","IGKV2D-10","IGKV2/OR22-4","IGKV2/OR22-3","IGKV2/OR2-8",
+          "IGKV2/OR2-7D","IGKV2/OR2-7","IGKV2/OR2-4","IGKV2/OR2-2","IGKV2/OR2-10","IGKV2/OR2-1","IGKV2-4","IGKV2-38","IGKV2-36","IGKV2-26","IGKV2-23",
+          "IGKV2-19","IGKV2-18","IGKV2-14","IGKV2-10","IGKV1D-42","IGKV1D-37","IGKV1D-35","IGKV1D-32","IGKV1D-27","IGKV1D-22","IGKV1/ORY-1",
+          "IGKV1/OR9-2","IGKV1/OR9-1","IGKV1/OR22-5","IGKV1/OR22-1","IGKV1/OR2-9","IGKV1/OR2-6","IGKV1/OR2-3","IGKV1/OR2-2","IGKV1/OR2-118",
+          "IGKV1/OR2-11","IGKV1/OR2-108","IGKV1/OR2-1","IGKV1/OR2-0","IGKV1/OR15-118","IGKV1/OR10-1","IGKV1/OR1-1","IGKV1/OR-4","IGKV1/OR-3",
+          "IGKV1/OR-2","IGKV1-37","IGKV1-35","IGKV1-32","IGKV1-22"),
+
+  IGL = c("IGLV7-35","IGLV3-7","IGLV3-6","IGLV3-4","IGLV3-32","IGLV3-31","IGLV3-30","IGLV3-29","IGLV3-26","IGLV3-24","IGLV3-2","IGLV3-17","IGLV3-15",
+          "IGLV3-13","IGLV2-NL1","IGLV2-5","IGLV2-34","IGLV2-33","IGLV2-28","IGLV11-55","IGLV10-67","IGLV1-62","IGLV1-50","IGLV(VII)-41-1",
+          "IGLV(VI)-25-1","IGLV(VI)-22-1","IGLV(V)-66","IGLV(V)-58","IGLV(IV)/OR22-2","IGLV(IV)/OR22-1","IGLV(IV)-66-1","IGLV(IV)-65","IGLV(IV)-64",
+          "IGLV(IV)-59","IGLV(IV)-53","IGLV(I)-70","IGLV(I)-68","IGLV(I)-63","IGLV(I)-56","IGLV(I)-42","IGLV(I)-38","IGLV(I)-20","IGLL4","IGLL2",
+          "IGLJ5","IGLJ4","IGLC5","IGLC4","IGLC/OR22-2","IGLC/OR22-1")
 )
 
 #### Default Haplotype Allele color scheme ####
@@ -76,7 +118,7 @@ Binom.test.gene.cutoff <- list(
 
 #### Save to R/sysdata.rda ####
 
-devtools::use_data(GENE.loc,
+usethis::use_data(GENE.loc,
                    PSEUDO,
                    HVGERM,
                    HDGERM,

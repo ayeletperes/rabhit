@@ -6,7 +6,7 @@
 \usage{
 plotHaplotype(hap_table, html_output = FALSE, gene_sort = c("name",
   "position"), text_size = 14, removeIGH = TRUE, plotYaxis = TRUE,
-  chain = c("IGH", "IGK", "IGL"))
+  chain = c("IGH", "IGK", "IGL"), dir)
 }
 \arguments{
 \item{hap_table}{haplotype summary table. See details.}
@@ -23,6 +23,8 @@ if by 'position' only functional genes are used and are ordered by their chromos
 \item{plotYaxis}{if TRUE, Y axis labels (gene names) are plotted on the middle and right plots. Default is TRUE.}
 
 \item{chain}{the Ig chain: IGH,IGK,IGL. Default is IGH.}
+
+\item{dir}{The output folder for saving the haplotype map for multiple individuals.}
 }
 \value{
 A haplotype map visualization. If more than one subject is visualized, a pdf is created. If html_output is TRUE, a folder named html_output is created with individual graphs.
@@ -34,15 +36,11 @@ The \code{plotHaplotype} functions visualizes an inferred haplotype.
 A \code{data.frame} in a haplotype format created by \code{createFullHaplotype} function.
 }
 \examples{
-# Load example data and germlines
-data(samples_db, HVGERM, HDGERM)
 
-# Selecting a single individual
-clip_db = samples_db[samples_db$SUBJECT=='I5', ]
+# Selecting a single individual from the haplotype samples data
+haplo_db = samplesHaplotype[samplesHaplotype$SUBJECT=='I5', ]
 
-# Infering haplotype
-hap_df = createFullHaplotype(clip_db,toHap_col=c('V_CALL','D_CALL'),
-hapBy_col='J_CALL',hapBy='IGHJ6',toHap_GERM=c(HVGERM,HDGERM))
-plotHaplotype(hap_df)
+# plot haplotype
+plotHaplotype(haplo_db)
 
 }

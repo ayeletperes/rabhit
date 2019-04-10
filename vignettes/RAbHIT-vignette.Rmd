@@ -16,7 +16,7 @@ output:
     preserve_yaml: no
     toc: yes
     toc_depth: 3
-  html_document:
+  html_vignette:
     fig_height: 20
     fig_width: 15
     highlight: pygments

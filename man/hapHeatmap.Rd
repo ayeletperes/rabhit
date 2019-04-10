@@ -32,12 +32,7 @@ The \code{hapHeatmap} function generates a graphical output of the alleles per g
 A \code{data.frame} created by \code{createFullHaplotype}.
 }
 \examples{
-# Load example data and germlines
-data(samples_db, HVGERM, HDGERM)
-
-# Infering haplotype
-hap_df = createFullHaplotype(samples_db,toHap_col=c('V_CALL','D_CALL'),
-hapBy_col='J_CALL',hapBy='IGHJ6',toHap_GERM=c(HVGERM,HDGERM))
-hapHeatmap(hap_df)
+# Plotting haplotpe heatmap
+hapHeatmap(samplesHaplotype)
 
 }

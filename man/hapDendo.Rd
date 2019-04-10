@@ -32,12 +32,7 @@ The \code{hapDendo} function generates a graphical output of an hierarchical clu
 A \code{data.frame} created by \code{createFullHaplotype}.
 }
 \examples{
-# Load example data and germlines
-data(samples_db, HVGERM, HDGERM)
-
-# Infering haplotype
-hap_df = createFullHaplotype(samples_db,toHap_col=c('V_CALL','D_CALL'),
-hapBy_col='J_CALL',hapBy='IGHJ6',toHap_GERM=c(HVGERM,HDGERM))
-hapDendo(hap_df)
+# Plotting haplotype hierarchical clustering based on the Jaccard distance
+hapDendo(samplesHaplotype)
 
 }

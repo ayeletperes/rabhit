@@ -71,208 +71,168 @@ NULL
 createFullHaplotype <- function(clip_db, toHap_col = c("V_CALL", "D_CALL"), hapBy_col = "J_CALL", hapBy = "IGHJ6", toHap_GERM, relative_freq_priors = TRUE,
     kThreshDel = 3, rmPseudo = TRUE, deleted_genes = c(), nonReliable_Vgenes = c(), min_minor_fraction = 0.3, chain = c("IGH", "IGK", "IGL")) {
 
-    # Check if germline was inputed
-    if (missing(toHap_GERM))
-        stop("Missing toHap_GERM, please input germline sequences")
 
-    if (missing(chain)) {
-        chain = "IGH"
-    }
-    chain <- match.arg(chain)
+  # Check if germline was inputed
+  if (missing(toHap_GERM))
+    stop("Missing toHap_GERM, please input germline sequences")
 
-    if (!("SUBJECT" %in% names(clip_db))) {
-        clip_db$SUBJECT <- "S1"
-    }
+  if (missing(chain)) {
+    chain = "IGH"
+  }
+  chain <- match.arg(chain)
 
-    haplo_db <- c()
-    for (sample_name in unique(clip_db$SUBJECT)) {
-        clip_db_sub = clip_db[clip_db$SUBJECT == sample_name, ]
+  if (!("SUBJECT" %in% names(clip_db))) {
 
-        if (is.list(nonReliable_Vgenes))
-            nonReliable_Vgenes_vec <- nonReliable_Vgenes[[sample_name]] else nonReliable_Vgenes_vec <- nonReliable_Vgenes
+    clip_db$SUBJECT <- "S1"
+  }
 
+  haplo_db <- c()
+  for (sample_name in unique(clip_db$SUBJECT)) {
 
-        if (is.data.frame(deleted_genes)) {
-            deleted_genes_vec <- deleted_genes %>% filter(.data$SUBJECT == sample_name, .data$DELETION == "Deletion") %>% select(.data$GENE) %>% pull()
-            if (is.null(nonReliable_Vgenes_vec))
-                nonReliable_Vgenes_vec <- deleted_genes %>% filter(.data$SUBJECT == sample_name, .data$DELETION == "Non reliable") %>% select(.data$GENE) %>% pull()
-        } else deleted_genes_vec <- c()
+    if (is.list(nonReliable_Vgenes)){
+      nonReliable_Vgenes_vec <- nonReliable_Vgenes[[sample_name]]
+    } else nonReliable_Vgenes_vec <- nonReliable_Vgenes
 
-
-        ### Check if haplotype can be infered by the specific gene in the data set.  Only relevant genes with one assignment
-        clip_db_sub <- clip_db_sub[!grepl(',',clip_db_sub[,hapBy_col]), ]
-
-        hapBy_alleles <- sort(unique(grep(pattern = paste0(hapBy, "*"), x = clip_db_sub[, paste(hapBy_col)], value = T, fixed = T)))
-
-        hapBy_alleles_table <- table(grep(pattern = paste0(hapBy, "*"), x = clip_db_sub[, paste(hapBy_col)], value = T, fixed = T))
-        if (length(unique(hapBy_alleles)) != 2)
-            stop("Can not haplotype by more or less than two alleles")
-        if (min(hapBy_alleles_table)/sum(hapBy_alleles_table) < min_minor_fraction)
-            stop("Can not haplotype, minor allele fraction lower than the cutoff set by the user")
+    if (is.data.frame(deleted_genes)) {
+      deleted_genes_vec <- deleted_genes %>% filter(.data$SUBJECT == sample_name, .data$DELETION == "Deletion") %>% select(.data$GENE) %>% pull()
+      if (is.null(nonReliable_Vgenes_vec))
+        nonReliable_Vgenes_vec <- deleted_genes %>% filter(.data$SUBJECT == sample_name, .data$DELETION == "Non reliable") %>% select(.data$GENE) %>% pull()
+    } else deleted_genes_vec <- c()
 
 
-        for (i in 1:length(toHap_col)) {
-            ## Remove 'none' in Gene Call assignments
-            if (i > 1) {
-                GENES <- c(GENES, unique(sapply(strsplit(clip_db_sub[, paste(toHap_col[i])][clip_db_sub[, paste(hapBy_col)] %in% hapBy_alleles & grepl("IG",
-                  clip_db_sub[, paste(toHap_col[i])])], "*", fixed = T), "[", 1)))
-            } else {
-                GENES <- unique(sapply(strsplit(clip_db_sub[, paste(toHap_col[i])][clip_db_sub[, paste(hapBy_col)] %in% hapBy_alleles & grepl("IG", clip_db_sub[,
-                  paste(toHap_col[i])])], "*", fixed = T), "[", 1))
+    ### Check if haplotype can be infered by the specific gene in the data set.  Only relevant genes with one assignment
+    clip_db_sub <- clip_db %>% filter(.data$SUBJECT==sample_name, !grepl(',', !!as.name(hapBy_col), perl = T))
+    hapBy_priors <- clip_db_sub %>% filter(grepl(paste0(hapBy, "\\*"), !!as.name(hapBy_col), perl = T)) %>% dplyr::count(!!as.name(hapBy_col)) %>% mutate(freq = n / sum(n)) %>% select(-n)
+    hapBy_priors <- setNames(hapBy_priors[[2]], hapBy_priors[[1]])
+    hapBy_alleles <- names(hapBy_priors)
+    if (length(hapBy_alleles) != 2)
+      stop("Can not haplotype by more or less than two alleles")
+    if (min(hapBy_priors) < min_minor_fraction)
+      stop("Can not haplotype, minor allele fraction lower than the cutoff set by the user")
 
-            }
+    GENES <- unique(gsub("\\*.*", "\\1", grep("^(?=.*IG)", unique(unlist(clip_db_sub[clip_db_sub[, hapBy_col] %in% hapBy_alleles,toHap_col], use.names = F)), value = T, perl = T), perl = T))
 
-        }
+    GENES.ref <- unique(gsub("\\*.*", "\\1", names(toHap_GERM), perl = T))
 
-        GENES.ref <- unique(sapply(strsplit(names(toHap_GERM), "*", fixed = T), "[", 1))
+    if (rmPseudo) {
+      GENES <- GENES[!grepl("OR|NL", GENES)]
+      GENES <- GENES[!(GENES %in% PSEUDO[[chain]])]
 
-        GENES.df <- data.frame(GENE = GENES.ref, g1 = rep("Unk", length(GENES.ref)), g2 = rep("Unk", length(GENES.ref)), stringsAsFactors = F)
-        names(GENES.df)[2:3] <- sort(hapBy_alleles)
-
-
-        if (rmPseudo) {
-            GENES <- GENES[!grepl("OR", GENES)]
-            GENES <- GENES[!grepl("NL", GENES)]
-            GENES <- GENES[!(GENES %in% PSEUDO[[chain]])]
-
-            GENES.ref <- GENES.ref[!grepl("OR", GENES.ref)]
-            GENES.ref <- GENES.ref[!grepl("NL", GENES.ref)]
-            GENES.ref <- GENES.ref[!(GENES.ref %in% PSEUDO[[chain]])]
-
-            GENES.df <- GENES.df[!grepl("OR", GENES.df$GENE), ]
-            GENES.df <- GENES.df[!grepl("NL", GENES.df$GENE), ]
-            GENES.df <- GENES.df[!(GENES.df$GENE %in% PSEUDO[[chain]]), ]
-        }
-
-        GENES.df.num <- c()
-        GENES.df.num_ToPlot <- c()
-
-        col_names <- c("SUBJECT", "GENE", gsub(pattern = "*", "_", hapBy_alleles, fixed = T),
-                                    'ALLELES', 'PRIORS_ROW', 'PRIORS_COL',
-                                    'COUNTS1', 'K1',
-                                    'COUNTS2', 'K2',
-                                    'COUNTS3', 'K3',
-                                    'COUNTS4', 'K4')
-        for (G in intersect(GENES, GENES.ref)) {
-
-            toHap_col_tmp <- toHap_col[grep(substr(G,4,4),toHap_col)]
-
-            clip_db_sub.G <- clip_db_sub %>% filter(grepl(paste0(G,'[*]'),!!as.name(toHap_col_tmp)), !!as.name(hapBy_col) %in% hapBy_alleles)
-            if(substr(G,4,4)=='V') clip_db_sub.G <- as.data.frame(clip_db_sub.G %>%
-                                                    filter(getGeneCount(!!as.name(toHap_col_tmp))==1) %>%
-                                                    group_by(!!as.name(toHap_col_tmp))  %>%
-                                                    mutate(n=n()) %>% ungroup() %>%
-                                                    filter((grepl(',',!!as.name(toHap_col_tmp))&n/nrow(clip_db_sub.G) > 0.2)|(!grepl(',',!!as.name(toHap_col_tmp)))) %>%
-                                                    mutate(!!as.name(toHap_col_tmp) := alleleCollapse(!!as.name(toHap_col_tmp))))
-            else clip_db_sub.G <-  clip_db_sub.G %>% filter(!grepl(',', !!as.name(toHap_col_tmp)))
-
-            tmp <- table(clip_db_sub.G[, toHap_col_tmp], clip_db_sub.G[, hapBy_col])
-            if(nrow(tmp)==0) next
-            relFreq <- min(rowSums(tmp))/sum(rowSums(tmp))
-            GENES.df.num_ToPlot <- rbind(GENES.df.num_ToPlot, reshape2::melt(tmp))
-            # if one column add the second
-            if (ncol(tmp) == 1) {
-                toadd <- setdiff(hapBy_alleles, colnames(tmp))
-                tmp <- cbind(tmp, rep(0, nrow(tmp)))
-                colnames(tmp)[2] <- toadd
-
-                coltmp <- colnames(tmp)
-                rowtmp <- rownames(tmp)
-
-                tmp <- as.data.frame(tmp)
-                tmp <- tmp[order(colnames(tmp))]
-                tmp <- as.matrix(tmp)
-            }
-
-
-
-            if(G %in% deleted_genes_vec || G %in% nonReliable_Vgenes_vec){
-
-              relFreqDf.tmp <- data.frame(matrix(c(sample_name, G,
-                                       rep(ifelse(G %in% nonReliable_Vgenes_vec, 'NR',
-                                              ifelse(G %in% deleted_genes_vec, 'Del')), 2),
-                                       rep(NA, 11)),nrow = 1),stringsAsFactors = F)
-              names(relFreqDf.tmp) <- col_names
-              relFreqDf.tmp <- asNum(relFreqDf.tmp)
-              GENES.df.num <- rbind(GENES.df.num, relFreqDf.tmp)
-              next
-            }
-
-            if (relative_freq_priors) {
-
-                clip_db_sub.toHap <- clip_db_sub[clip_db_sub[, hapBy_col] %in% hapBy_alleles, ]
-                hapBy_priors <- table(clip_db_sub.toHap[, hapBy_col])/sum(table(clip_db_sub.toHap[, hapBy_col]))
-
-                clip_db_sub.hapBy <- clip_db_sub[(grepl(paste0(G, "*"), clip_db_sub[, toHap_col_tmp], fixed = T)), ]
-                clip_db_sub.hapBy <- clip_db_sub.hapBy[clip_db_sub.hapBy[, toHap_col_tmp] %in% rownames(tmp), ]
-                toHap_priors <- table(clip_db_sub.hapBy[, toHap_col_tmp])/sum(table(clip_db_sub.hapBy[, toHap_col_tmp]))
-
-                if (length(toHap_priors) != nrow(tmp)) {
-                  toHap_priors_tmp <- c(rep(0, nrow(tmp)))
-                  names(toHap_priors_tmp) <- rownames(tmp)
-                  for (i in names(toHap_priors)) {
-                    toHap_priors_tmp[i] <- toHap_priors[i]
-                  }
-
-                  toHap_priors <- toHap_priors_tmp
-                }
-
-                hap.df <- createHaplotypeTable(tmp, HapByPriors = hapBy_priors, toHapByCol = TRUE, toHapPriors = toHap_priors)
-
-                relFreqDf.tmp <- data.frame(c(sample_name, G, hap.df[, 2:length(hap.df)]),
-                  stringsAsFactors = F)
-                relFreqDf.tmp <- asNum(relFreqDf.tmp)
-                names(relFreqDf.tmp) <- col_names
-                GENES.df.num <- rbind(GENES.df.num, relFreqDf.tmp)
-            } else {
-                hap.df <- createHaplotypeTable(tmp)
-                relFreqDf.tmp <- data.frame(c(sample_name, G, hap.df[, 2:length(hap.df)]),
-                                            stringsAsFactors = F)
-                relFreqDf.tmp <- asNum(relFreqDf.tmp)
-                names(relFreqDf.tmp) <- col_names
-                GENES.df.num <- rbind(GENES.df.num, relFreqDf.tmp)
-
-            }
-
-
-        }
-
-        # Check if toHap_col genes are in toHap_GERM
-        if (length(GENES.df.num) == 0)
-            stop("Genes in haplotype column to be infered do not match the genes germline given")
-
-
-        ## Fill deleted according to a k thershold
-        unkIDX <- which(GENES.df.num[gsub("*", "_", hapBy_alleles[1], fixed = T)][, 1] == "Unk")
-        delIDX <- unkIDX[which(sapply(unkIDX, function(i) min(GENES.df.num[i,paste0('K',1:4)], na.rm = T)) >= kThreshDel)]
-        GENES.df.num[delIDX, paste(gsub("*", "_", hapBy_alleles[1], fixed = T))] <- "Del"
-
-        unkIDX <- which(GENES.df.num[gsub("*", "_", hapBy_alleles[2], fixed = T)][, 1] == "Unk")
-        delIDX <- unkIDX[which(sapply(unkIDX, function(i) min(GENES.df.num[i,paste0('K',1:4)], na.rm = T)) >= kThreshDel)]
-        GENES.df.num[delIDX, paste(gsub("*", "_", hapBy_alleles[2], fixed = T))] <- "Del"
-
-        ## Add as iunknown genes that do not appear in the individual and mark them as unknown
-
-        GENES.MISSING <- GENES.df$GENE[!(GENES.df$GENE %in% GENES.df.num$GENE)]
-        if (length(GENES.MISSING) > 0) {
-            m <- length(GENES.MISSING)
-
-            sub.df <- data.frame(do.call(rbind, lapply(1:m, function(x) {
-                c(sample_name, NA, "Unk", "Unk", rep(NA, ncol(GENES.df.num) - 4))
-            })))
-            names(sub.df) <- names(GENES.df.num)
-
-            sub.df$GENE <- GENES.MISSING
-
-            sub.df[,gsub("*", "_", hapBy_alleles, fixed = T)] <- matrix(rep(ifelse(GENES.MISSING %in% nonReliable_Vgenes_vec,'NR',ifelse(GENES.MISSING %in% deleted_genes_vec, 'Del', 'Unk')), 2), ncol=2)
-
-            GENES.df.num <- rbind(GENES.df.num, sub.df)
-        }
-
-        haplo_db <- rbind(haplo_db, GENES.df.num)
+      GENES.ref <- GENES.ref[!grepl("OR|NL", GENES.ref)]
+      GENES.ref <- GENES.ref[!(GENES.ref %in% PSEUDO[[chain]])]
     }
 
-    return(haplo_db)
+    GENES.df.num <- data.table::rbindlist(lapply(intersect(GENES, GENES.ref),function(G){
+
+      if(G %in% deleted_genes_vec || G %in% nonReliable_Vgenes_vec){
+
+        relFreqDf.tmp <- data.frame(matrix(c(sample_name, G,
+                                             rep(ifelse(G %in% nonReliable_Vgenes_vec, 'NR',
+                                                        ifelse(G %in% deleted_genes_vec, 'Del')), 2),
+                                             rep(NA, 11)),nrow = 1),stringsAsFactors = F)
+
+        relFreqDf.tmp <- asNum(relFreqDf.tmp)
+        return(relFreqDf.tmp)
+      } else{
+
+        toHap_col_tmp <- toHap_col[grep(substr(G,4,4),toHap_col)]
+
+        clip_db_sub.G <- clip_db_sub %>% filter(grepl(paste0(G,'[*]'),!!as.name(toHap_col_tmp)))
+        if(substr(G,4,4)=='V'){clip_db_sub.G <- clip_db_sub.G %>% filter(getGeneCount(!!as.name(toHap_col_tmp))==1) %>%
+          group_by(!!as.name(toHap_col_tmp))  %>%
+          mutate(n=n()) %>% ungroup() %>%
+          filter((grepl(',',!!as.name(toHap_col_tmp), fixed = T)&n/nrow(clip_db_sub.G) > 0.4)|(!grepl(',',!!as.name(toHap_col_tmp), fixed = T))) %>%
+          mutate(!!as.name(toHap_col_tmp) := alleleCollapse(!!as.name(toHap_col_tmp))) %>% as.data.frame()
+        } else clip_db_sub.G <-  clip_db_sub.G %>% filter(!grepl(',', !!as.name(toHap_col_tmp)))
+
+        tmp <- clip_db_sub.G %>% filter(grepl(paste0('^(?=.*',hapBy,'\\*)'), !!as.name(hapBy_col), perl = T)) %>% select(!!as.name(toHap_col_tmp), !!as.name(hapBy_col)) %>% table()
+
+        if(nrow(tmp)==0){return()
+        }else{
+          # if one column add the second
+          if (ncol(tmp) == 1) {
+            toadd <- setdiff(hapBy_alleles, colnames(tmp))
+            tmp <- cbind(tmp, rep(0, nrow(tmp)))
+            colnames(tmp)[2] <- toadd
+
+            tmp <- as.data.frame(tmp)
+            tmp <- tmp[order(colnames(tmp))]
+            tmp <- as.matrix(tmp)
+          }
+
+          if (relative_freq_priors) {
+
+            clip_db_sub.hapBy <- clip_db_sub.G[clip_db_sub.G[, toHap_col_tmp] %in% rownames(tmp), ]
+            toHap_priors <- table(clip_db_sub.hapBy[, toHap_col_tmp])/sum(table(clip_db_sub.hapBy[, toHap_col_tmp]))
+
+            if (length(toHap_priors) != nrow(tmp)) {
+              toHap_priors_tmp <- c(rep(0, nrow(tmp)))
+              names(toHap_priors_tmp) <- rownames(tmp)
+              for (i in names(toHap_priors)) {
+                toHap_priors_tmp[i] <- toHap_priors[i]
+              }
+
+              toHap_priors <- toHap_priors_tmp
+            }
+
+            hap.df <- createHaplotypeTable(tmp, HapByPriors = hapBy_priors, toHapByCol = TRUE, toHapPriors = toHap_priors)
+
+            relFreqDf.tmp <- data.frame(c(sample_name, G, hap.df[, 2:length(hap.df)]),
+                                        stringsAsFactors = F)
+            relFreqDf.tmp <- asNum(relFreqDf.tmp)
+            return(relFreqDf.tmp)
+          } else {
+            hap.df <- createHaplotypeTable(tmp)
+            relFreqDf.tmp <- data.frame(c(sample_name, G, hap.df[, 2:length(hap.df)]),
+                                        stringsAsFactors = F)
+            relFreqDf.tmp <- asNum(relFreqDf.tmp)
+            return(relFreqDf.tmp)
+
+          }
+        }
+      }
+    }
+    )) %>% as.data.frame()
+
+    colnames(GENES.df.num) <- c("SUBJECT", "GENE", gsub(pattern = "*", "_", hapBy_alleles, fixed = T),
+                                   'ALLELES', 'PRIORS_ROW', 'PRIORS_COL','COUNTS1', 'K1',
+                                   'COUNTS2', 'K2','COUNTS3', 'K3','COUNTS4', 'K4')
+    # Check if toHap_col genes are in toHap_GERM
+    if (length(GENES.df.num) == 0)
+      stop("Genes in haplotype column to be infered do not match the genes germline given")
+
+
+    ## Fill deleted according to a k thershold
+    unkIDX <- which(GENES.df.num[gsub("*", "_", hapBy_alleles[1], fixed = T)][, 1] == "Unk")
+    delIDX <- unkIDX[which(sapply(unkIDX, function(i) min(GENES.df.num[i,paste0('K',1:4)], na.rm = T)) >= kThreshDel)]
+    GENES.df.num[delIDX, paste(gsub("*", "_", hapBy_alleles[1], fixed = T))] <- "Del"
+
+    unkIDX <- which(GENES.df.num[gsub("*", "_", hapBy_alleles[2], fixed = T)][, 1] == "Unk")
+    delIDX <- unkIDX[which(sapply(unkIDX, function(i) min(GENES.df.num[i,paste0('K',1:4)], na.rm = T)) >= kThreshDel)]
+    GENES.df.num[delIDX, paste(gsub("*", "_", hapBy_alleles[2], fixed = T))] <- "Del"
+
+    ## Add as unknown genes that do not appear in the individual and mark them as unknown
+
+    GENES.MISSING <- GENES.ref[!(GENES.ref %in% GENES.df.num$GENE)]
+    if (length(GENES.MISSING) > 0) {
+      m <- length(GENES.MISSING)
+
+      sub.df <- data.frame(do.call(rbind, lapply(1:m, function(x) {
+        c(sample_name, NA, "Unk", "Unk", rep(NA, 11))
+      })))
+      names(sub.df) <- names(GENES.df.num)
+
+      sub.df$GENE <- GENES.MISSING
+
+      sub.df[,gsub("*", "_", hapBy_alleles, fixed = T)] <- matrix(rep(ifelse(GENES.MISSING %in% nonReliable_Vgenes_vec,'NR',ifelse(GENES.MISSING %in% deleted_genes_vec, 'Del', 'Unk')), 2), ncol=2)
+
+      GENES.df.num <- rbind(GENES.df.num, sub.df)
+    }
+
+    haplo_db <- rbind(haplo_db, GENES.df.num)
+  }
+
+  return(haplo_db)
 
 }
 
@@ -517,11 +477,13 @@ deletionsByBinom <- function(clip_db, chain = c("IGH", "IGK", "IGL"), nonReliabl
 #' }
 #'
 #' @examples
+#' \donttest{
 #' data(samples_db)
 #'
 #' # Infering V pooled deletions
 #' del_db <- deletionsByVpooled(samples_db)
 #' head(del_db)
+#' }
 #' @export
 # not for light chain
 deletionsByVpooled <- function(clip_db, deletion_col = c("D_CALL"), count_thresh = 50, deleted_genes = "", min_minor_fraction = 0.3,
@@ -563,39 +525,39 @@ deletionsByVpooled <- function(clip_db, deletion_col = c("D_CALL"), count_thresh
 
         V.df <- list()
         if (length(GENES) > 0) {
-            print("The following genes used for pooled deletion detection")
+            print(paste0("The following genes used for pooled deletion detection for sample ", sample_name))
             print(paste(GENES, sep = ","))
             toHapGerm <- if (deletion_col == "D_CALL")
                 HDGERM else HJGERM
-            for (g in GENES) {
+            for (G in GENES) {
 
-                full.hap <- createFullHaplotype(clip_db_sub, toHap_col = deletion_col, hapBy_col = "V_CALL", hapBy = g,
+                full.hap <- createFullHaplotype(clip_db_sub, toHap_col = deletion_col, hapBy_col = "V_CALL", hapBy = G,
                                                 toHap_GERM = toHapGerm, relative_freq_priors = T,
                   kThreshDel = kThreshDel, rmPseudo = T, deleted_genes = deleted_genes_df, chain = "IGH")
 
                 full.hap$V_ALLELE_1 <- strsplit(names(full.hap)[3], "_")[[1]][2]
                 full.hap$V_ALLELE_2 <- strsplit(names(full.hap)[4], "_")[[1]][2]
 
-                names(full.hap)[3] <- paste0(g, "_", 1)
-                names(full.hap)[4] <- paste0(g, "_", 2)
-                V.df[[g]] <- rbind(V.df[[g]], full.hap)
+                names(full.hap)[3] <- paste0(G, "_", 1)
+                names(full.hap)[4] <- paste0(G, "_", 2)
+                V.df[[G]] <- rbind(V.df[[G]], full.hap)
 
             }
         } else {
             stop("No heterozygous V genes found for deletion detection, try changing the parameters")
         }
 
-        GENES <- unlist(sapply(names(V.df), function(g) {
-            if (sample_name %in% V.df[[g]]$SUBJECT) {
-                return(g)
+        GENES <- unlist(sapply(names(V.df), function(G) {
+            if (sample_name %in% V.df[[G]]$SUBJECT) {
+                return(G)
             }
         }))
 
         if (!is.null(GENES)) {
             d.del.df <- c()
 
-            for (g in GENES) {
-                tmp <- V.df[[g]] %>% filter(.data$SUBJECT == sample_name, grepl("IGHD|IGHJ", .data$GENE))
+            for (G in GENES) {
+                tmp <- V.df[[G]] %>% filter(.data$SUBJECT == sample_name, grepl("IGHD|IGHJ", .data$GENE))
                 tmp$DELETION <- apply(tmp, 1, function(x) {
                   if (x[3] == "Unk" & x[4] != "Unk" | x[3] != "Unk" & x[4] == "Unk") {
                     return(1)
@@ -630,7 +592,7 @@ deletionsByVpooled <- function(clip_db, deletion_col = c("D_CALL"), count_thresh
                 })
 
                 tmp <- tmp %>% mutate(SUBJECT = sample_name) %>% select(.data$SUBJECT, .data$GENE, .data$DELETION, .data$K, .data$COUNTS)
-                tmp$V_GENE <- rep(g, nrow(tmp))
+                tmp$V_GENE <- rep(G, nrow(tmp))
                 tmp$DELETION2 <- ifelse(tmp$DELETION == 0, 0, 1)
                 d.del.df <- rbind(d.del.df, tmp)
 

@@ -48,9 +48,11 @@ The function accepts a \code{data.frame} in Change-O format (\url{https://change
 }
 }
 \examples{
+\donttest{
 data(samples_db)
 
 # Infering V pooled deletions
 del_db <- deletionsByVpooled(samples_db)
 head(del_db)
+}
 }

@@ -17,7 +17,7 @@ NULL
 #' @param    removeIGH            if TRUE, 'IGH'\'IGK'\'IGL' prefix is removed from gene names.
 #' @param    plotYaxis            if TRUE, Y axis labels (gene names) are plotted on the middle and right plots. Default is TRUE.
 #' @param    chain                the Ig chain: IGH,IGK,IGL. Default is IGH.
-#'
+#' @param    dir                  The output folder for saving the haplotype map for multiple individuals.
 #'
 #' @return
 #'
@@ -28,20 +28,16 @@ NULL
 #' A \code{data.frame} in a haplotype format created by \code{createFullHaplotype} function.
 #'
 #' @examples
-#' # Load example data and germlines
-#' data(samples_db, HVGERM, HDGERM)
 #'
-#' # Selecting a single individual
-#' clip_db = samples_db[samples_db$SUBJECT=='I5', ]
+#' # Selecting a single individual from the haplotype samples data
+#' haplo_db = samplesHaplotype[samplesHaplotype$SUBJECT=='I5', ]
 #'
-#' # Infering haplotype
-#' hap_df = createFullHaplotype(clip_db,toHap_col=c('V_CALL','D_CALL'),
-#' hapBy_col='J_CALL',hapBy='IGHJ6',toHap_GERM=c(HVGERM,HDGERM))
-#' plotHaplotype(hap_df)
+#' # plot haplotype
+#' plotHaplotype(haplo_db)
 #'
 #' @export
 plotHaplotype <- function(hap_table, html_output = FALSE, gene_sort = c("name", "position"), text_size = 14, removeIGH = TRUE, plotYaxis = TRUE, chain = c("IGH",
-    "IGK", "IGL")) {
+    "IGK", "IGL"), dir) {
     if (missing(chain)) {
         chain = "IGH"
     }
@@ -290,13 +286,22 @@ plotHaplotype <- function(hap_table, html_output = FALSE, gene_sort = c("name", 
     }
     if (length(plot_list) != 1) {
 
+
+        if(!missing(dir)){
+          dir <- file.path(dir, "haplotype_output")
+          dir.create(dir)
+
+        }else{
+          dir <- tempdir()
+        }
+
         if (html_output) {
-            dir.create(file.path(getwd(), "html_output"))
+
             for (sample_name in names(plot_list)) {
-                htmlwidgets::saveWidget(plot_list[[sample_name]], paste0(getwd(), "/html_output/", sample_name, ".html"), selfcontained = T)
+                htmlwidgets::saveWidget(plot_list[[sample_name]], paste0(dir, '/', sample_name, ".html"), selfcontained = T)
             }
         } else {
-            pdf(paste0(getwd(), "/haplotype_output.pdf"), height = 20, width = 15)
+            pdf(paste0(dir, "/haplotype_output.pdf"), height = 20, width = 15)
             for (sample_name in names(plot_list)) {
 
                 title <- ggdraw() + draw_label(sample_name, fontface = "bold")
@@ -333,13 +338,8 @@ plotHaplotype <- function(hap_table, html_output = FALSE, gene_sort = c("name", 
 #' A \code{data.frame} created by \code{createFullHaplotype}.
 #'
 #' @examples
-#' # Load example data and germlines
-#' data(samples_db, HVGERM, HDGERM)
-#'
-#' # Infering haplotype
-#' hap_df = createFullHaplotype(samples_db,toHap_col=c('V_CALL','D_CALL'),
-#' hapBy_col='J_CALL',hapBy='IGHJ6',toHap_GERM=c(HVGERM,HDGERM))
-#' hapHeatmap(hap_df)
+#' # Plotting haplotpe heatmap
+#' hapHeatmap(samplesHaplotype)
 #'
 #' @export
 hapHeatmap <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = "position", removeIGH = TRUE, lk_cutoff = 1, mark_low_lk = TRUE) {
@@ -494,13 +494,8 @@ hapHeatmap <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = "p
 #' A \code{data.frame} created by \code{createFullHaplotype}.
 #'
 #' @examples
-#' # Load example data and germlines
-#' data(samples_db, HVGERM, HDGERM)
-#'
-#' # Infering haplotype
-#' hap_df = createFullHaplotype(samples_db,toHap_col=c('V_CALL','D_CALL'),
-#' hapBy_col='J_CALL',hapBy='IGHJ6',toHap_GERM=c(HVGERM,HDGERM))
-#' hapDendo(hap_df)
+#' # Plotting haplotype hierarchical clustering based on the Jaccard distance
+#' hapDendo(samplesHaplotype)
 #'
 #' @export
 hapDendo <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = c("name", "position"), removeIGH = TRUE, mark_low_lk = TRUE, lk_cutoff = 1) {
@@ -514,7 +509,6 @@ hapDendo <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = c("n
     gene_sort = "position"
   }
   gene_sort <- match.arg(gene_sort)
-
   hapBy_cols = names(hap_table)[c(3,4)]
   samples <- unique(hap_table$SUBJECT)
 
@@ -637,6 +631,7 @@ hapDendo <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = c("n
           axis.title.x = element_text(size = 14, colour = "black"), legend.justification = "center") + labs(y = "", x = "Gene") + guides(fill = guide_legend(nrow = round(length(allele_palette$AlleleCol)/9),
                                                                                                                                                              order = 1, override.aes = list(color = "#DCDCDC"))) + scale_x_continuous(expand = c(0,0),breaks = 1:length(unique(heatmap.df$GENE)[order(match(unique(heatmap.df$GENE), levels(heatmap.df$GENE)))]),labels = unique(heatmap.df$GENE)[order(match(unique(heatmap.df$GENE), levels(heatmap.df$GENE)))], sec.axis = dup_axis(name = ""))
 
+
   if (mark_low_lk & nrow(haplo_db_clust_texture) != 0) {
     # Get Allele legend
     gt1 = ggplotGrob(hap_plot)
@@ -690,12 +685,13 @@ hapDendo <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = c("n
 #' A \code{data.frame} created by \code{binom_test_deletion}.
 #'
 #' @examples
+#'
 #' # Load example data and germlines
 #' data(samples_db)
 #'
 #' # Infering haplotype
-#' hap_df = deletionsByBinom(samples_db);
-#' plotDeletionsByBinom(hap_df)
+#' deletions_db = deletionsByBinom(samples_db);
+#' plotDeletionsByBinom(deletions_db)
 #'
 #' @export
 plotDeletionsByBinom <- function(GENE.usage.df, chain = c("IGH", "IGK", "IGL"), genes.low.cer = c("IGHV3-43", "IGHV3-20"), genes.dup = c("IGHD4-11", "IGHD5-18")) {
@@ -762,14 +758,8 @@ plotDeletionsByBinom <- function(GENE.usage.df, chain = c("IGH", "IGK", "IGL"), 
 #' A \code{data.frame} created by \code{createFullHaplotype}.
 #'
 #' @examples
-#' # Load example data and germlines
-#' data(samples_db, HVGERM, HDGERM)
-#'
-#' # Infering haplotype
-#' hap_df = createFullHaplotype(samples_db,toHap_col=c('V_CALL','D_CALL'),
-#' hapBy_col='J_CALL',hapBy='IGHJ6',toHap_GERM=c(HVGERM,HDGERM))
-#' deletionHeatmap(hap_df)
-#'
+#' # Plotting single choromosme deletion from haplotype inference
+#' deletionHeatmap(samplesHaplotype)
 #' @export
 # Not in use, html_output = FALSE. @param    html_output          If TRUE, a html5 interactive graph is outputed insteaed of the normal plot. Defualt is FALSE
 deletionHeatmap <- function(hap_table, kThreshDel = 3, chain = c("IGH", "IGK", "IGL")) {
@@ -856,6 +846,7 @@ deletionHeatmap <- function(hap_table, kThreshDel = 3, chain = c("IGH", "IGK", "
   del.df.heatmap.cnt <- del.df.heatmap %>% ungroup() %>% group_by(.data$SUBJECT, .data$GENE2) %>% mutate(n = n()) %>% dplyr::slice(1)
   del.df.heatmap.cnt$HapBy[del.df.heatmap.cnt$n == 2] <- "Both"
   del.df.heatmap.cnt <- del.df.heatmap.cnt %>% ungroup() %>% group_by(.data$GENE2, .data$HapBy) %>% count_()
+  names(del.df.heatmap.cnt)[3] <- 'n'
 
   del.df.heatmap.cnt$HapBy <- factor(del.df.heatmap.cnt$HapBy, levels = c(ALLELE_01_col, ALLELE_02_col, "Both"))
   pdel <- ggplot(del.df.heatmap.cnt, aes_string(x = "GENE2", y = "n", fill = "HapBy")) + theme_bw() + geom_bar(stat = "identity", position = "stack", na.rm = T) +
@@ -907,10 +898,12 @@ deletionHeatmap <- function(hap_table, kThreshDel = 3, chain = c("IGH", "IGK", "
 #' A \code{data.frame} created by \code{deletionsByVpooled}.
 #'
 #' @examples
+#' \donttest{
 #' # Load example data and germlines
 #' data(samples_db)
 #' del_db <- deletionsByVpooled(samples_db)
 #' plotDeletionsByVpooled(del_db)
+#' }
 #' @export
 plotDeletionsByVpooled <- function(del.df, K_ranges = c(3, 7)) {
 

@@ -27,11 +27,12 @@ The \code{plotDeletionsByBinom} function generates a graphical output of the dou
 A \code{data.frame} created by \code{binom_test_deletion}.
 }
 \examples{
+
 # Load example data and germlines
 data(samples_db)
 
 # Infering haplotype
-hap_df = deletionsByBinom(samples_db);
-plotDeletionsByBinom(hap_df)
+deletions_db = deletionsByBinom(samples_db);
+plotDeletionsByBinom(deletions_db)
 
 }

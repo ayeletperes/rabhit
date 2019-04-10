@@ -56,9 +56,8 @@
 #'                           mutate mutate_ summarize summarize_
 #'                           mutate_at summarize_at count_ count
 #'                           rename rename_ transmute transmute_ pull ungroup row_number
-#' @importFrom  data.table   :=
+#' @importFrom  data.table   := rbindlist
 #' @importFrom  reshape2     melt
-#' @importFrom  mltools      bin_data
 #' @importFrom  gtools       ddirichlet
 #' @importFrom  stats        hclust as.dendrogram as.dist binom.test p.adjust setNames weighted.mean
 #' @importFrom  ggdendro     dendro_data segment
@@ -69,5 +68,6 @@
 #' @importFrom  rlang        .data
 #' @importFrom  tigger       sortAlleles
 #' @importFrom  RColorBrewer brewer.pal
+#' @importFrom  tidyr        separate_rows
 NULL
 
