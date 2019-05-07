@@ -71,17 +71,6 @@ del_binom_db <- del_binom_db[grep('IGHJ', del_binom_db$GENE, invert = T),]
 # Inferred deletion summary table
 plotDeletionsByBinom(del_binom_db) 
 
-## ---- eval=TRUE, warning=FALSE, cache=TRUE-------------------------------
-# Selecting a single individual with partial V coverage
-clip_db <- samples_db[samples_db$SUBJECT=='I5_FR2', ]
-
-# Detecting non reliable genes
-nonReliable_Vgenes <- nonReliableVGenes(clip_db)
-
-## ---- eval=TRUE, warning=FALSE, cache=TRUE-------------------------------
-# Inferred deletion summary table
-del_binom_db <- deletionsByBinom(clip_db, nonReliable_Vgenes = nonReliable_Vgenes)
-
 ## ---- eval=TRUE, warning=FALSE-------------------------------------------
 # Using the deleted_genes and nonRelaible_Vgenes flags 
 # to infer haplotype for a partial V coverage sequence dataset
@@ -94,14 +83,6 @@ haplo_db <- createFullHaplotype(clip_db, toHap_col=c("V_CALL","D_CALL"),
 ## ---- eval=TRUE, warning=FALSE-------------------------------------------
 # Generate interactive haplotype plot
 p <- plotHaplotype(haplo_db, html_output = TRUE)
-
-## ---- cache=TRUE, eval=FALSE, warning=FALSE------------------------------
-#  # Saving the plot to html output
-#  htmlwidgets::saveWidget(p, "haplotype.html", selfcontained = T)
-
-## ---- cache=TRUE, eval=TRUE, warning=FALSE, message=F--------------------
-# Plotting the interactive haplotype inference
-p
 
 ## ---- eval=TRUE, warning=FALSE,fig.height=12,fig.width=15----------------
 # Detecting non reliable genes
@@ -118,11 +99,6 @@ haplo_db <- createFullHaplotype(samples_db, toHap_col=c("V_CALL","D_CALL"),
                                 nonReliable_Vgenes = nonReliable_Vgenes)
 # plot deletion heatmap
 deletionHeatmap(haplo_db)
-
-## ---- eval=TRUE, warning=FALSE, cache=T----------------------------------
-# Inferred deletion summary table
-del_db <- deletionsByVpooled(samples_db, nonReliable_Vgenes = nonReliable_Vgenes)
-head(del_db)
 
 ## ---- eval=TRUE, warning=FALSE,fig.height=4,fig.width=8------------------
 # Plot the deletion heatmap
