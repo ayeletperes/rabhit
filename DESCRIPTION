@@ -1,7 +1,7 @@
 Package: rabhit
 Type: Package
 Title: Inference Tool for Antibody Haplotype
-Version: 0.1.1
+Version: 0.1.3
 Authors@R: c(person("Ayelet", "Peres", role=c("aut","cre"), 
                     email="peresay@biu.ac.il"),
             person("Moriah", "Gidoni", role=c("aut"), 
@@ -21,11 +21,12 @@ BuildVignettes: true
 VignetteBuilder: knitr
 Encoding: UTF-8
 Depends: R (>= 3.2.5), ggplot2 (>= 2.0.0)
-Imports: dplyr (>= 0.5.0), reshape2,  plotly (>= 4.7.1),
+Imports: dplyr (>= 0.5.0), reshape2 (>= 1.4.3), plotly (>= 4.7.1), graphics (>= 3.4.4),
     gtools (>= 3.5.0), cowplot (>= 0.9.1), 
-    stats, dendextend (>= 1.9.0), data.table,
-    ggdendro (>= 0.1.20), gridExtra, alakazam (>= 0.2.10), tigger (>= 0.2.11),
-    methods, htmlwidgets, gtable, grDevices, rlang, RColorBrewer, tidyr, stringi
+    stats (>= 3.4.4), dendextend (>= 1.9.0), data.table (>= 1.12.2),
+    ggdendro (>= 0.1.20), gridExtra (>= 2.3.0), alakazam (>= 0.2.10), tigger (>= 0.2.11),
+    methods (>= 3.4.4), htmlwidgets (>= 1.3.0), gtable (>= 0.3.0), rlang (>= 0.4.0), RColorBrewer (>= 1.1.2), tidyr (>= 0.8.3), 
+    stringi (>= 1.4.3), grid (>= 3.4.4), splitstackshape (>= 1.4.8), fastmatch (>= 1.1.0) , grDevices
 Suggests: knitr,
     rmarkdown
 RoxygenNote: 6.1.1
@@ -36,3 +37,4 @@ Collate:
     'internal_functions.R'
     'functions.R'
     'graphic_functions.R'
+    'zzz.R'

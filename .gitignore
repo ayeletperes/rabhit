@@ -3,6 +3,6 @@
 .RData
 .Ruserdata
 inst/doc
-rabhit.Rproj
+^.*\.Rproj$
 Rprof.out
 

@@ -23,7 +23,13 @@ if by 'position' only functional genes are used and are ordered by their chromos
 \item{mark_low_lk}{if TRUE, a texture is add for low lK values. Defualt is TRUE.}
 }
 \value{
-A heat-map visualization of the haplotype inference for multiple samples.
+A list with the following:
+
+\itemize{
+  \item \code{'p'}:        heat-map visualization of the haplotype inference for multiple samples.
+  \item \code{'width'}:    Optimal width value for rendering plot to pdf.
+  \item \code{'height'}:   Optimal width value for rendering plot to pdf.
+}
 }
 \description{
 The \code{hapHeatmap} function generates a graphical output of the alleles per gene in multiple samples.
@@ -33,6 +39,6 @@ A \code{data.frame} created by \code{createFullHaplotype}.
 }
 \examples{
 # Plotting haplotpe heatmap
-hapHeatmap(samplesHaplotype)
-
+p <- hapHeatmap(samplesHaplotype)
+p$p
 }
