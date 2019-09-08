@@ -27,8 +27,8 @@ A list with the following:
 
 \itemize{
   \item \code{'p'}:        heat-map visualization of the haplotype inference for multiple samples.
-  \item \code{'width'}:    Optimal width value for rendering plot to pdf.
-  \item \code{'height'}:   Optimal width value for rendering plot to pdf.
+  \item \code{'width'}:    Optimal width value for rendering plot.
+  \item \code{'height'}:   Optimal width value for rendering plot.
 }
 }
 \description{
@@ -40,5 +40,6 @@ A \code{data.frame} created by \code{createFullHaplotype}.
 \examples{
 # Plotting haplotpe heatmap
 p <- hapHeatmap(samplesHaplotype)
+
 p$p
 }
