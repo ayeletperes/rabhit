@@ -423,8 +423,8 @@ plotHaplotype <- function(hap_table, html_output = FALSE, gene_sort = c("name", 
 #'
 #' \itemize{
 #'   \item \code{'p'}:        heat-map visualization of the haplotype inference for multiple samples.
-#'   \item \code{'width'}:    Optimal width value for rendering plot to pdf.
-#'   \item \code{'height'}:   Optimal width value for rendering plot to pdf.
+#'   \item \code{'width'}:    Optimal width value for rendering plot.
+#'   \item \code{'height'}:   Optimal width value for rendering plot.
 #' }
 #'
 #' @details
@@ -434,6 +434,7 @@ plotHaplotype <- function(hap_table, html_output = FALSE, gene_sort = c("name", 
 #' @examples
 #' # Plotting haplotpe heatmap
 #' p <- hapHeatmap(samplesHaplotype)
+#'
 #' p$p
 #' @export
 hapHeatmap <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = "position", removeIGH = TRUE, lk_cutoff = 1, mark_low_lk = TRUE) {
@@ -485,7 +486,7 @@ hapHeatmap <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = "p
     # getting the lk value
     panels[,"K":=apply(panels,1,k_assign)]
     # clean lk inf
-    invisible(lapply(names(panels),function(.name) set(panels, which(is.infinite(panels[[.name]])), j = .name,value=NA)))
+    invisible(lapply(names(panels),function(.name) data.table::set(panels, which(is.infinite(panels[[.name]])), j = .name,value=NA)))
     # remove unnecessary columns
     cols <- c("SUBJECT","GENE","GENE_LOC","hapBy","hapBy_alleles","K")
     panels <- panels[, .SD, .SDcols= cols]
@@ -611,12 +612,11 @@ hapHeatmap <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = "p
     # set the height and width of plot
     height <- samples_n * 0.1 + 2 + nrow(m2)*0.2 + short_reads_rows*0.4 # number of samples, number of rows in legend, number of rows in bottom annotation
     width <- genes_n * 0.3 + 1.5 # numer of genes
-    size_text = nrow(upper_m)/(height*width) # text size for heatmap annoations
+    size_text = nrow(upper_m)/(height*width)+0.5 # text size for heatmap annoations
     size_text_leg = ncol(m2)/(width*longest_allele)+1 # text size for legend annotations
 
     # plot layout
     layout.matrix <- matrix(c(1,2, 3, 4), nrow = 4, ncol = 1)
-
     graphics::layout(mat = layout.matrix,
                      heights = c(2, 2, 1, 1) # Heights of the three rows
     )
