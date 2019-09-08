@@ -6,7 +6,7 @@
 \usage{
 hapHeatmap(hap_table, chain = c("IGH", "IGK", "IGL"),
   gene_sort = "position", removeIGH = TRUE, lk_cutoff = 1,
-  mark_low_lk = TRUE)
+  mark_low_lk = TRUE, size_annot = 1.5)
 }
 \arguments{
 \item{hap_table}{haplotype summary table. See details.}
@@ -21,6 +21,8 @@ if by 'position' only functional genes are used and are ordered by their chromos
 \item{lk_cutoff}{the lK cutoff value to be considerd low for texture layer. Defualt is lK<1.}
 
 \item{mark_low_lk}{if TRUE, a texture is add for low lK values. Defualt is TRUE.}
+
+\item{size_annot}{size of bottom annotation text. Defualt is 1.5 .}
 }
 \value{
 A list with the following:
@@ -41,5 +43,5 @@ A \code{data.frame} created by \code{createFullHaplotype}.
 # Plotting haplotpe heatmap
 p <- hapHeatmap(samplesHaplotype)
 
-p$p
+cowplot::ggdraw(p$p)
 }

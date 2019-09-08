@@ -50,7 +50,7 @@ haplo_comb <- rbind(haplo_db_J6,haplo_db_D2_21)
 # Plot the haplotype inferred dendogram
 hapDendo(haplo_comb)
 
-## ---- eval=TRUE, warning=FALSE, fig.width=12, fig.height=12--------------
+## ---- cache = T, eval=TRUE, warning=FALSE, fig.width=12, fig.height=12----
 # Removing the individual I5_FR1 with the paritial V coverage sequence.
 clip_dbs <- samples_db[samples_db$SUBJECT!='I5_FR2', ]
 
@@ -58,7 +58,17 @@ clip_dbs <- samples_db[samples_db$SUBJECT!='I5_FR2', ]
 haplo_db <- createFullHaplotype(clip_dbs, toHap_col=c("V_CALL","D_CALL"),
                         hapBy_col="J_CALL", hapBy="IGHJ6", toHap_GERM=c(HVGERM, HDGERM))
 # Plot the haplotype inferred heatmap
-hapHeatmap(haplo_db)
+p.list <- hapHeatmap(haplo_db)
+
+# The function return a list with the plot and the optimal width and height
+# we can use both parametrs to render the plot to the desired size.
+width <- p.list$width
+height <- p.list$height
+
+
+## ---- echo = F, cache = T, eval=TRUE, warning=FALSE, fig.width=width, fig.height=height----
+# Plotting the heatmap
+cowplot::ggdraw(p.list$p)
 
 ## ---- eval=TRUE, warning=FALSE-------------------------------------------
 # Infering double choromosome deletions

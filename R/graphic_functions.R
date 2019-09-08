@@ -416,6 +416,7 @@ plotHaplotype <- function(hap_table, html_output = FALSE, gene_sort = c("name", 
 #' @param    removeIGH            if TRUE, 'IGH'\'IGK'\'IGL' prefix is removed from gene names.
 #' @param    lk_cutoff            the lK cutoff value to be considerd low for texture layer. Defualt is lK<1.
 #' @param    mark_low_lk          if TRUE, a texture is add for low lK values. Defualt is TRUE.
+#' @param    size_annot           size of bottom annotation text. Defualt is 1.5 .
 #'
 #' @return
 #'
@@ -435,9 +436,9 @@ plotHaplotype <- function(hap_table, html_output = FALSE, gene_sort = c("name", 
 #' # Plotting haplotpe heatmap
 #' p <- hapHeatmap(samplesHaplotype)
 #'
-#' p$p
+#' cowplot::ggdraw(p$p)
 #' @export
-hapHeatmap <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = "position", removeIGH = TRUE, lk_cutoff = 1, mark_low_lk = TRUE) {
+hapHeatmap <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = "position", removeIGH = TRUE, lk_cutoff = 1, mark_low_lk = TRUE, size_annot = 1.5) {
 
 
     if (missing(chain)) {
@@ -592,7 +593,6 @@ hapHeatmap <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = "p
     start <- c(0.01)
     end <- c(0.15,0.13)
     size = 1
-    size_annot = 1
     short_reads_rows = 0
     ## add short read text annotation at the bottom
     if(nra){
@@ -610,8 +610,8 @@ hapHeatmap <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = "p
     }
 
     # set the height and width of plot
-    height <- samples_n * 0.1 + 2 + nrow(m2)*0.2 + short_reads_rows*0.4 # number of samples, number of rows in legend, number of rows in bottom annotation
-    width <- genes_n * 0.3 + 1.5 # numer of genes
+    height <- samples_n * 0.1 + 10 + nrow(m2)*0.2 + short_reads_rows*0.4 # number of samples, number of rows in legend, number of rows in bottom annotation
+    width <- genes_n * 0.3 + 5 # numer of genes
     size_text = nrow(upper_m)/(height*width)+0.5 # text size for heatmap annoations
     size_text_leg = ncol(m2)/(width*longest_allele)+1 # text size for legend annotations
 
