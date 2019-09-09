@@ -419,6 +419,8 @@ plotHaplotype <- function(hap_table, html_output = FALSE, gene_sort = c("name", 
 #' @param    size_annot           size of bottom annotation text. Defualt is 1.5 .
 #' @param    color_y              named list of the colors for y axis labels.
 #' @param    order_subject        order subject by a vecor.
+#' @param    file                 file path for rendering the plot to pdf. If non is supplied than the plot is retured as object. Defualt is NULL.
+#'
 #' @return
 #'
 #' A list with the following:
@@ -428,6 +430,8 @@ plotHaplotype <- function(hap_table, html_output = FALSE, gene_sort = c("name", 
 #'   \item \code{'width'}:    Optimal width value for rendering plot.
 #'   \item \code{'height'}:   Optimal width value for rendering plot.
 #' }
+#'
+#' When a file is supplied the graph is also rendered to pdf.
 #'
 #' @details
 #'
@@ -618,6 +622,7 @@ hapHeatmap <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = "p
     size_text = nrow(upper_m)/(height*width)+0.5 # text size for heatmap annoations
     size_text_leg = ncol(m2)/(width*longest_allele)+1 # text size for legend annotations
 
+    if(!is.null(file)) pdf(file,onefile = F, width = width, height = height, family = "serif")
     # plot layout
     layout.matrix <- matrix(c(1,2, 3, 4), nrow = 4, ncol = 1)
     graphics::layout(mat = layout.matrix,
@@ -739,6 +744,9 @@ hapHeatmap <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = "p
     p1.base <- recordPlot()
     invisible(dev.off())
     return(list(p = p1.base, width = width, height = height))
+    if(!is.null(file)) dev.off()
+    # embed the fonts to file
+    if(!is.null(file)) embedFonts(file)
 }
 
 
