@@ -417,7 +417,8 @@ plotHaplotype <- function(hap_table, html_output = FALSE, gene_sort = c("name", 
 #' @param    lk_cutoff            the lK cutoff value to be considerd low for texture layer. Defualt is lK<1.
 #' @param    mark_low_lk          if TRUE, a texture is add for low lK values. Defualt is TRUE.
 #' @param    size_annot           size of bottom annotation text. Defualt is 1.5 .
-#'
+#' @param    color_y              named list of the colors for y axis labels.
+#' @param    order_subject        order subject by a vecor.
 #' @return
 #'
 #' A list with the following:
@@ -438,7 +439,7 @@ plotHaplotype <- function(hap_table, html_output = FALSE, gene_sort = c("name", 
 #'
 #' cowplot::ggdraw(p$p)
 #' @export
-hapHeatmap <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = "position", removeIGH = TRUE, lk_cutoff = 1, mark_low_lk = TRUE, size_annot = 1.5) {
+hapHeatmap <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = "position", removeIGH = TRUE, lk_cutoff = 1, mark_low_lk = TRUE, size_annot = 1.5, color_y = NULL, order_subject = NULL) {
 
 
     if (missing(chain)) {
@@ -569,6 +570,8 @@ hapHeatmap <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = "p
     panels_m[,"id" := 1:.N, by = c("SUBJECT", "GENE", "hapBy")]
     panels_f = panels_m[,c("n_line" = 1:get("line")), by = c("SUBJECT", "hapBy", "GENE", "GENE_LOC", "ALLELES_G", "A_CODE", "text_bottom", "K"), nomatch = 0]
 
+    if(!is.null(order_subject)) panels_f <- panels_f[order(match(panels_f$SUBJECT, order_subject))]
+
     # transform allele codes to matrix, 12 box for each gene. each row is an individual
     upper_m <- matrix(panels_f[panels_f$hapBy==hapBy_cols[1]][[6]],ncol = 12*genes_n,byrow = T,
                       dimnames = list(unique(panels_f[panels_f$hapBy==hapBy_cols[1]][[1]]),panels_f[panels_f$hapBy==hapBy_cols[1]][[3]][1:(12*genes_n)]))
@@ -627,8 +630,14 @@ hapHeatmap <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = "p
     grid(lwd=1,nx = genes_n,ny=0,col = "white",lty = 1)
     # add axis annotations
     axis(3,(0:(genes_n-1))/genes_n+6/(12*genes_n),names(gene_loc),las=3) # top
-    axis(1,(0:(genes_n-1))/genes_n+6/(12*genes_n),names(gene_loc),las=3) # left
-    axis(2,(0:(samples_n-1))/(samples_n-1),rownames(upper_m),las=1,cex.axis=0.8) # bottom
+    axis(1,(0:(genes_n-1))/genes_n+6/(12*genes_n),names(gene_loc),las=3) # bottom
+    title(gsub('_','*',hapBy_cols[1]), adj = 0.5)
+    # color y tick labels if supplied
+    colors <- "black"
+    if(!is.null(color_y)) colors <- color_y[rownames(upper_m)]
+    Map(axis, side=2, at=(0:(samples_n-1))/(samples_n-1), col.axis=colors, labels=rownames(upper_m), lwd=0, las=1, cex.axis=0.8) #left
+    axis(2,at=(0:(samples_n-1))/(samples_n-1),labels=FALSE)
+
 
     # draw lines for low lk values
     sub_geno = panels_m[panels_m$hapBy==hapBy_cols[1] & panels_m$K<lk_cutoff,]
@@ -664,8 +673,13 @@ hapHeatmap <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = "p
     grid(lwd=1,nx = genes_n,ny=0,col = "white",lty = 1)
     # add axis annotations
     axis(3,(0:(genes_n-1))/genes_n+6/(12*genes_n),names(gene_loc),las=3) # top
-    axis(1,(0:(genes_n-1))/genes_n+6/(12*genes_n),names(gene_loc),las=3) # left
-    axis(2,(0:(samples_n-1))/(samples_n-1),rownames(lower_m),las=1,cex.axis=0.8) # bottom
+    axis(1,(0:(genes_n-1))/genes_n+6/(12*genes_n),names(gene_loc),las=3) # bottom
+    title(gsub('_','*',hapBy_cols[2]), adj = 0.5)
+    # color y tick labels if supplied
+    colors <- "black"
+    if(!is.null(color_y)) colors <- color_y[rownames(lower_m)]
+    Map(axis, side=2, at=(0:(samples_n-1))/(samples_n-1), col.axis=colors, labels=rownames(lower_m), lwd=0, las=1, cex.axis=0.8) #left
+    axis(2,at=(0:(samples_n-1))/(samples_n-1),labels=FALSE)
 
     # draw lines for low lk values
     sub_geno = panels_m[panels_m$hapBy==hapBy_cols[2] & panels_m$K<lk_cutoff,]

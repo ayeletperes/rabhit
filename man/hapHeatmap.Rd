@@ -6,7 +6,7 @@
 \usage{
 hapHeatmap(hap_table, chain = c("IGH", "IGK", "IGL"),
   gene_sort = "position", removeIGH = TRUE, lk_cutoff = 1,
-  mark_low_lk = TRUE, size_annot = 1.5)
+  mark_low_lk = TRUE, size_annot = 1.5, color_y = NULL)
 }
 \arguments{
 \item{hap_table}{haplotype summary table. See details.}
@@ -23,6 +23,8 @@ if by 'position' only functional genes are used and are ordered by their chromos
 \item{mark_low_lk}{if TRUE, a texture is add for low lK values. Defualt is TRUE.}
 
 \item{size_annot}{size of bottom annotation text. Defualt is 1.5 .}
+
+\item{color_y}{named list of the colors for y axis labels.}
 }
 \value{
 A list with the following:
