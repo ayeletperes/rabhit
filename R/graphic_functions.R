@@ -443,7 +443,7 @@ plotHaplotype <- function(hap_table, html_output = FALSE, gene_sort = c("name", 
 #'
 #' cowplot::ggdraw(p$p)
 #' @export
-hapHeatmap <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = "position", removeIGH = TRUE, lk_cutoff = 1, mark_low_lk = TRUE, size_annot = 1.5, color_y = NULL, order_subject = NULL) {
+hapHeatmap <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = "position", removeIGH = TRUE, lk_cutoff = 1, mark_low_lk = TRUE, size_annot = 1.5, color_y = NULL, order_subject = NULL , file = NULL) {
 
 
     if (missing(chain)) {
@@ -622,7 +622,7 @@ hapHeatmap <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = "p
     size_text = nrow(upper_m)/(height*width)+0.5 # text size for heatmap annoations
     size_text_leg = ncol(m2)/(width*longest_allele)+1 # text size for legend annotations
 
-    if(!is.null(file)) pdf(file,onefile = F, width = width, height = height, family = "serif")
+    if(!is.null(file)) pdf(file, onefile = F, width = width, height = height, family = "serif")
     # plot layout
     layout.matrix <- matrix(c(1,2, 3, 4), nrow = 4, ncol = 1)
     graphics::layout(mat = layout.matrix,
