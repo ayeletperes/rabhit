@@ -2,18 +2,18 @@
 
 #### Default Gene location ####
 
-## Get the tables from imgt
-imgt_igk = "http://www.imgt.org/IMGTrepertoire/index.php?section=LocusGenes&repertoire=GeneOrder&species=human&group=IGK"
-imgt_igk  = XML::readHTMLTable(imgt_igk, header=T, which=1,stringsAsFactors=F, skip.rows = 1)
-cat(paste0('"',rev(imgt_igk$`IMGT gene name`),'"',collapse = ','))
-
-imgt_igL = "http://www.imgt.org/IMGTrepertoire/index.php?section=LocusGenes&repertoire=GeneOrder&species=human&group=IGL"
-imgt_igL  = XML::readHTMLTable(imgt_igL, header=T, which=1,stringsAsFactors=F, skip.rows = 1)
-cat(paste0('"',rev(imgt_igL$`IMGT gene name`),'"',collapse = ','))
-
-imgt_igH = "http://www.imgt.org/IMGTrepertoire/index.php?section=LocusGenes&repertoire=GeneOrder&species=human&group=IGH"
-imgt_igH  = XML::readHTMLTable(imgt_igH, header=T, which=1,stringsAsFactors=F, skip.rows = 1)
-cat(paste0('"',rev(imgt_igH$`IMGT gene name`),'"',collapse = ','))
+# ## Get the tables from imgt
+# imgt_igk = "http://www.imgt.org/IMGTrepertoire/index.php?section=LocusGenes&repertoire=GeneOrder&species=human&group=IGK"
+# imgt_igk  = XML::readHTMLTable(imgt_igk, header=T, which=1,stringsAsFactors=F, skip.rows = 1)
+# cat(paste0('"',rev(imgt_igk$`IMGT gene name`),'"',collapse = ','))
+#
+# imgt_igL = "http://www.imgt.org/IMGTrepertoire/index.php?section=LocusGenes&repertoire=GeneOrder&species=human&group=IGL"
+# imgt_igL  = XML::readHTMLTable(imgt_igL, header=T, which=1,stringsAsFactors=F, skip.rows = 1)
+# cat(paste0('"',rev(imgt_igL$`IMGT gene name`),'"',collapse = ','))
+#
+# imgt_igH = "http://www.imgt.org/IMGTrepertoire/index.php?section=LocusGenes&repertoire=GeneOrder&species=human&group=IGH"
+# imgt_igH  = XML::readHTMLTable(imgt_igH, header=T, which=1,stringsAsFactors=F, skip.rows = 1)
+# cat(paste0('"',rev(imgt_igH$`IMGT gene name`),'"',collapse = ','))
 
 GENE.loc <- list(
 
@@ -63,14 +63,15 @@ GENE.loc <- list(
 
 #### Known Pseudo Gene####
 
-library(rvest)
-imgt = "http://www.imgt.org/genedb/GENElect?query=4.2+IG&species=Homo+sapiens"
-pseudo <- html_nodes(webpage, "table") %>% html_table()
-pseudo_IGK <- pseudo[[1]] %>% filter(`IMGT gene functionality`%in% c("ORF", "P"), grepl('IGK', `IMGT/GENE-DB`))
-cat(paste0('"',rev(pseudo_IGK$`IMGT/GENE-DB`),'"',collapse = ','))
-
-pseudo_IGL <- pseudo[[1]] %>% filter(`IMGT gene functionality`%in% c("ORF", "P"), grepl('IGL', `IMGT/GENE-DB`))
-cat(paste0('"',rev(pseudo_IGL$`IMGT/GENE-DB`),'"',collapse = ','))
+# library(rvest)
+# imgt = "http://www.imgt.org/genedb/GENElect?query=4.2+IG&species=Homo+sapiens"
+# imgt  = XML::readHTMLTable(imgt, header=T, which=1,stringsAsFactors=F, skip.rows = 1)
+# pseudo <- html_nodes(imgt, "table") %>% html_table()
+# pseudo_IGK <- pseudo[[1]] %>% filter(`IMGT gene functionality`%in% c("ORF", "P"), grepl('IGK', `IMGT/GENE-DB`))
+# cat(paste0('"',rev(pseudo_IGK$`IMGT/GENE-DB`),'"',collapse = ','))
+#
+# pseudo_IGL <- pseudo[[1]] %>% filter(`IMGT gene functionality`%in% c("ORF", "P"), grepl('IGL', `IMGT/GENE-DB`))
+# cat(paste0('"',rev(pseudo_IGL$`IMGT/GENE-DB`),'"',collapse = ','))
 
 
 PSEUDO <- list(
