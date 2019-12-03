@@ -600,7 +600,7 @@ hapHeatmap <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = "p
     # start and end values for plot parts
     matrix_p <- c(1:4)
     matrix_r <- 4
-    matrix_heights <- c(2, 2, 1, 1)
+    matrix_heights <- c(2, 2, 0.5, 0.5)
     size = 1
     short_reads_rows = 0
     ## add short read text annotation at the bottom
@@ -622,7 +622,7 @@ hapHeatmap <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = "p
 
     # set the height and width of plot
     height <- samples_n * 0.1 + 10 + nrow(m2)*0.2 + short_reads_rows*0.4 # number of samples, number of rows in legend, number of rows in bottom annotation
-    width <- genes_n * 0.3 + 5 # numer of genes
+    width <- genes_n * 0.15 + 5 # numer of genes
     size_text = if(is.null(size_text)) nrow(upper_m)/(height*width)+0.5 # text size for heatmap annoations
     size_text_leg = ncol(m2)/(width*longest_allele)+1 # text size for legend annotations
 
