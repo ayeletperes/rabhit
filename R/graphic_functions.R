@@ -627,6 +627,10 @@ hapHeatmap <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = "p
     size_text_leg = ncol(m2)/(width*longest_allele)+1 # text size for legend annotations
 
     if(!is.null(file)) pdf(file, onefile = F, width = width, height = height, family = "serif")
+    else{
+      pdf(NULL)
+      dev.control(displaylist="enable")
+    }
     # plot layout
     layout.matrix <- matrix(matrix_p, nrow = matrix_r, ncol = 1)
     graphics::layout(mat = layout.matrix,
@@ -751,12 +755,15 @@ hapHeatmap <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = "p
       plot(c(0, 1), c(0, 1), ann = F, bty = 'n', type = 'n', xaxt = 'n', yaxt = 'n')
       text(x = x_annot, y = 0.5, annot, cex = size_annot, col = "black", pos = 4)
     }
-    p1.base <- recordPlot()
-    invisible(dev.off())
-    return(list(p = p1.base, width = width, height = height))
-    if(!is.null(file)) dev.off()
-    # embed the fonts to file
-    if(!is.null(file)) embedFonts(file)
+
+    if(is.null(file)){
+      p1.base <- recordPlot()
+      invisible(dev.off())
+      return(list(p = p1.base, width = width, height = height))
+    }else{
+      dev.off()
+      # embed the fonts to file
+      embedFonts(file)}
 }
 
 
