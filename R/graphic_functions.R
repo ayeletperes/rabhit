@@ -420,6 +420,7 @@ plotHaplotype <- function(hap_table, html_output = FALSE, gene_sort = c("name", 
 #' @param    color_y              named list of the colors for y axis labels.
 #' @param    order_subject        order subject by a vecor.
 #' @param    file                 file path for rendering the plot to pdf. If non is supplied than the plot is retured as object. Defualt is NULL.
+#' @param    size_text            text size for annotations.
 #'
 #' @return
 #'
@@ -443,7 +444,7 @@ plotHaplotype <- function(hap_table, html_output = FALSE, gene_sort = c("name", 
 #'
 #' cowplot::ggdraw(p$p)
 #' @export
-hapHeatmap <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = "position", removeIGH = TRUE, lk_cutoff = 1, mark_low_lk = TRUE, size_annot = 1.5, color_y = NULL, order_subject = NULL , file = NULL) {
+hapHeatmap <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = "position", removeIGH = TRUE, lk_cutoff = 1, mark_low_lk = TRUE, size_annot = 1.5, color_y = NULL, order_subject = NULL , file = NULL, size_text = NULL) {
 
 
     if (missing(chain)) {
@@ -482,7 +483,7 @@ hapHeatmap <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = "p
     # fix na in K columns
     panels[is.na(panels)] <- Inf
     # melt haplotype columns to one
-    panels <- melt(panels, measure.vars = hapBy_cols, variable.name = "hapBy", value.name = 'hapBy_alleles')
+    panels <- reshape2::melt(panels, measure.vars = hapBy_cols, variable.name = "hapBy", value.name = 'hapBy_alleles')
 
     # separating the allele column
     panels <- splitstackshape::cSplit(panels[,c('SUBJECT','GENE','GENE_LOC',"hapBy",'hapBy_alleles',"ALLELES",paste0("K",1:4))],
@@ -597,8 +598,9 @@ hapHeatmap <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = "p
     m2 <- matrix(c(unlist(seqs),rep(0,add)), ncol = genes_n*12, byrow = T)
 
     # start and end values for plot parts
-    start <- c(0.01)
-    end <- c(0.15,0.13)
+    matrix_p <- c(1:4)
+    matrix_r <- 4
+    matrix_heights <- c(2, 2, 1, 1)
     size = 1
     short_reads_rows = 0
     ## add short read text annotation at the bottom
@@ -612,21 +614,23 @@ hapHeatmap <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = "p
       short_reads_rows = length(annot)
       annot <- paste0(annot,collapse = '\n')
       # add the start and value for the third part
-      end <- c(0.2, 0.22, 0.06)
-      start <- c(0.03,0.01)
+      matrix_p <- c(1:3)
+      matrix_r <- 3
+      matrix_heights <- c(2, 2, 1, 3)
+
     }
 
     # set the height and width of plot
     height <- samples_n * 0.1 + 10 + nrow(m2)*0.2 + short_reads_rows*0.4 # number of samples, number of rows in legend, number of rows in bottom annotation
     width <- genes_n * 0.3 + 5 # numer of genes
-    size_text = nrow(upper_m)/(height*width)+0.5 # text size for heatmap annoations
+    size_text = if(is.null(size_text)) nrow(upper_m)/(height*width)+0.5 # text size for heatmap annoations
     size_text_leg = ncol(m2)/(width*longest_allele)+1 # text size for legend annotations
 
     if(!is.null(file)) pdf(file, onefile = F, width = width, height = height, family = "serif")
     # plot layout
-    layout.matrix <- matrix(c(1,2, 3, 4), nrow = 4, ncol = 1)
+    layout.matrix <- matrix(matrix_p, nrow = matrix_r, ncol = 1)
     graphics::layout(mat = layout.matrix,
-                     heights = c(2, 2, 1, 1) # Heights of the three rows
+                     heights =matrix_heights # Heights of the rows
     )
     # heatmap upper plot
     par(mar=c(2,6,8,6))
@@ -636,16 +640,18 @@ hapHeatmap <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = "p
     # add axis annotations
     axis(3,(0:(genes_n-1))/genes_n+6/(12*genes_n),names(gene_loc),las=3) # top
     axis(1,(0:(genes_n-1))/genes_n+6/(12*genes_n),names(gene_loc),las=3) # bottom
-    title(gsub('_','*',hapBy_cols[1]), adj = 0.5)
+    title(gsub('_','*',hapBy_cols[1]), adj = 0.5, line = 5)
     # color y tick labels if supplied
     colors <- "black"
     if(!is.null(color_y)) colors <- color_y[rownames(upper_m)]
-    Map(axis, side=2, at=(0:(samples_n-1))/(samples_n-1), col.axis=colors, labels=rownames(upper_m), lwd=0, las=1, cex.axis=0.8) #left
-    axis(2,at=(0:(samples_n-1))/(samples_n-1),labels=FALSE)
+    samples_loc <- ifelse(samples_n==1, 0, (0:(samples_n-1))/(samples_n-1))
+    Map(axis, side=2, at=samples_loc, col.axis=colors, labels=rownames(upper_m), lwd=0, las=1, cex.axis=0.8) #left
+    axis(2,at=samples_loc,labels=FALSE)
 
 
     # draw lines for low lk values
     sub_geno = panels_m[panels_m$hapBy==hapBy_cols[1] & panels_m$K<lk_cutoff,]
+    if(nrow(sub_geno)>0){
     NR = samples_n
     NC = genes_n*12
     apply(sub_geno, 1,function(x){
@@ -653,10 +659,11 @@ hapHeatmap <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = "p
       I = which(x["SUBJECT"]==samples)-1    # row index
       J = (as.numeric(x["GENE_LOC"])-1)*12            # column index
       draw_segment(NR,NC,I,J,lwd=1,col="white")}
-    )
+    )}
 
     # ad text annotations
     ids_text <- !grepl('^[0-9]|Del|Unk',panels_m$text_bottom)
+    if(any(ids_text)){
     sub_geno = panels_m[panels_m$hapBy==hapBy_cols[1] & ids_text,]
 
     NR = samples_n
@@ -669,7 +676,7 @@ hapHeatmap <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = "p
       N_ALLELES = as.numeric(x["n"])                  # number of alleles
       TEXT =  x["text"]                   # text
       Write_text(NR,NC,I,J,ALLELE,N_ALLELES,TEXT,cex=size_text)}
-    )
+    )}
 
     # heatmap lower plot
     par(mar=c(2,6,8,6))
@@ -679,14 +686,16 @@ hapHeatmap <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = "p
     # add axis annotations
     axis(3,(0:(genes_n-1))/genes_n+6/(12*genes_n),names(gene_loc),las=3) # top
     axis(1,(0:(genes_n-1))/genes_n+6/(12*genes_n),names(gene_loc),las=3) # bottom
-    title(gsub('_','*',hapBy_cols[2]), adj = 0.5)
+    title(gsub('_','*',hapBy_cols[2]), adj = 0.5, line = 5)
     # color y tick labels if supplied
     colors <- "black"
     if(!is.null(color_y)) colors <- color_y[rownames(lower_m)]
-    Map(axis, side=2, at=(0:(samples_n-1))/(samples_n-1), col.axis=colors, labels=rownames(lower_m), lwd=0, las=1, cex.axis=0.8) #left
-    axis(2,at=(0:(samples_n-1))/(samples_n-1),labels=FALSE)
+    samples_loc <- ifelse(samples_n==1, 0, (0:(samples_n-1))/(samples_n-1))
+    Map(axis, side=2, at=samples_loc, col.axis=colors, labels=rownames(lower_m), lwd=0, las=1, cex.axis=0.8) #left
+    axis(2,at=samples_loc,labels=FALSE)
 
     # draw lines for low lk values
+    if(any(ids_text)){
     sub_geno = panels_m[panels_m$hapBy==hapBy_cols[2] & panels_m$K<lk_cutoff,]
     NR = samples_n
     NC = genes_n*12
@@ -695,10 +704,11 @@ hapHeatmap <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = "p
       I = which(x["SUBJECT"]==samples)-1    # row index
       J = (as.numeric(x["GENE_LOC"])-1)*12            # column index
       draw_segment(NR,NC,I,J,lwd=1,col="white")}
-    )
+    )}
 
     # ad text annotations
     sub_geno = panels_m[panels_m$hapBy==hapBy_cols[2] & ids_text,]
+    if(nrow(sub_geno)>0){
     NR = samples_n
     NC = genes_n*12
     apply(sub_geno, 1,function(x){
@@ -709,7 +719,7 @@ hapHeatmap <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = "p
       N_ALLELES = as.numeric(x["n"])                  # number of alleles
       TEXT =  x["text"]                   # text
       Write_text(NR,NC,I,J,ALLELE,N_ALLELES,TEXT,cex=size_text)}
-    )
+    )}
 
     # legend plot
     par(mar=c(3,6,2,6))
@@ -963,7 +973,7 @@ hapDendo <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = c("n
 #'
 #'
 #' @param    GENE.usage.df        double chromosome deletion summary table. See details.
-#' @param    chain                the IG chain: IGH,IGK,IGL. Default is IGH.
+# @param    chain                the IG chain: IGH,IGK,IGL. Default is IGH.
 #' @param    genes.low.cer        a vector of IGH genes known to be with low certantiny in the binomial test. Default is IGHV3-43 and IGHV3-20
 #' @param    genes.dup            a vector of IGH genes known to have a duplicated gene. Default is IGHD4-11 that his duplicate is IGHD4-4 and IGHD5-18 that his duplicate is IGHD5-5
 #'
@@ -984,13 +994,14 @@ hapDendo <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = c("n
 #' deletions_db = deletionsByBinom(samples_db);
 #' plotDeletionsByBinom(deletions_db)
 #'
+#, chain = c("IGH", "IGK", "IGL")
 #' @export
-plotDeletionsByBinom <- function(GENE.usage.df, chain = c("IGH", "IGK", "IGL"), genes.low.cer = c("IGHV3-43", "IGHV3-20"), genes.dup = c("IGHD4-11", "IGHD5-18")) {
+plotDeletionsByBinom <- function(GENE.usage.df, genes.low.cer = c("IGHV3-43", "IGHV3-20"), genes.dup = c("IGHD4-11", "IGHD5-18")) {
 
-    if (missing(chain)) {
+    #if (missing(chain)) {
         chain = "IGH"
-    }
-    chain <- match.arg(chain)
+    #}
+    #chain <- match.arg(chain)
 
     if (!("SUBJECT" %in% names(GENE.usage.df))) {
         GENE.usage.df$SUBJECT <- rep("S1", nrow(GENE.usage.df))
@@ -1007,7 +1018,7 @@ plotDeletionsByBinom <- function(GENE.usage.df, chain = c("IGH", "IGK", "IGL"), 
     p.del <- ggplot(GENE.usage.df %>% filter(.data$DELETION != "Non reliable"), aes_string(x = "GENE2", y = "FRAC")) + geom_boxplot(outlier.colour = NA) + geom_jitter(aes_string(x = "GENE2",
         color = "DELETION"), width = 0.25, size = 0.5) + theme(axis.text.y = element_text(size = 16), axis.title = element_text(size = 16), axis.text.x = element_text(size = 14,
         angle = 90, hjust = 1, vjust = 0.5, color = colvec), legend.text = element_text(size = 16), legend.position = "none") + ylab("Fraction") + xlab("") +
-        scale_color_manual(name = "", labels = c("Deletion", "No Deletion", "NA"), values = c("blue", "black", "grey40"), drop = T) + guides(color = guide_legend(override.aes = list(size = 5)))
+        scale_color_manual(name = "", labels = c("Deletion", "No Deletion", "NA"), values = c("#6d6d6d", "black", "#dedede"), drop = T) + guides(color = guide_legend(override.aes = list(size = 5)))
 
     ### heat map of deletions in population according to binom test
     GENE.usage.df$DELETION <- factor(GENE.usage.df$DELETION, levels = levels(GENE.usage.df$DELETION))
@@ -1039,7 +1050,7 @@ plotDeletionsByBinom <- function(GENE.usage.df, chain = c("IGH", "IGK", "IGL"), 
 #' @param    hap_table            haplotype summary table. See details.
 #' @param    chain                the IG chain: IGH,IGK,IGL. Default is IGH.
 #' @param    kThreshDel           the minimum lK (log10 of the Bayes factor) used in \code{createFullHaplotype} to call a deletion. Indicates the color for strong deletion. Defualt is 3.
-#'
+#' @param    html_output          If TRUE, a html5 interactive graph is outputed insteaed of the normal plot. Defualt is FALSE
 #' @return
 #'
 #' A single chromosome deletion visualization.
@@ -1052,8 +1063,8 @@ plotDeletionsByBinom <- function(GENE.usage.df, chain = c("IGH", "IGK", "IGL"), 
 #' # Plotting single choromosme deletion from haplotype inference
 #' deletionHeatmap(samplesHaplotype)
 #' @export
-# Not in use, html_output = FALSE. @param    html_output          If TRUE, a html5 interactive graph is outputed insteaed of the normal plot. Defualt is FALSE
-deletionHeatmap <- function(hap_table, kThreshDel = 3, chain = c("IGH", "IGK", "IGL")) {
+# Not in use,
+deletionHeatmap <- function(hap_table, chain = c("IGH", "IGK", "IGL"), kThreshDel = 3, html_output = FALSE) {
 
   if (missing(chain)) {
     chain = "IGH"
@@ -1122,24 +1133,45 @@ deletionHeatmap <- function(hap_table, kThreshDel = 3, chain = c("IGH", "IGK", "
   ALLELE_02_col = gsub("_", "*", gsub("IG[H|K|L]", "", ALLELE_02_col))
   heatmap.df$DEL <- factor(heatmap.df$DEL, levels = c(0:4))
   heatmap.df$HapBy <- ifelse(heatmap.df$HapBy == ALLELE_01_num, ALLELE_01_col, ALLELE_02_col)
-  heatmap.plot <- ggplot(data = heatmap.df, aes_string(x = "GENE2", y = "SUBJECT")) + theme_bw() + geom_tile(aes_string(fill = "DEL")) + facet_wrap(~HapBy, nrow = 2) + scale_x_discrete(drop = FALSE) +
-    scale_fill_manual(name = "lK", labels = c("No deletion (lK>=3)", "No deletion (lK<3)", paste0("Deletion (lK<", kThreshDel, ")"), paste0("Deletion (lK>=",
-                                                                                                                                            kThreshDel, ")"), "NA"), values = c("white", "#ffb6c1", "lightblue", "#6d6d6d", "#dedede"), drop = FALSE) + ylab("Subject") + xlab("Gene") + theme(strip.text = element_text(size = 18), strip.background =element_rect(fill="seashell2"),
-                                                                                                                                                                                                                                                                                             axis.title = element_text(size = 18), axis.text = element_text(size = 14, colour = "black"), axis.text.x = element_text(angle = 90, vjust = 0.5,
-                                                                                                                                                                                                                                                                                                                                                                                                                     hjust = 1), plot.margin = margin(b = 12), panel.grid.major = element_blank(), panel.grid.minor = element_blank(), panel.background = element_blank(),
-                                                                                                                                                                                                                                                                                             legend.direction = "horizontal", legend.justification = "center", legend.position = "bottom", legend.text = element_text(size = 14), legend.title = element_text(size = 14),
-                                                                                                                                                                                                                                                                                             legend.key = element_rect(fill = "white", colour = "black"), axis.line = element_line(colour = "black"))
+  # del.df.heatmap <- heatmap.df
+  # del.df.heatmap <- del.df.heatmap %>% filter(.data$ALLELE == "Del")
 
-
-  del.df.heatmap <- heatmap.df
-  del.df.heatmap <- del.df.heatmap %>% filter(.data$ALLELE == "Del")
-
-  del.df.heatmap.cnt <- del.df.heatmap %>% ungroup() %>% group_by(.data$SUBJECT, .data$GENE2) %>% mutate(n = dplyr::n()) %>% dplyr::slice(1)
+  del.df.heatmap.cnt <- heatmap.df %>% ungroup() %>% group_by(.data$SUBJECT, .data$GENE2, .data$DEL) %>% mutate(n = dplyr::n()) %>% dplyr::slice(1)
+  del.df.heatmap.cnt$n[del.df.heatmap.cnt$DEL==0] <- 0
   del.df.heatmap.cnt$HapBy[del.df.heatmap.cnt$n == 2] <- "Both"
-  del.df.heatmap.cnt <- del.df.heatmap.cnt %>% ungroup() %>% group_by(.data$GENE2, .data$HapBy) %>% count_()
-  names(del.df.heatmap.cnt)[3] <- 'n'
-
+  del.df.heatmap.cnt <- del.df.heatmap.cnt %>% ungroup() %>% group_by(.data$GENE2, .data$HapBy, .data$DEL) %>% count_()
+  names(del.df.heatmap.cnt)[4] <- 'n'
+  del.df.heatmap.cnt$n[del.df.heatmap.cnt$DEL==0] <- 0
   del.df.heatmap.cnt$HapBy <- factor(del.df.heatmap.cnt$HapBy, levels = c(ALLELE_01_col, ALLELE_02_col, "Both"))
+  if (!html_output){
+    heatmap.plot <- ggplot(data = heatmap.df, aes_string(x = "GENE2", y = "SUBJECT")) +
+      theme_bw() + geom_tile(aes_string(fill = "DEL")) +
+      facet_wrap(~HapBy, nrow = 2) + scale_x_discrete(drop = FALSE) +
+      scale_fill_manual(name = "lK",
+                        labels = c("No deletion (lK>=3)",
+                                   "No deletion (lK<3)",
+                                   paste0("Deletion (lK<", kThreshDel, ")"),
+                                   paste0("Deletion (lK>=", kThreshDel, ")"), "NA"),
+                        values = c("white", "#ffb6c1", "lightblue", "#6d6d6d", "#dedede"),
+                        drop = FALSE) +
+      ylab("Subject") + xlab("Gene") +
+      theme(strip.text = element_text(size = 18),
+            strip.background =element_rect(fill="seashell2"),
+            axis.title = element_text(size = 18),
+            axis.text = element_text(size = 14, colour = "black"),
+            axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),
+            plot.margin = margin(b = 12),
+            panel.grid.major = element_blank(),
+            panel.grid.minor = element_blank(),
+            panel.background = element_blank(),
+            legend.direction = "horizontal",
+            legend.justification = "center",
+            legend.position = "bottom",
+            legend.text = element_text(size = 14),
+            legend.title = element_text(size = 14),
+            legend.key = element_rect(fill = "white", colour = "black"),
+            axis.line = element_line(colour = "black"))
+
   pdel <- ggplot(del.df.heatmap.cnt, aes_string(x = "GENE2", y = "n", fill = "HapBy")) + theme_bw() + geom_bar(stat = "identity", position = "stack", na.rm = T) +
     theme(strip.background = element_blank(), axis.text = element_text(size = 14, colour = "black"), axis.text.x = element_text(angle = 90, vjust = 0.5,
                                                                                                                                 hjust = 1), plot.margin = margin(0, 8, 0, 7, "pt"), axis.line = element_line(colour = "black"), panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
@@ -1149,26 +1181,80 @@ deletionHeatmap <- function(hap_table, kThreshDel = 3, chain = c("IGH", "IGK", "
   pdel <- pdel + theme(legend.position = "bottom", legend.direction = "horizontal", legend.justification = "center", panel.grid.major = element_blank(),
                        panel.grid.minor = element_blank(), panel.background = element_blank(), axis.line = element_line(colour = "black"), legend.key = element_rect(fill = "white",
                                                                                                                                                                      colour = "black"), legend.margin = margin(0, 0, 0, 0), legend.text = element_text(size = 14), legend.title = element_text(size = 14))
+  p <- plot(plot_grid(pdel, heatmap.plot, ncol = 1, rel_heights = c(0.15, 0.35), align = "hv", axis = "b"))
+  }else{
+    lk_labels <- setNames(c("No deletion (lK>=3)", "No deletion (lK<3)",
+                            paste0("Deletion (lK<", kThreshDel, ")"),
+                            paste0("Deletion (lK>=", kThreshDel, ")"), "NA"), 0:4)
+    heatmap.df$text <- paste0("Individual: ",heatmap.df$SUBJECT,
+                              '<br />', "Gene: ", heatmap.df$GENE2,
+                              '<br />',"Deletion: ", lk_labels[heatmap.df$DEL])
 
-  #a start for html output
-  # if (html_output) {
-  #
-  #     pdel.l <- ggplotly(pdel, height = 400, width = 1500)
-  #
-  #     heatmap.plot.l <- ggplotly(heatmap.plot, height = 900, width = 1500)
-  #
-  #     heatmap.bar.l <- subplot(pdel.l, heatmap.plot.l, nrows = 2, shareX = F, heights = c(0.2, 0.6), margin = 0.08)
-  #
-  #     # fix header box of facet_grif plots
-  #
-  #     heatmap.bar.l$x$layout$annotations[[2]]$font$size <- 17
-  #     heatmap.bar.l$x$layout$annotations[[3]]$font$size <- 17
-  #     heatmap.bar.l$x$layout$shapes[[3]]$yanchor <- heatmap.bar.l$x$layout$annotations[[2]]$y
-  #     heatmap.bar.l$x$layout$shapes[[5]]$yanchor <- heatmap.bar.l$x$layout$annotations[[3]]$y
-  #
-  # }
+    lk_labels <- setNames(paste0("lK - ",lk_labels), 0:4)
+    heatmap.plot <- ggplot(data = heatmap.df, aes_string(x = "GENE2", y = "SUBJECT", text = "text")) +
+      theme_bw() + geom_tile(aes_string(fill = "DEL")) +
+      facet_wrap(~HapBy, nrow = 2) + scale_x_discrete(drop = FALSE) +
+      scale_fill_manual(name = "",labels = lk_labels,
+                        values = c("white", "#ffb6c1", "lightblue", "#6d6d6d", "#dedede"),
+                        drop = FALSE) +
+      ylab("Subject") + xlab("Gene") +
+      theme(strip.text = element_text(size = 18),
+            strip.background =element_rect(fill="seashell2"),
+            axis.title = element_text(size = 18),
+            axis.text = element_text(size = 14, colour = "black"),
+            axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),
+            plot.margin = margin(b = 12),
+            panel.grid.major = element_blank(),
+            panel.grid.minor = element_blank(),
+            panel.background = element_blank(),
+            panel.spacing = unit(2, "lines"),
+            legend.text = element_text(size = 14),
+            legend.title = element_text(size = 14),
+            legend.key = element_rect(fill = "white", colour = "black"),
+            axis.line = element_line(colour = "black"))
 
-  plot(plot_grid(pdel, heatmap.plot, ncol = 1, rel_heights = c(0.15, 0.35), align = "hv", axis = "b"))
+    del.df.heatmap.cnt$text <- paste0("Chromosome: ", del.df.heatmap.cnt$HapBy,
+                                      '<br />', "Gene: ", del.df.heatmap.cnt$GENE2,
+                                      '<br />',"Number of deletions: ", del.df.heatmap.cnt$n)
+    del.df.heatmap.cnt$HapBy2 <- paste0("Chromosome - ", del.df.heatmap.cnt$HapBy)
+    pdel <- ggplot(del.df.heatmap.cnt, aes_string(x = "GENE2", y = "n", fill = "HapBy2", text = "text")) + theme_bw() +
+      geom_bar(stat = "identity", position = "stack", na.rm = T) +
+      theme(strip.background = element_blank(),
+            axis.text = element_text(size = 14, colour = "black"),
+            axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1), plot.margin = margin(0, 8, 0, 7, "pt"),
+            axis.line = element_line(colour = "black"),
+            panel.border = element_blank(), legend.background = element_blank(),
+            panel.grid.major = element_blank(),
+            panel.grid.minor = element_blank(), panel.background = element_blank(),
+            legend.key = element_rect(fill = "white",colour = "black"),
+            legend.margin = margin(0, 0, 0, 0), legend.text = element_text(size = 14), legend.title = element_text(size = 14)) +
+      ylab("Number of individuals\nwith a deletion") +
+      scale_fill_manual(name = "",values = c("darksalmon", "deepskyblue", "darkolivegreen3", "grey50")) + scale_x_discrete(drop = FALSE) + xlab("")
+
+     #a start for html output
+      pdel.l <- ggplotly(pdel, height = 400, width = 1500, tooltip = "text")
+
+      heatmap.plot.l <- ggplotly(heatmap.plot, height = 900, width = 1500, tooltip = "text")
+      for(i in 1:length(heatmap.plot.l$x$data)){
+        heatmap.plot.l$x$data[[i]]$name <- lk_labels[heatmap.plot.l$x$data[[i]]$name]
+        heatmap.plot.l$x$data[[i]]$legendgroup <- lk_labels[heatmap.plot.l$x$data[[i]]$legendgroup]
+      }
+      l <- list(
+        font = list(
+          family = "sans-serif",
+          size = 12,
+          color = "#000"),
+        bgcolor = "#eae5e5",
+        bordercolor = "#FFFFFF",
+        borderwidth = 2)
+      heatmap.bar.l <- subplot(pdel.l, heatmap.plot.l %>% layout(xaxis = list(title = "Gene"),
+                                                                 yaxis = list(title = "Subject"),
+                                                                 yaxis2 = list(title = "Subject")),
+                               nrows = 2 , titleY = TRUE, titleX = TRUE, shareX = F, shareY = F,
+                               heights = c(0.2, 0.7), margin = 0.08) %>% layout(legend = l)
+
+    return(heatmap.bar.l)
+  }
 }
 
 ##########################################################################
@@ -1177,7 +1263,8 @@ deletionHeatmap <- function(hap_table, kThreshDel = 3, chain = c("IGH", "IGK", "
 #' The \code{plotDeletionsByVpooled} function generates a graphical output for single chromosome D or J gene deletions (for heavy chain only).
 #'
 #'
-#' @param  del.df   a \code{data.frame} created by \code{deletionsByVpooled}.
+#' @param  del.df   a \code{data.frame} created by \code{deletionsByVpooled}
+#' @param  chain    the IG chain: IGH,IGK,IGL. Default is IGH..
 #' @param  K_ranges vector of one or two integers for log(K) certainty level thresholds
 #'
 #' @return
@@ -1196,12 +1283,17 @@ deletionHeatmap <- function(hap_table, kThreshDel = 3, chain = c("IGH", "IGK", "
 #' plotDeletionsByVpooled(del_db)
 #' }
 #' @export
-plotDeletionsByVpooled <- function(del.df, K_ranges = c(3, 7)) {
+plotDeletionsByVpooled <- function(del.df, chain = c("IGH", "IGK", "IGL"), K_ranges = c(3, 7)) {
 
 
     if (!("SUBJECT" %in% names(del.df))) {
         del.df$SUBJECT <- rep("S1", nrow(del.df))
     }
+
+    if (missing(chain)) {
+      chain = "IGH"
+    }
+    chain <- match.arg(chain)
 
     if (length(K_ranges) == 2) {
         del.df$EVENT <- unlist(sapply(1:nrow(del.df), function(i) {
@@ -1221,7 +1313,7 @@ plotDeletionsByVpooled <- function(del.df, K_ranges = c(3, 7)) {
 
 
         del.df$EVENT <- factor(del.df$EVENT, levels = 1:6)
-        del.df$GENE2 <- factor(gsub("IGH", "", del.df$GENE), levels = gsub("IGH", "", GENE.loc[["IGH"]]))
+        del.df$GENE2 <- factor(gsub(chain, "", del.df$GENE), levels = gsub(chain, "", GENE.loc[[chain]]))
         labels1 = c(paste0("Deletion lK<", K_ranges[1]), paste0("Deletion ", K_ranges[1], "<=lK<", K_ranges[2]), paste0("Deletion lK>=", K_ranges[2]), paste0("No deletion lK<",
             K_ranges[1]), paste0("No deletion ", K_ranges[1], "<=lK<", K_ranges[2]), paste0("No deletion lK>=", K_ranges[2]))
         values1 = c("lightblue", "cornflowerblue", "#6d6d6d", "lightpink", "lightcoral", "white")
@@ -1241,7 +1333,7 @@ plotDeletionsByVpooled <- function(del.df, K_ranges = c(3, 7)) {
 
 
         del.df$EVENT <- factor(del.df$EVENT, levels = 1:4)
-        del.df$GENE2 <- factor(gsub("IGH", "", del.df$GENE), levels = gsub("IGH", "", GENE.loc[["IGH"]]))
+        del.df$GENE2 <- factor(gsub(chain, "", del.df$GENE), levels = gsub(chain, "", GENE.loc[[chain]]))
         labels1 = c(paste0("Deletion lK<", K_ranges[1]), paste0("Deletion lK>=", K_ranges[1]), paste0("No deletion lK<", K_ranges[1]), paste0("No deletion lK>=",
             K_ranges[1]))
         values1 = c("lightblue", "#6d6d6d", "lightpink", "lightgrey")

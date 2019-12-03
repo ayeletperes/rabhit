@@ -6,7 +6,8 @@
 \usage{
 hapHeatmap(hap_table, chain = c("IGH", "IGK", "IGL"),
   gene_sort = "position", removeIGH = TRUE, lk_cutoff = 1,
-  mark_low_lk = TRUE, size_annot = 1.5, color_y = NULL)
+  mark_low_lk = TRUE, size_annot = 1.5, color_y = NULL,
+  order_subject = NULL, file = NULL, size_text = NULL)
 }
 \arguments{
 \item{hap_table}{haplotype summary table. See details.}
@@ -25,6 +26,12 @@ if by 'position' only functional genes are used and are ordered by their chromos
 \item{size_annot}{size of bottom annotation text. Defualt is 1.5 .}
 
 \item{color_y}{named list of the colors for y axis labels.}
+
+\item{order_subject}{order subject by a vecor.}
+
+\item{file}{file path for rendering the plot to pdf. If non is supplied than the plot is retured as object. Defualt is NULL.}
+
+\item{size_text}{text size for annotations.}
 }
 \value{
 A list with the following:
@@ -34,6 +41,8 @@ A list with the following:
   \item \code{'width'}:    Optimal width value for rendering plot.
   \item \code{'height'}:   Optimal width value for rendering plot.
 }
+
+When a file is supplied the graph is also rendered to pdf.
 }
 \description{
 The \code{hapHeatmap} function generates a graphical output of the alleles per gene in multiple samples.

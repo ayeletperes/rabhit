@@ -37,7 +37,7 @@ GENE.loc <- list(
   #          "IGKV1E-33","IGKV1E-39","V2E-40","IGKV2D-30","IGKV2D-29",
   #          "IGKV2D-26","IGKV3D-20","V1D-17","IGKV1D-16","IGKV3D-15","IGKV3D-11","IGKV1D-43","IGKV1D-8","IGKV3D-7"),
 
-  IGK =  c("IGKJ5","IGKJ4","IGKJ3","IGKJ2","IGKJ1","IGKV4-1","IGKV5-2","IGKV7-3","IGKV2-4","IGKV1-5","IGKV1-6","IGKV3-7",
+  IGKO =  c("IGKJ5","IGKJ4","IGKJ3","IGKJ2","IGKJ1","IGKV4-1","IGKV5-2","IGKV7-3","IGKV2-4","IGKV1-5","IGKV1-6","IGKV3-7",
            "IGKV1-8","IGKV1-9","IGKV2-10","IGKV3-11","IGKV1-12","IGKV1-13","IGKV2-14","IGKV3-15","IGKV1-16","IGKV1-17","IGKV2-18",
            "IGKV2-19","IGKV3-20","IGKV6-21","IGKV1-22","IGKV2-23","IGKV2-24","IGKV3-25","IGKV2-26","IGKV1-27","IGKV2-28","IGKV2-29",
            "IGKV2-30","IGKV3-31","IGKV1-32","IGKV1-33","IGKV3-34","IGKV1-35","IGKV2-36","IGKV1-37","IGKV2-38","IGKV1-39","IGKV2-40",
@@ -45,6 +45,14 @@ GENE.loc <- list(
            "IGKV2D-30","IGKV2D-29","IGKV2D-28","IGKV1D-27","IGKV2D-26","IGKV3D-25","IGKV2D-24","IGKV2D-23","IGKV1D-22","IGKV6D-21",
            "IGKV3D-20","IGKV2D-19","IGKV2D-18","IGKV6D-41","IGKV1D-17","IGKV1D-16","IGKV3D-15","IGKV2D-14","IGKV1D-13","IGKV1D-12",
            "IGKV3D-11","IGKV2D-10","IGKV1D-42","IGKV1D-43","IGKV1D-8","IGKV3D-7","IGKV1-NL1"),
+
+  IGK =  c("IGKJ5","IGKJ4","IGKJ3","IGKJ2","IGKJ1","IGKV4-1","IGKV5-2","IGKV7-3","IGKV2-4","IGKV1-5","IGKV1-6","IGKV3-7",
+            "IGKV1-8","IGKV1-9","IGKV2-10","IGKV3-11","IGKV1E-12","IGKV1E-13","IGKV2-14","IGKV3-15","IGKV1-16","IGKV1-17","IGKV2-18",
+            "IGKV2-19","IGKV3-20","IGKV6E-21","IGKV1-22","IGKV2-23","IGKV2-24","IGKV3-25","IGKV2-26","IGKV1-27","IGKV2E-28","IGKV2-29",
+            "IGKV2-30","IGKV3-31","IGKV1-32","IGKV1E-33","IGKV3-34","IGKV1-35","IGKV2-36","IGKV1E-37","IGKV2-38","IGKV1E-39","IGKV2E-40","IGKV2D-38","IGKV2D-36","IGKV1D-35","IGKV3D-34","IGKV1D-32","IGKV3D-31",
+            "IGKV2D-30","IGKV2D-29","IGKV1D-27","IGKV2D-26","IGKV3D-25","IGKV2D-24","IGKV2D-23","IGKV1D-22",
+            "IGKV3D-20","IGKV2D-19","IGKV2D-18","IGKV6D-41","IGKV1D-17","IGKV1D-16","IGKV3D-15","IGKV2D-14",
+            "IGKV3D-11","IGKV2D-10","IGKV1D-42","IGKV1D-43","IGKV1D-8","IGKV3D-7","IGKV1-NL1"),
 
   IGL =  c("IGLV4-69","IGLV8-61","IGLV4-60","IGLV6-57","IGLV10-54","IGLV5-52","IGLV1-51","IGLV9-49",
            "IGLV1-47","IGLV7-46","IGLV5-45","IGLV1-44","IGLV7-43","IGLV1-40","IGLV5-37","IGLV1-36",
@@ -105,11 +113,24 @@ ALLELE_PALETTE <- c(
 HVGERM <- toupper(unlist(seqinr::read.fasta('data-raw/HVGERM_4_12_18.fasta',as.string = T)))
 HDGERM <- toupper(unlist(seqinr::read.fasta('data-raw/HDGERM_4_12_18.fasta',as.string = T)))
 HJGERM <- toupper(unlist(seqinr::read.fasta('data-raw/HJGERM_4_12_18.fasta',as.string = T)))
-
+LVGERM <- toupper(unlist(seqinr::read.fasta('data-raw/LVGERM_15_11_19.fasta',as.string = T)))
+LJGERM <- toupper(unlist(seqinr::read.fasta('data-raw/LJGERM_15_11_19.fasta',as.string = T)))
+KVGERM <- LVGERM[grep("K",names(LVGERM))]
+KJGERM <- LJGERM[grep("K",names(LJGERM))]
+LVGERM <- LVGERM[grep("L",names(LVGERM))]
+LJGERM <- LJGERM[grep("L",names(LJGERM))]
 save(HVGERM, file='data/HVGERM.rda')
 save(HDGERM, file='data/HDGERM.rda')
 save(HJGERM, file='data/HJGERM.rda')
+save(KVGERM, file='data/KVGERM.rda')
+save(KJGERM, file='data/KJGERM.rda')
+save(LVGERM, file='data/LVGERM.rda')
+save(LJGERM, file='data/LJGERM.rda')
 
+GERM <- list(IGH = list(V_CALL = HVGERM, D_CALL = HDGERM, J_CALL = HJGERM),
+             IGL = list(V_CALL = LVGERM, J_CALL = LJGERM) ,
+             IGK = list(V_CALL = KVGERM, J_CALL = KJGERM))
+save(GERM, file='data/GERM.rda')
 #### Default Binom test cutoffs ####
 
 Binom.test.gene.cutoff <- list(
@@ -120,9 +141,7 @@ Binom.test.gene.cutoff <- list(
 
 usethis::use_data(GENE.loc,
                    PSEUDO,
-                   HVGERM,
-                   HDGERM,
-                   HJGERM,
+                   GERM,
                    Binom.test.gene.cutoff,
                    ALLELE_PALETTE,
                    internal=TRUE, overwrite=TRUE)
