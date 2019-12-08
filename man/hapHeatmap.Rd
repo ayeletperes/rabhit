@@ -7,7 +7,8 @@
 hapHeatmap(hap_table, chain = c("IGH", "IGK", "IGL"),
   gene_sort = "position", removeIGH = TRUE, lk_cutoff = 1,
   mark_low_lk = TRUE, size_annot = 1.5, color_y = NULL,
-  order_subject = NULL, file = NULL, size_text = NULL)
+  order_subject = NULL, file = NULL, size_text = NULL,
+  ylabel_size = 1)
 }
 \arguments{
 \item{hap_table}{haplotype summary table. See details.}
@@ -32,6 +33,8 @@ if by 'position' only functional genes are used and are ordered by their chromos
 \item{file}{file path for rendering the plot to pdf. If non is supplied than the plot is retured as object. Defualt is NULL.}
 
 \item{size_text}{text size for annotations.}
+
+\item{ylabel_size}{text size for y axis labels.}
 }
 \value{
 A list with the following:

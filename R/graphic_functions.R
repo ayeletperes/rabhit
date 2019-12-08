@@ -421,6 +421,7 @@ plotHaplotype <- function(hap_table, html_output = FALSE, gene_sort = c("name", 
 #' @param    order_subject        order subject by a vecor.
 #' @param    file                 file path for rendering the plot to pdf. If non is supplied than the plot is retured as object. Defualt is NULL.
 #' @param    size_text            text size for annotations.
+#' @param    ylabel_size          text size for y axis labels.
 #'
 #' @return
 #'
@@ -444,7 +445,7 @@ plotHaplotype <- function(hap_table, html_output = FALSE, gene_sort = c("name", 
 #'
 #' cowplot::ggdraw(p$p)
 #' @export
-hapHeatmap <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = "position", removeIGH = TRUE, lk_cutoff = 1, mark_low_lk = TRUE, size_annot = 1.5, color_y = NULL, order_subject = NULL , file = NULL, size_text = NULL) {
+hapHeatmap <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = "position", removeIGH = TRUE, lk_cutoff = 1, mark_low_lk = TRUE, size_annot = 1.5, color_y = NULL, order_subject = NULL , file = NULL, size_text = NULL, ylabel_size = 1) {
 
 
     if (missing(chain)) {
@@ -626,8 +627,10 @@ hapHeatmap <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = "p
     size_text = if(is.null(size_text)) nrow(upper_m)/(height*width)+0.5 # text size for heatmap annoations
     size_text_leg = ncol(m2)/(width*longest_allele)+1 # text size for legend annotations
 
-    if(!is.null(file)) pdf(file, onefile = F, width = width, height = height, family = "serif")
-    else{
+    if(!is.null(file)){
+      message(paste0("rendering to pdf: ",file))
+      pdf(file, onefile = F, width = width, height = height, family = "serif")
+      }else{
       pdf(NULL)
       dev.control(displaylist="enable")
     }
@@ -649,7 +652,7 @@ hapHeatmap <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = "p
     colors <- "black"
     if(!is.null(color_y)) colors <- color_y[rownames(upper_m)]
     samples_loc <- ifelse(samples_n==1, 0, (0:(samples_n-1))/(samples_n-1))
-    Map(axis, side=2, at=samples_loc, col.axis=colors, labels=rownames(upper_m), lwd=0, las=1, cex.axis=0.8) #left
+    Map(axis, side=2, at=samples_loc, col.axis=colors, labels=rownames(upper_m), lwd=0, las=1, cex.axis=ylabel_size) #left
     axis(2,at=samples_loc,labels=FALSE)
 
 
@@ -695,7 +698,7 @@ hapHeatmap <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = "p
     colors <- "black"
     if(!is.null(color_y)) colors <- color_y[rownames(lower_m)]
     samples_loc <- ifelse(samples_n==1, 0, (0:(samples_n-1))/(samples_n-1))
-    Map(axis, side=2, at=samples_loc, col.axis=colors, labels=rownames(lower_m), lwd=0, las=1, cex.axis=0.8) #left
+    Map(axis, side=2, at=samples_loc, col.axis=colors, labels=rownames(lower_m), lwd=0, las=1, cex.axis=ylabel_size) #left
     axis(2,at=samples_loc,labels=FALSE)
 
     # draw lines for low lk values
@@ -763,7 +766,8 @@ hapHeatmap <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = "p
     }else{
       dev.off()
       # embed the fonts to file
-      embedFonts(file)}
+      #embedFonts(file)
+      }
 }
 
 
