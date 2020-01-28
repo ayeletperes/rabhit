@@ -702,8 +702,9 @@ hapHeatmap <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = "p
     axis(2,at=samples_loc,labels=FALSE)
 
     # draw lines for low lk values
-    if(any(ids_text)){
+
     sub_geno = panels_m[panels_m$hapBy==hapBy_cols[2] & panels_m$K<lk_cutoff,]
+    if(nrow(sub_geno)>0){
     NR = samples_n
     NC = genes_n*12
     apply(sub_geno, 1,function(x){
