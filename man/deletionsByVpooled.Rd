@@ -4,10 +4,16 @@
 \alias{deletionsByVpooled}
 \title{Single chromosomal D or J gene deletions inferred by the V pooled method}
 \usage{
-deletionsByVpooled(clip_db, chain = c("IGH", "IGK", "IGL"),
-  deletion_col = c("D_CALL", "J_CALL"), count_thresh = 50,
-  deleted_genes = "", min_minor_fraction = 0.3, kThreshDel = 3,
-  nonReliable_Vgenes = c())
+deletionsByVpooled(
+  clip_db,
+  chain = c("IGH", "IGK", "IGL"),
+  deletion_col = c("D_CALL", "J_CALL"),
+  count_thresh = 50,
+  deleted_genes = "",
+  min_minor_fraction = 0.3,
+  kThreshDel = 3,
+  nonReliable_Vgenes = c()
+)
 }
 \arguments{
 \item{clip_db}{a \code{data.frame} in Change-O format. See details.}

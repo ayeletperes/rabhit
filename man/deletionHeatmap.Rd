@@ -4,8 +4,12 @@
 \alias{deletionHeatmap}
 \title{Graphical output of single chromosome deletions}
 \usage{
-deletionHeatmap(hap_table, chain = c("IGH", "IGK", "IGL"),
-  kThreshDel = 3, html_output = FALSE)
+deletionHeatmap(
+  hap_table,
+  chain = c("IGH", "IGK", "IGL"),
+  kThreshDel = 3,
+  html_output = FALSE
+)
 }
 \arguments{
 \item{hap_table}{haplotype summary table. See details.}

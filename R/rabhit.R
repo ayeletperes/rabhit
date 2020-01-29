@@ -63,7 +63,7 @@
 #' @importFrom  ggdendro         dendro_data segment
 #' @importFrom  htmlwidgets      saveWidget
 #' @importFrom  gtable           gtable_filter
-#' @importFrom  grDevices        dev.off pdf recordPlot
+#' @importFrom  grDevices        dev.off pdf recordPlot dev.control
 #' @importFrom  alakazam         getGene
 #' @importFrom  rlang            .data
 #' @importFrom  tigger           sortAlleles

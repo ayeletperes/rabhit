@@ -4,8 +4,11 @@
 \alias{plotDeletionsByBinom}
 \title{Graphical output of double chromosome deletions}
 \usage{
-plotDeletionsByBinom(GENE.usage.df, genes.low.cer = c("IGHV3-43",
-  "IGHV3-20"), genes.dup = c("IGHD4-11", "IGHD5-18"))
+plotDeletionsByBinom(
+  GENE.usage.df,
+  genes.low.cer = c("IGHV3-43", "IGHV3-20"),
+  genes.dup = c("IGHD4-11", "IGHD5-18")
+)
 }
 \arguments{
 \item{GENE.usage.df}{double chromosome deletion summary table. See details.}

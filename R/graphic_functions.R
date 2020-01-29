@@ -599,9 +599,9 @@ hapHeatmap <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = "p
     m2 <- matrix(c(unlist(seqs),rep(0,add)), ncol = genes_n*12, byrow = T)
 
     # start and end values for plot parts
-    matrix_p <- c(1:4)
-    matrix_r <- 4
-    matrix_heights <- c(2, 2, 0.5, 0.5)
+    matrix_p <- c(1:3)
+    matrix_r <- 3
+    matrix_heights <- c(2, 2, 0.5)
     size = 1
     short_reads_rows = 0
     ## add short read text annotation at the bottom
@@ -615,8 +615,8 @@ hapHeatmap <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = "p
       short_reads_rows = length(annot)
       annot <- paste0(annot,collapse = '\n')
       # add the start and value for the third part
-      matrix_p <- c(1:3)
-      matrix_r <- 3
+      matrix_p <- c(1:4)
+      matrix_r <- 4
       matrix_heights <- c(2, 2, 1, 3)
 
     }
@@ -647,11 +647,12 @@ hapHeatmap <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = "p
     # add axis annotations
     axis(3,(0:(genes_n-1))/genes_n+6/(12*genes_n),names(gene_loc),las=3) # top
     axis(1,(0:(genes_n-1))/genes_n+6/(12*genes_n),names(gene_loc),las=3) # bottom
-    title(gsub('_','*',hapBy_cols[1]), adj = 0.5, line = 5)
+    graphics::title(gsub('_','*',hapBy_cols[1]), adj = 0.5, line = 5)
     # color y tick labels if supplied
     colors <- "black"
     if(!is.null(color_y)) colors <- color_y[rownames(upper_m)]
-    samples_loc <- ifelse(samples_n==1, 0, (0:(samples_n-1))/(samples_n-1))
+    samples_loc_n <- ifelse(samples_n==1, 0, samples_n-1)
+    samples_loc <- (0:(samples_loc_n))/(samples_loc_n)
     Map(axis, side=2, at=samples_loc, col.axis=colors, labels=rownames(upper_m), lwd=0, las=1, cex.axis=ylabel_size) #left
     axis(2,at=samples_loc,labels=FALSE)
 
@@ -693,11 +694,10 @@ hapHeatmap <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = "p
     # add axis annotations
     axis(3,(0:(genes_n-1))/genes_n+6/(12*genes_n),names(gene_loc),las=3) # top
     axis(1,(0:(genes_n-1))/genes_n+6/(12*genes_n),names(gene_loc),las=3) # bottom
-    title(gsub('_','*',hapBy_cols[2]), adj = 0.5, line = 5)
+    graphics::title(gsub('_','*',hapBy_cols[2]), adj = 0.5, line = 5)
     # color y tick labels if supplied
     colors <- "black"
     if(!is.null(color_y)) colors <- color_y[rownames(lower_m)]
-    samples_loc <- ifelse(samples_n==1, 0, (0:(samples_n-1))/(samples_n-1))
     Map(axis, side=2, at=samples_loc, col.axis=colors, labels=rownames(lower_m), lwd=0, las=1, cex.axis=ylabel_size) #left
     axis(2,at=samples_loc,labels=FALSE)
 
@@ -1244,9 +1244,9 @@ deletionHeatmap <- function(hap_table, chain = c("IGH", "IGK", "IGL"), kThreshDe
       scale_fill_manual(name = "",values = c("darksalmon", "deepskyblue", "darkolivegreen3", "grey50")) + scale_x_discrete(drop = FALSE) + xlab("")
 
      #a start for html output
-      pdel.l <- ggplotly(pdel, height = 400, width = 1500, tooltip = "text")
+      pdel.l <- plotly::ggplotly(pdel, height = 400, width = 1500, tooltip = "text")
 
-      heatmap.plot.l <- ggplotly(heatmap.plot, height = 900, width = 1500, tooltip = "text")
+      heatmap.plot.l <- plotly::ggplotly(heatmap.plot, height = 900, width = 1500, tooltip = "text")
       for(i in 1:length(heatmap.plot.l$x$data)){
         heatmap.plot.l$x$data[[i]]$name <- lk_labels[heatmap.plot.l$x$data[[i]]$name]
         heatmap.plot.l$x$data[[i]]$legendgroup <- lk_labels[heatmap.plot.l$x$data[[i]]$legendgroup]
@@ -1259,11 +1259,11 @@ deletionHeatmap <- function(hap_table, chain = c("IGH", "IGK", "IGL"), kThreshDe
         bgcolor = "#eae5e5",
         bordercolor = "#FFFFFF",
         borderwidth = 2)
-      heatmap.bar.l <- subplot(pdel.l, heatmap.plot.l %>% layout(xaxis = list(title = "Gene"),
+      heatmap.bar.l <- plotly::subplot(pdel.l, heatmap.plot.l %>% plotly::layout(xaxis = list(title = "Gene"),
                                                                  yaxis = list(title = "Subject"),
                                                                  yaxis2 = list(title = "Subject")),
                                nrows = 2 , titleY = TRUE, titleX = TRUE, shareX = F, shareY = F,
-                               heights = c(0.2, 0.7), margin = 0.08) %>% layout(legend = l)
+                               heights = c(0.2, 0.7), margin = 0.08) %>% plotly::layout(legend = l)
 
     return(heatmap.bar.l)
   }

@@ -4,11 +4,20 @@
 \alias{hapHeatmap}
 \title{Graphical output of alleles division by chromosome}
 \usage{
-hapHeatmap(hap_table, chain = c("IGH", "IGK", "IGL"),
-  gene_sort = "position", removeIGH = TRUE, lk_cutoff = 1,
-  mark_low_lk = TRUE, size_annot = 1.5, color_y = NULL,
-  order_subject = NULL, file = NULL, size_text = NULL,
-  ylabel_size = 1)
+hapHeatmap(
+  hap_table,
+  chain = c("IGH", "IGK", "IGL"),
+  gene_sort = "position",
+  removeIGH = TRUE,
+  lk_cutoff = 1,
+  mark_low_lk = TRUE,
+  size_annot = 1.5,
+  color_y = NULL,
+  order_subject = NULL,
+  file = NULL,
+  size_text = NULL,
+  ylabel_size = 1
+)
 }
 \arguments{
 \item{hap_table}{haplotype summary table. See details.}
