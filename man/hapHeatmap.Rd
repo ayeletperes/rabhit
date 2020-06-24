@@ -65,6 +65,5 @@ A \code{data.frame} created by \code{createFullHaplotype}.
 \examples{
 # Plotting haplotpe heatmap
 p <- hapHeatmap(samplesHaplotype)
-
-cowplot::ggdraw(p$p)
+p$p
 }

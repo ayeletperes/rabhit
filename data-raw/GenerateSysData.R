@@ -135,7 +135,9 @@ save(GERM, file='data/GERM.rda')
 #### Default Binom test cutoffs ####
 
 Binom.test.gene.cutoff <- list(
-  IGH = read.delim('data-raw/IGH_Binom_test_cutoff.tab',sep='\t',stringsAsFactors = FALSE)
+  IGH = read.delim('data-raw/IGH_Binom_test_cutoff.tab',sep='\t',stringsAsFactors = FALSE),
+  IGK = read.delim('data-raw/IGK_Binom_test_cutoff.tab',sep='\t',stringsAsFactors = FALSE),
+  IGL = read.delim('data-raw/IGL_Binom_test_cutoff.tab',sep='\t',stringsAsFactors = FALSE)
 )
 
 #### Save to R/sysdata.rda ####
