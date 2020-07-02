@@ -465,9 +465,9 @@ hapHeatmap <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = "p
       # input haplotype row
       # output lk value
       if(x[5] %fin% c("Unk","Del","NR")){
-        k_m <- paste0('K',1:4)
+        k_m <- paste0('k',1:4)
       }else{
-        k_m <- paste0('K',which(x[-c(1:10)]==x[5],arr.ind = T))
+        k_m <- paste0('k',which(x[-c(1:10)]==x[5],arr.ind = T))
       }
       k <- min(as.numeric(x[k_m]), na.rm = T)
     }
