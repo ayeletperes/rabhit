@@ -291,12 +291,12 @@ Another way to visualize the inferred haplotype is using the interactive HTML5 p
 p <- plotHaplotype(haplo_db, html_output = TRUE)
 ```
 
-```{r, cache=TRUE, eval=FALSE, warning=FALSE}
+```{r, cache=FALSE, eval=FALSE, warning=FALSE}
 # Saving the plot to html output
 htmlwidgets::saveWidget(p, "haplotype.html", selfcontained = T)
 ```
 
-```{r, cache=TRUE, eval=TRUE, warning=FALSE, message=F}
+```{r, cache=FALSE, eval=TRUE, warning=FALSE, message=F}
 # Plotting the interactive haplotype inference
 p
 ```

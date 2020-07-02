@@ -651,7 +651,7 @@ hapHeatmap <- function(hap_table, chain = c("IGH", "IGK", "IGL"), gene_sort = "p
     colors <- "black"
     if(!is.null(color_y)) colors <- color_y[rownames(upper_m)]
     samples_loc_n <- ifelse(samples_n==1, 0, samples_n-1)
-    samples_loc <- (0:(samples_loc_n))/(samples_loc_n)
+    samples_loc <- ifelse(samples_loc_n==0, 0, (0:(samples_loc_n))/(samples_loc_n))
     Map(axis, side=2, at=samples_loc, col.axis=colors, labels=rownames(upper_m), lwd=0, las=1, cex.axis=ylabel_size) #left
     axis(2,at=samples_loc,labels=FALSE)
 
