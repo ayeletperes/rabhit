@@ -106,10 +106,25 @@ createFullHaplotype <- function(clip_db, toHap_col = c("v_call", "d_call"), hapB
     hapBy_priors <- clip_db_sub %>% filter(grepl(paste0(hapBy, "\\*"), !!as.name(hapBy_col), perl = T)) %>% dplyr::count(!!as.name(hapBy_col)) %>% mutate(freq = n / sum(n)) %>% select(-n)
     hapBy_priors <- setNames(hapBy_priors[[2]], hapBy_priors[[1]])
     hapBy_alleles <- names(hapBy_priors)
-    if (length(hapBy_alleles) != 2)
-      stop("Can not haplotype by more or less than two alleles")
-    if (min(hapBy_priors) < min_minor_fraction)
-      stop("Can not haplotype, minor allele fraction lower than the cutoff set by the user")
+    if (length(hapBy_alleles) != 2){
+      if(sample_name == tail(unique(clip_db$subject),1)){
+        stop("Can not haplotype by more or less than two alleles")
+      }else{
+        message(paste0("For sample ",sample_name,", there were ", length(hapBy_alleles), " alleles, can not haplotype by ", ifelse(length(hapBy_alleles)>2, "more","less")," than two alleles."))
+        next()}
+    }else{
+      message(paste0("For sample ",sample_name, ", haplotyping with ", paste0(hapBy_alleles, collapse = "/")))
+    }
+
+    if(min(hapBy_priors) < min_minor_fraction){
+      if(sample_name == tail(unique(clip_db$subject),1)){
+        stop("Can not haplotype, minor allele fraction lower than the cutoff set by the user")
+      }else{
+        message(paste0("minor allele fraction lower than the cutoff set by the user for sample ",sample_name,", try changing the parameters"))
+        next()
+        }
+    }
+
 
     GENES <- unique(gsub("\\*.*", "\\1", grep("^(?=.*IG)", unique(unlist(clip_db_sub[clip_db_sub[, hapBy_col] %in% hapBy_alleles,toHap_col], use.names = F)), value = T, perl = T), perl = T))
 
@@ -399,10 +414,10 @@ deletionsByBinom <- function(clip_db, chain = c("IGH", "IGK", "IGL"), nonReliabl
 
     GENE.usage.df <- geneUsage(clip_db, chain)
 
-    GENE.usage.df <- GENE.usage.df %>% filter(.data$gene %in% Binom.test.gene.cutoff[[chain]]$GENE)
+    GENE.usage.df <- GENE.usage.df %>% filter(.data$gene %in% Binom.test.gene.cutoff[[chain]][[1]])
 
     GENE.usage.df$min_frac <- sapply(1:nrow(GENE.usage.df), function(x) {
-      unique(Binom.test.gene.cutoff[[chain]]$min_frac[Binom.test.gene.cutoff[[chain]]$GENE == GENE.usage.df$gene[x]])
+      unique(Binom.test.gene.cutoff[[chain]]$min_frac[Binom.test.gene.cutoff[[chain]][[1]] == GENE.usage.df$gene[x]])
     })
 
 
@@ -548,7 +563,7 @@ deletionsByVpooled <- function(clip_db, chain = c("IGH","IGK","IGL"), deletion_c
 
         ### Test for heterozygous V genes
 
-        VGENES <- unique(sapply(strsplit(clip_db_sub$v_call, split = "*", fixed = T), "[", 1))
+        VGENES <- grep(chain,unique(sapply(strsplit(clip_db_sub$v_call, split = "*", fixed = T), "[", 1)),value = T)
         VGENES <- VGENES[!VGENES %in% nonReliable_Vgenes_vec]
         GENES <- unlist(sapply(VGENES, function(x) {
             gene_counts <- table(grep(clip_db_sub$v_call, pattern = paste0(x, "*"), fixed = T, value = T))

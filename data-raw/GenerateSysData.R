@@ -9,28 +9,15 @@
 #
 # imgt_igL = "http://www.imgt.org/IMGTrepertoire/index.php?section=LocusGenes&repertoire=GeneOrder&species=human&group=IGL"
 # imgt_igL  = XML::readHTMLTable(imgt_igL, header=T, which=1,stringsAsFactors=F, skip.rows = 1)
-# cat(paste0('"',rev(imgt_igL$`IMGT gene name`),'"',collapse = ','))
+# cat(paste0('"',rev(grep("IGL[VJ]",imgt_igL$`IMGT gene name`,value=T)),'"',collapse = ','))
 #
 # imgt_igH = "http://www.imgt.org/IMGTrepertoire/index.php?section=LocusGenes&repertoire=GeneOrder&species=human&group=IGH"
 # imgt_igH  = XML::readHTMLTable(imgt_igH, header=T, which=1,stringsAsFactors=F, skip.rows = 1)
-# cat(paste0('"',rev(imgt_igH$`IMGT gene name`),'"',collapse = ','))
+# cat(paste0('"',grep("NL1|P",grep("IGH[VDJ][0-9]",imgt_igH$`IMGT gene name`,value=T),invert = T,value = T),'"',collapse = ','))
 
 GENE.loc <- list(
 
-  IGH = c("IGHV7-81", "IGHV5-78", "IGHV3-74", "IGHV3-73", "IGHV3-72", "IGHV3-71","IGHV2-70", "IGHV1-69D", "IGHV1-f","IGHV2-70D", "IGHV1-69", "IGHV1-68","IGHV1-69-2", "IGHV3-69-1",
-          "IGHV3-66","IGHV3-64", "IGHV3-63", "IGHV3-62", "IGHV4-61" , "IGHV4-59","IGHV1-58", "IGHV4-55", "IGHV3-54", "IGHV3-53", "IGHV3-52",
-          "IGHV5-51", "IGHV3-49", "IGHV3-48", "IGHV3-47", "IGHV1-46", "IGHV1-45", "IGHV3-43" , "IGHV3-43D", "IGHV7-40", "IGHV4-39", "IGHV1-38-4", "IGHV3-38-3", "IGHV4-38-2",
-          "IGHV3-38", "IGHV3-35", "IGHV7-34-1", "IGHV4-34", "IGHV3-33-2", "IGHV3-33", "IGHV3-32",
-          "IGHV4-31", "IGHV3-30-52" , "IGHV3-30-5", "IGHV3-30-42", "IGHV4-30-4", "IGHV3-30-33", "IGHV3-30-3", "IGHV3-30-22", "IGHV4-30-2", "IGHV4-30-1", "IGHV3-30-2", "IGHV3-30", "IGHV3-29", "IGHV4-28" ,
-          "IGHV2-26", "IGHV3-25" ,"IGHV1-24", "IGHV3-23", "IGHV3-23D", "IGHV3-22", "IGHV3-21","IGHV3-20", "IGHV3-19","IGHV1-18", "IGHV3-16",
-          "IGHV3-15","IGHV3-13", "IGHV3-11" , "IGHV2-10", "IGHV3-9","IGHV5-10-1" , "IGHV1-8","IGHV3-64D", "IGHV3-7",
-          "IGHV2-5","IGHV7-4-1","IGHV4-4", "IGHV1-3", "IGHV1-2",  "IGHV6-1",
-          "IGHD1-1" ,  "IGHD2-2" , "IGHD3-3", "IGHD6-6" , "IGHD1-7" ,  "IGHD2-8" ,
-          "IGHD3-9",  "IGHD3-10"  ,  "IGHD4-11", "IGHD5-12" , "IGHD6-13", "IGHD1-14",
-          "IGHD2-15","IGHD3-16",
-          "IGHD4-17","IGHD5-18"   , "IGHD6-19","IGHD1-20"  ,"IGHD2-21"  ,"IGHD3-22" ,
-          "IGHD4-23" ,  "IGHD5-24" ,  "IGHD6-25"  , "IGHD1-26","IGHD7-27",
-          "IGHJ1", "IGHJ2","IGHJ3","IGHJ4","IGHJ5","IGHJ6"),
+  IGH = c("IGHV7-81","IGHV4-80","IGHV3-79","IGHV5-78","IGHV7-77","IGHV3-76","IGHV3-75","IGHV3-74","IGHV3-73","IGHV3-72","IGHV3-71","IGHV2-70","IGHV1-69D","IGHV1-69-2","IGHV3-69-1","IGHV2-70D","IGHV1-69","IGHV1-68","IGHV1-67","IGHV3-66","IGHV3-65","IGHV3-64","IGHV3-63","IGHV3-62","IGHV4-61","IGHV3-60","IGHV4-59","IGHV1-58","IGHV3-57","IGHV7-56","IGHV4-55","IGHV3-54","IGHV3-53","IGHV3-52","IGHV3-51-1","IGHV5-51","IGHV3-50","IGHV3-49","IGHV3-48","IGHV3-47","IGHV1-46","IGHV1-45","IGHV3-43","IGHV3-42","IGHV3-41","IGHV7-40","IGHV4-39","IGHV1-38-4","IGHV3-38-3","IGHV3-43D","IGHV3-42D","IGHV7-40D","IGHV4-38-2","IGHV3-38","IGHV3-37","IGHV3-36","IGHV3-35","IGHV7-34-1","IGHV4-34","IGHV3-33-2","IGHV3-33","IGHV3-32","IGHV4-31","IGHV3-30-52","IGHV3-30-5","IGHV3-30-42","IGHV4-30-4","IGHV3-30-33","IGHV3-30-3","IGHV3-30-22","IGHV4-30-2","IGHV4-30-1","IGHV3-30-2","IGHV3-30","IGHV3-29","IGHV4-28","IGHV7-27","IGHV2-26","IGHV3-25","IGHV1-24","IGHV3-23D","IGHV3-23","IGHV3-22","IGHV3-21","IGHV3-20","IGHV3-19","IGHV1-18","IGHV1-17","IGHV3-16","IGHV3-15","IGHV1-14","IGHV3-13","IGHV1-12","IGHV3-11","IGHV2-10","IGHV3-9","IGHV1-8","IGHV5-10-1","IGHV3-64D","IGHV3-7","IGHV3-6","IGHV2-5","IGHV7-4-1","IGHV4-4","IGHV1-3","IGHV1-2","IGHV6-1","IGHD1-1","IGHD2-2","IGHD3-3","IGHD4-4","IGHD5-5","IGHD6-6","IGHD1-7","IGHD2-8","IGHD3-9","IGHD3-10","IGHD4-11","IGHD5-12","IGHD6-13","IGHD1-14","IGHD2-15","IGHD3-16","IGHD4-17","IGHD5-18","IGHD6-19","IGHD1-20","IGHD2-21","IGHD3-22","IGHD4-23","IGHD5-24","IGHD6-25","IGHD1-26","IGHD7-27","IGHJ1","IGHJ2","IGHJ3","IGHJ4","IGHJ5","IGHJ6"),
 
   # IGK =  c("IGKJ5","IGKJ4","IGKJ3","IGKJ2","IGKJ1","IGKV4-1","IGKV5-2","IGKV1-5","IGKV1-6","IGKV1-8","IGKV1-9","IGKV3-11",
   #          "IGKV1E-12","IGKV1E-13","V3-15","IGKV1-16","IGKV1-17","IGKV3-20","IGKV6E-21","IGKV2-24","IGKV1-27","IGKV2E-28","IGKV2-29","IGKV2-30",
@@ -54,23 +41,28 @@ GENE.loc <- list(
             "IGKV3D-20","IGKV2D-19","IGKV2D-18","IGKV6D-41","IGKV1D-17","IGKV1D-16","IGKV3D-15","IGKV2D-14",
             "IGKV3D-11","IGKV2D-10","IGKV1D-42","IGKV1D-43","IGKV1D-8","IGKV3D-7","IGKV1-NL1"),
 
-  IGL =  c("IGLV4-69","IGLV8-61","IGLV4-60","IGLV6-57","IGLV10-54","IGLV5-52","IGLV1-51","IGLV9-49",
-           "IGLV1-47","IGLV7-46","IGLV5-45","IGLV1-44","IGLV7-43","IGLV1-40","IGLV5-37","IGLV1-36",
-           "IGLV3-27","IGLV3-25","IGLV2-23","IGLV3-22","IGLV3-21","IGLV3-19","IGLV2-18","IGLV3-16","IGLV2-14",
-           "IGLV3-12","IGLV2-11","IGLV3-10","IGLV3-9","IGLV2-8","IGLV4-3","IGLV3-1","IGLJ1","IGLJ2","IGLJ3","IGLJ6","IGLJ7")
+  IGL =  c("IGLV(I)-70","IGLV4-69","IGLV(I)-68","IGLV10-67","IGLV(IV)-66-1","IGLV(V)-66","IGLV(IV)-65","IGLV(IV)-64","IGLV(I)-63",
+           "IGLV1-62","IGLV8-61","IGLV4-60","IGLV(IV)-59","IGLV(V)-58","IGLV6-57","IGLV(I)-56","IGLV11-55","IGLV10-54","IGLV(IV)-53",
+           "IGLV5-52","IGLV1-51","IGLV1-50","IGLV9-49","IGLV5-48","IGLV1-47","IGLV7-46","IGLV5-45","IGLV1-44","IGLV7-43","IGLV(I)-42",
+           "IGLV(VII)-41-1","IGLV1-41","IGLV1-40","IGLV5-39","IGLV(I)-38","IGLV5-37","IGLV1-36","IGLV7-35","IGLV2-34","IGLV2-33","IGLV3-32",
+           "IGLV3-31","IGLV3-30","IGLV3-29","IGLV2-28","IGLV3-27","IGLV3-26","IGLV(VI)-25-1","IGLV3-25","IGLV3-24","IGLV2-23","IGLV(VI)-22-1",
+           "IGLV3-22","IGLV3-21","IGLV(I)-20","IGLV3-19","IGLV2-18","IGLV3-17","IGLV3-16","IGLV3-15","IGLV2-14","IGLV3-13","IGLV3-12","IGLV2-11",
+           "IGLV3-10","IGLV3-9","IGLV2-8","IGLV3-7","IGLV3-6","IGLV2-5","IGLV3-4","IGLV4-3","IGLV3-2","IGLV3-1","IGLJ1","IGLJ2","IGLJ23","IGLJ3","IGLJ4",
+           "IGLJ5","IGLJ6","IGLJ7")
 
 )
 
 #### Known Pseudo Gene####
 
 # library(rvest)
-# imgt = "http://www.imgt.org/genedb/GENElect?query=4.2+IG&species=Homo+sapiens"
+# imgt = xml2::read_html("http://www.imgt.org/genedb/GENElect?query=4.2+IG&species=Homo+sapiens")
 # imgt  = XML::readHTMLTable(imgt, header=T, which=1,stringsAsFactors=F, skip.rows = 1)
-# pseudo <- html_nodes(imgt, "table") %>% html_table()
+# pseudo <- rvest::html_nodes(imgt, "tableres") %>% html_table()
 # pseudo_IGK <- pseudo[[1]] %>% filter(`IMGT gene functionality`%in% c("ORF", "P"), grepl('IGK', `IMGT/GENE-DB`))
 # cat(paste0('"',rev(pseudo_IGK$`IMGT/GENE-DB`),'"',collapse = ','))
-#
-# pseudo_IGL <- pseudo[[1]] %>% filter(`IMGT gene functionality`%in% c("ORF", "P"), grepl('IGL', `IMGT/GENE-DB`))
+# imgt = "http://www.imgt.org/genedb/GENElect?query=4.2+IG&species=Homo+sapiens"
+# tables <- imgt %>% xml2::read_html() %>% html_table(fill = TRUE)
+# pseudo_IGL <- tables[[3]] %>% filter(`IMGT gene functionality`%in% c("ORF", "P"), grepl('IGL', `IMGT/GENE-DB`))
 # cat(paste0('"',rev(pseudo_IGL$`IMGT/GENE-DB`),'"',collapse = ','))
 
 
