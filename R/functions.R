@@ -108,7 +108,8 @@ createFullHaplotype <- function(clip_db, toHap_col = c("v_call", "d_call"), hapB
     hapBy_alleles <- names(hapBy_priors)
     if (length(hapBy_alleles) != 2){
       if(sample_name == tail(unique(clip_db$subject),1)){
-        stop("Can not haplotype by more or less than two alleles")
+        message(paste0("For sample ",sample_name,", cannot haplotype by more or less than two alleles"))
+        next()
       }else{
         message(paste0("For sample ",sample_name,", there were ", length(hapBy_alleles), " alleles, can not haplotype by ", ifelse(length(hapBy_alleles)>2, "more","less")," than two alleles."))
         next()}
@@ -348,7 +349,7 @@ geneUsage <- function(clip_db, chain = c("IGH", "IGK", "IGL")){
 
   gusage <- unlist(GENE.usage)
   gusage.gene <- sapply(strsplit(names(unlist(GENE.usage)), ".", fixed = T), "[", 1)
-  gusage.samp <- sapply(strsplit(names(unlist(GENE.usage)), ".", fixed = T), "[", 2)
+  gusage.samp <- gsub(paste0(paste0(gusage.gene,"[.]"),collapse="|"),"",names(unlist(GENE.usage)))
   GENE.usage.df <- data.frame(subject = gusage.samp, gene = gusage.gene, frac = gusage, stringsAsFactors = F, row.names = NULL)
   GENE.usage.df <- GENE.usage.df %>% filter(.data$gene %in% GENE.loc.NoPseudo)
 
