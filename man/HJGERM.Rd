@@ -4,9 +4,7 @@
 \name{HJGERM}
 \alias{HJGERM}
 \title{Human IGHJ germlines}
-\format{
-Values correspond to IMGT nuceltoide sequences.
-}
+\format{Values correspond to IMGT nuceltoide sequences.}
 \usage{
 HJGERM
 }

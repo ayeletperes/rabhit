@@ -5,13 +5,8 @@
 \alias{KVGERM}
 \alias{LVGERM}
 \title{Human IGKV germlines}
-\format{
-Values correspond to IMGT-gaped nuceltoide sequences (with
-nucleotides capitalized and gaps represented by '.').
-
-Values correspond to IMGT-gaped nuceltoide sequences (with
-nucleotides capitalized and gaps represented by '.').
-}
+\format{Values correspond to IMGT-gaped nuceltoide sequences (with
+nucleotides capitalized and gaps represented by '.').}
 \usage{
 KVGERM
 

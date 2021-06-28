@@ -6,8 +6,8 @@
 \usage{
 hapHeatmap(
   hap_table,
-  chain = c("IGH", "IGK", "IGL"),
-  gene_sort = "position",
+  chain = c("IGH", "IGK", "IGL", "TRB", "TRA"),
+  genes_order = NULL,
   removeIGH = TRUE,
   lk_cutoff = 1,
   mark_low_lk = TRUE,
@@ -24,10 +24,9 @@ hapHeatmap(
 
 \item{chain}{the IG chain: IGH,IGK,IGL. Default is IGH.}
 
-\item{gene_sort}{if by 'name' the genes in the output are ordered lexicographically,
-if by 'position' only functional genes are used and are ordered by their chromosomal location. Default is 'position'.}
+\item{genes_order}{A vector of the genes by the desired order. Defualt is by GENE.loc}
 
-\item{removeIGH}{if TRUE, 'IGH'\'IGK'\'IGL' prefix is removed from gene names.}
+\item{removeIGH}{if TRUE, 'IGH'\'IGK'\'IGL'\'TRB' prefix is removed from gene names.}
 
 \item{lk_cutoff}{the lK cutoff value to be considerd low for texture layer. Defualt is lK<1.}
 
