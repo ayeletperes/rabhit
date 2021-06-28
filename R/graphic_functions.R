@@ -990,13 +990,13 @@ hapHeatmap <-
       # add the start and value for the third part
       matrix_p <- c(1:4)
       matrix_r <- 4
-      matrix_heights <- c(2, 2, 1, 3)
+      matrix_heights <- c(2, 2, 1, 0.5)
 
     }
 
     # set the height and width of plot
     height <-
-      samples_n * 0.1 + 10 + nrow(m2) * 0.2 + short_reads_rows * 0.4 # number of samples, number of rows in legend, number of rows in bottom annotation
+      samples_n * 0.2 + 10 + nrow(m2) * 0.2 + short_reads_rows * 0.4 # number of samples, number of rows in legend, number of rows in bottom annotation
     width <- genes_n * 0.15 + 5 # numer of genes
     size_text = if (is.null(size_text))
       nrow(upper_m) / (height * width) + 0.5 # text size for heatmap annoations
@@ -1202,7 +1202,7 @@ hapHeatmap <-
     # bottom text for nra, only if exists
     if (nra) {
       # add the text at the bottom
-      par(mar = c(1, 6, 3, 6))
+      par(mar = c(1, 6, 1, 6))
       plot(
         c(0, 1),
         c(0, 1),
