@@ -1012,11 +1012,16 @@ hapHeatmap <-
     if (nra) {
       bottom_annot <-
         unique(grep(
-          "[0-9][0-9]_[0-9]+",
+          "[0-9]_[0-9]+$|[0-9]_[0-9]+[.]+",
           panels_f$text_bottom ,
-          value = T,
-          perl = T
+          value = T
         ))
+      bottom_annot <- unique(grep(
+        '^[0-9]+[_][0-9]+[A-Z]+[0-9]+',
+        bottom_annot ,
+        value = T,
+        invert = T
+      ))
 
       # Create text for annotating the short reads labels
       annot <-
