@@ -4,7 +4,9 @@
 \name{GENE.loc}
 \alias{GENE.loc}
 \title{Human Gene order on the chromosome}
-\format{A nested list with three enteries, each a vector of the IG chains (IGH, IGL, and IGK) genes ordered by location.}
+\format{
+A nested list with three enteries, each a vector of the IG chains (IGH, IGL, and IGK) genes ordered by location.
+}
 \usage{
 GENE.loc
 }

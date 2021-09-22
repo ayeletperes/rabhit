@@ -1,7 +1,7 @@
 Package: rabhit
 Type: Package
 Title: Inference Tool for Antibody Haplotype
-Version: 0.1.7
+Version: 0.1.8
 Authors@R: c(person("Ayelet", "Peres", role=c("aut","cre"), 
                     email="peresay@biu.ac.il"),
             person("Moriah", "Gidoni", role=c("aut"), 
@@ -30,7 +30,7 @@ Imports: dplyr (>= 1.0.0), reshape2 (>= 1.4.3), plotly (>= 4.7.1), graphics (>= 
     stringi (>= 1.4.3), grid (>= 3.4.4), splitstackshape (>= 1.4.8), fastmatch (>= 1.1.0) , grDevices
 Suggests: knitr,
     rmarkdown
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
 NeedsCompilation: no
 Collate: 
     'Data.R'
