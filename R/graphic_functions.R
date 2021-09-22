@@ -66,9 +66,10 @@ plotHaplotype <-
 
     plot_list <- c()
     for (sample_name in unique(hap_table$subject)) {
+
       haplo.db <-
         parseHapTab(
-          hap_table[hap_table$subject == sample_name,],
+          hap_table[hap_table$subject == sample_name & grepl(chain, hap_table$gene),],
           chain = chain,
           sample_name = sample_name,
           hapBy_cols = hapBy_cols,
@@ -102,8 +103,8 @@ plotHaplotype <-
       ########################################################################################################
 
       ### Prepare All panels
-      geno.df$ALLELE_TEXT <- geno.df$alleles
-      count.df$ALLELE_TEXT <- count.df$alleles
+      geno.df$ALLELE_TEXT <- as.character(geno.df$alleles)
+      count.df$ALLELE_TEXT <- as.character(count.df$alleles)
 
 
       if (length(grep("[0-9][0-9]_[0-9][0-9]", geno.df$alleles)) != 0) {
@@ -118,22 +119,22 @@ plotHaplotype <-
       }
 
       geno.df$ALLELE_TEXT <- sapply(1:nrow(geno.df), function(i) {
-        if (grepl("[0-9][0-9]_[0-9][0-9]", geno.df$alleles[i])) {
+        if (grepl("[0-9][0-9]_[0-9][0-9]", geno.df$ALLELE_TEXT[i])) {
           unique(non_reliable_alleles_text$text_bottom[geno.df$gene[i] == non_reliable_alleles_text$gene &
-                                                         grepl(geno.df$alleles[i],
+                                                         grepl(geno.df$ALLELE_TEXT[i],
                                                                non_reliable_alleles_text$text_bottom)])
         } else{
-          geno.df$alleles[i]
+          geno.df$ALLELE_TEXT[i]
         }
       })
 
       count.df$ALLELE_TEXT <- sapply(1:nrow(count.df), function(i) {
-        if (grepl("[0-9][0-9]_[0-9][0-9]", count.df$alleles[i])) {
+        if (grepl("[0-9][0-9]_[0-9][0-9]", count.df$ALLELE_TEXT[i])) {
           unique(non_reliable_alleles_text$text_bottom[count.df$gene[i] == non_reliable_alleles_text$gene &
-                                                         grepl(count.df$alleles[i],
+                                                         grepl(count.df$ALLELE_TEXT[i],
                                                                non_reliable_alleles_text$text_bottom)])
         } else{
-          count.df$alleles[i]
+          count.df$ALLELE_TEXT[i]
         }
       })
 
