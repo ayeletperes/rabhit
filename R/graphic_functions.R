@@ -10,8 +10,8 @@ NULL
 #'
 #'
 #' @param    hap_table            haplotype summary table. See details.
-#' @param    html_output          if TRUE, a html5 interactive graph is outputed. Defualt is FALSE.
-#' @param    genes_order           A vector of the genes by the desired order. Defualt is by GENE.loc
+#' @param    html_output          if TRUE, a html5 interactive graph is outputed. Default is FALSE.
+#' @param    genes_order           A vector of the genes by the desired order. Default is by GENE.loc
 #' @param    text_size            the size of graph labels. Default is 14 (pts).
 #' @param    removeIGH            if TRUE, 'IGH'\'IGK'\'IGL'\'TRB' prefix is removed from gene names.
 #' @param    plotYaxis            if TRUE, Y axis labels (gene names) are plotted on the middle and right plots. Default is TRUE.
@@ -109,7 +109,7 @@ plotHaplotype <-
 
       if (length(grep("[0-9][0-9]_[0-9][0-9]", geno.df$alleles)) != 0) {
         geno.df <-
-          as.data.frame(geno.df %>% group_by(.data$hapBy, .data$gene) %>% mutate(n = dplyr::n()))
+          as.data.frame(geno.df %>% dplyr::group_by(.data$hapBy, .data$gene) %>% dplyr::mutate(n = dplyr::n()))
         geno.df$freq <-
           ifelse(geno.df$n == 2, 0.5, ifelse(geno.df$n != 1, 0.25, 1))
         non_reliable_alleles_text <-
@@ -154,7 +154,7 @@ plotHaplotype <-
                '<br />',
                "Allele: ",
                geno.df$ALLELE_TEXT)
-      options(warn = -1)
+      #options(warn = -1)
       p = ggplot() +
         geom_bar(
           data = geno.df,
@@ -311,7 +311,7 @@ plotHaplotype <-
       ### Plot All panels
 
       if (html_output) {
-        options(warn = -1)
+        #options(warn = -1)
         ## Prepare panels for html plot
 
         p = p + theme(axis.title.x = element_blank())
@@ -500,7 +500,7 @@ plotHaplotype <-
             ) %>%
               plotly::layout(
                 title = sample_name,
-                titlefont = list(size = 16),
+                font = list(size = 16),
                 margin = list(t = 45)
               )
           )
@@ -515,25 +515,27 @@ plotHaplotype <-
             gsub("[()|,]|white|black", "", p.l.c$x$data[[i]]$name)
         }
 
-        p.l.c$x$layout$annotations[[6]]$text = "log<sub>10</sub>(lK)----"
-        p.l.c$x$layout$annotations[[6]]$xanchor = "center"
-        p.l.c$x$layout$annotations[[6]]$legendtitle = TRUE
-        p.l.c$x$layout$annotations[[6]]$y = 1 - 0.033 * (length(grep(
-          '[[]', grep('TRUE', p.l.c$x$data, value = T), invert = T
-        ))) #(length(AlleleCol) + 2.4)  #0.52
-        p.l.c$x$layout$annotations[[6]]$x = 0.985
-        p.l.c$x$layout$annotations[[6]]$xref = 'paper'
-        p.l.c$x$layout$annotations[[6]]$yref = 'paper'
-        p.l.c$x$layout$annotations[[6]]$font$size = 16
 
+        # p.l.c$x$layout$annotations[[6]]$text = "log<sub>10</sub>(lK)----"
+        # p.l.c$x$layout$annotations[[6]]$xanchor = "center"
+        # p.l.c$x$layout$annotations[[6]]$legendtitle = TRUE
+        # p.l.c$x$layout$annotations[[6]]$y = 1 - 0.033 * (length(grep(
+        #   '[[]', grep('TRUE', p.l.c$x$data, value = T), invert = T
+        # ))) #(length(AlleleCol) + 2.4)  #0.52
+        # p.l.c$x$layout$annotations[[6]]$x = 0.985
+        # p.l.c$x$layout$annotations[[6]]$xref = 'paper'
+        # p.l.c$x$layout$annotations[[6]]$yref = 'paper'
+        # p.l.c$x$layout$annotations[[6]]$font$size = 16
+        #
+        #
+        # p.l.c$x$layout$annotations[[3]] <-
+        #   p.l.c$x$layout$annotations[[6]]
+        # p.l.c$x$layout$annotations[[3]]$text = "Alleles----"
+        # p.l.c$x$layout$annotations[[3]]$y = 0.99
+        # p.l.c$x$layout$annotations[[3]]$x = 0.98
+        # p.l.c$x$layout$annotations[[3]]$legendTitle = FALSE
+        # p.l.c$x$layout$annotations[[3]]$font$size = 16
 
-        p.l.c$x$layout$annotations[[3]] <-
-          p.l.c$x$layout$annotations[[6]]
-        p.l.c$x$layout$annotations[[3]]$text = "Alleles----"
-        p.l.c$x$layout$annotations[[3]]$y = 0.99
-        p.l.c$x$layout$annotations[[3]]$x = 0.98
-        p.l.c$x$layout$annotations[[3]]$legendTitle = FALSE
-        p.l.c$x$layout$annotations[[3]]$font$size = 16
 
         if (short_reads) {
           bottom_annot_collapsed <- ifelse(
@@ -546,15 +548,53 @@ plotHaplotype <-
             paste0(bottom_annot, collapse = '\t')
           )
 
-          p.l.c$x$layout$annotations[[7]] <-
-            p.l.c$x$layout$annotations[[6]]
-          p.l.c$x$layout$annotations[[7]]$text = bottom_annot_collapsed
-          p.l.c$x$layout$annotations[[7]]$y = p.l.c$x$layout$annotations[[6]]$y - 0.05 * (length(grep(
+          # p.l.c$x$layout$annotations[[5]] <-
+          #   p.l.c$x$layout$annotations[[4]]
+          # p.l.c$x$layout$annotations[[5]]$text = bottom_annot_collapsed
+          # p.l.c$x$layout$annotations[[5]]$y = p.l.c$x$layout$annotations[[6]]$y - 0.05 * (length(grep(
+          #   '[[]', grep('TRUE', p.l.c$x$data, value = T), invert = T
+          # )))
+          # p.l.c$x$layout$annotations[[7]]$x = 1.1
+          # p.l.c$x$layout$annotations[[7]]$legendTitle = FALSE
+          # p.l.c$x$layout$annotations[[7]]$font$size = 12
+          #
+          y = 1 - 0.037 * (length(grep(
             '[[]', grep('TRUE', p.l.c$x$data, value = T), invert = T
           )))
-          p.l.c$x$layout$annotations[[7]]$x = 1.1
-          p.l.c$x$layout$annotations[[7]]$legendTitle = FALSE
-          p.l.c$x$layout$annotations[[7]]$font$size = 12
+          y_short = y - 0.05 * (length(grep(
+            '[[]', grep('TRUE', p.l.c$x$data, value = T), invert = T
+          )))
+
+          p.l.c <- p.l.c %>% plotly::add_annotations(
+            x = c(1.1, 1.1),
+            y = c(1, y),
+            text = c("Alleles-----", "log<sub>10</sub>(lK)----"),
+            font = list(size = 16),
+            xref = "paper",
+            yref = "paper",
+            showarrow = FALSE
+          ) %>% plotly::add_annotations(
+            x = c(1.15),
+            y = c( y_short),
+            text = c(bottom_annot_collapsed),
+            font = list(size = 12),
+            xref = "paper",
+            yref = "paper",
+            showarrow = FALSE
+          )
+        }else{
+          y = 1 - 0.037 * (length(grep(
+            '[[]', grep('TRUE', p.l.c$x$data, value = T), invert = T
+          )))
+          p.l.c <- p.l.c %>% plotly::add_annotations(
+            x = c(1.1, 1.1),
+            y = c(1, y),
+            text = c("Alleles-----", "log<sub>10</sub>(lK)----"),
+            font = list(size = 16),
+            xref = "paper",
+            yref = "paper",
+            showarrow = FALSE
+          )
         }
 
 
@@ -682,14 +722,14 @@ plotHaplotype <-
 #'
 #' @param    hap_table            haplotype summary table. See details.
 #' @param    chain                the IG chain: IGH,IGK,IGL. Default is IGH.
-#' @param    genes_order           A vector of the genes by the desired order. Defualt is by GENE.loc
+#' @param    genes_order           A vector of the genes by the desired order. Default is by GENE.loc
 #' @param    removeIGH            if TRUE, 'IGH'\'IGK'\'IGL'\'TRB' prefix is removed from gene names.
-#' @param    lk_cutoff            the lK cutoff value to be considerd low for texture layer. Defualt is lK<1.
-#' @param    mark_low_lk          if TRUE, a texture is add for low lK values. Defualt is TRUE.
-#' @param    size_annot           size of bottom annotation text. Defualt is 1.5 .
+#' @param    lk_cutoff            the lK cutoff value to be considered low for texture layer. Default is lK<1.
+#' @param    mark_low_lk          if TRUE, a texture is add for low lK values. Default is TRUE.
+#' @param    size_annot           size of bottom annotation text. Default is 1.5 .
 #' @param    color_y              named list of the colors for y axis labels.
-#' @param    order_subject        order subject by a vecor.
-#' @param    file                 file path for rendering the plot to pdf. If non is supplied than the plot is retured as object. Defualt is NULL.
+#' @param    order_subject        order subject by a vector.
+#' @param    file                 file path for rendering the plot to pdf. If non is supplied than the plot is returned as object. Default is NULL.
 #' @param    size_text            text size for annotations.
 #' @param    ylabel_size          text size for y axis labels.
 #'
@@ -727,6 +767,11 @@ hapHeatmap <-
            file = NULL,
            size_text = NULL,
            ylabel_size = 1) {
+
+    '.' <- list
+
+    subject <- gene <- alleles <- NULL
+
     if (missing(chain)) {
       chain = "IGH"
     }
@@ -776,7 +821,7 @@ hapHeatmap <-
     hap_table <-
       setDT(hap_table)[CJ(subject = subject,
                           gene = gene,
-                          unique = TRUE), on = .(subject, gene)]
+                          unique = TRUE), on = c("subject", "gene")]
     hap_table[is.na(alleles) , c(hapBy_cols, "alleles", paste0("k", 1:4)) := list("Unk",
                                                                                   "Unk",
                                                                                   NA_character_,
@@ -788,7 +833,7 @@ hapHeatmap <-
     # sort the data
     hap_table$order <-
       fastmatch::fmatch(hap_table$gene, genes_order)
-    hap_table <- na.omit(hap_table, cols = "order")
+    hap_table <- stats::na.omit(hap_table, cols = "order")
     hap_table <- hap_table[order(order), ]
     if (removeIGH) {
       hap_table$gene <- gsub(chain, "", hap_table$gene)
@@ -1290,10 +1335,10 @@ hapHeatmap <-
 #'
 #' @param    hap_table            haplotype summary table. See details.
 #' @param    chain                the IG/TR chain: IGH,IGK,IGL,TRB. Default is IGH.
-#' @param    genes_order           A vector of the genes by the desired order. Defualt is by GENE.loc
-#' @param    removeIGH            if TRUE, 'IGH'\'IGK'\'IGL' prefix is removed from gene names. Defualt is TRUE.
-#' @param    mark_low_lk          if TRUE, a texture is add for low lK values. Defualt is TRUE.
-#' @param    lk_cutoff            the lK cutoff value to be considerd low for texture layer. Defualt is lK<1.
+#' @param    genes_order           A vector of the genes by the desired order. Default is by GENE.loc
+#' @param    removeIGH            if TRUE, 'IGH'\'IGK'\'IGL' prefix is removed from gene names. Default is TRUE.
+#' @param    mark_low_lk          if TRUE, a texture is add for low lK values. Default is TRUE.
+#' @param    lk_cutoff            the lK cutoff value to be considerd low for texture layer. Default is lK<1.
 #'
 #' @return
 #'
@@ -1446,7 +1491,7 @@ hapDendo <-
 
     # Formating the data to fit heatmap plot
     haplo_db_clust <-
-      haplo_db_clust %>% group_by(.data$subject, .data$hapBy, .data$gene) %>% mutate(n = dplyr::n())
+      haplo_db_clust %>% group_by(.data$subject, .data$hapBy, .data$gene) %>% dplyr::mutate(n = dplyr::n())
     haplo_db_clust$freq <-
       ifelse(haplo_db_clust$n == 2,
              0.5,
@@ -1694,7 +1739,7 @@ hapDendo <-
 #' @param    chain                the IG chain: IGH,IGK,IGL. Default is IGH.
 #' @param    genes.low.cer        a vector of IGH genes known to be with low certantiny in the binomial test. Default is IGHV3-43 and IGHV3-20
 #' @param    genes.dup            a vector of IGH genes known to have a duplicated gene. Default is IGHD4-11 that his duplicate is IGHD4-4 and IGHD5-18 that his duplicate is IGHD5-5
-#' @param    genes_order           A vector of the genes by the desired order. Defualt is by GENE.loc
+#' @param    genes_order           A vector of the genes by the desired order. Default is by GENE.loc
 #'
 #' @return
 #'
@@ -1861,9 +1906,9 @@ plotDeletionsByBinom <-
 #'
 #' @param    hap_table            haplotype summary table. See details.
 #' @param    chain                the IG chain: IGH,IGK,IGL. Default is IGH.
-#' @param    kThreshDel           the minimum lK (log10 of the Bayes factor) used in \code{createFullHaplotype} to call a deletion. Indicates the color for strong deletion. Defualt is 3.
-#' @param    genes_order           A vector of the genes by the desired order. Defualt is by GENE.loc
-#' @param    html_output          If TRUE, a html5 interactive graph is outputed insteaed of the normal plot. Defualt is FALSE
+#' @param    kThreshDel           the minimum lK (log10 of the Bayes factor) used in \code{createFullHaplotype} to call a deletion. Indicates the color for strong deletion. Default is 3.
+#' @param    genes_order           A vector of the genes by the desired order. Default is by GENE.loc
+#' @param    html_output          If TRUE, a html5 interactive graph is outputed insteaed of the normal plot. Default is FALSE
 #' @return
 #'
 #' A single chromosome deletion visualization.
@@ -1917,7 +1962,7 @@ deletionHeatmap <-
     hap_table$k2[is.na(hap_table$k2)] <- 0
 
     hap_table.del.heatmap <-
-      hap_table %>% rowwise %>% mutate(k = max(as.numeric(.data$k1), as.numeric(.data$k2), na.rm = T)) %>% select_(.dots = c("subject", "gene",
+      hap_table %>% rowwise %>% dplyr::mutate(k = max(as.numeric(.data$k1), as.numeric(.data$k2), na.rm = T)) %>% select_(.dots = c("subject", "gene",
                                                                                                                              ALLELE_01_col, "k"))
 
     hap_table.del.heatmap$HapBy <-
@@ -1928,7 +1973,7 @@ deletionHeatmap <-
       rbind(
         hap_table.del.heatmap,
         data.frame(
-          hap_table %>% rowwise %>% mutate(k = max(
+          hap_table %>% rowwise %>% dplyr::mutate(k = max(
             as.numeric(.data$k1), as.numeric(.data$k2), na.rm = T
           )) %>%
             select_(.dots = c("subject", "gene", ALLELE_02_col, "k")),
@@ -1995,12 +2040,12 @@ deletionHeatmap <-
     # del.df.heatmap <- del.df.heatmap %>% filter(.data$ALLELE == "Del")
 
     del.df.heatmap.cnt <-
-      heatmap.df %>% ungroup() %>% group_by(.data$subject, .data$gene2, .data$del) %>% mutate(n = dplyr::n()) %>% dplyr::slice(1)
+      heatmap.df %>% dplyr::ungroup() %>% dplyr::group_by(.data$subject, .data$gene2, .data$del) %>% dplyr::mutate(n = dplyr::n()) %>% dplyr::slice(1)
     del.df.heatmap.cnt$n[del.df.heatmap.cnt$del == 0] <- 0
     del.df.heatmap.cnt$n[del.df.heatmap.cnt$del == 1] <- 0
     del.df.heatmap.cnt$HapBy[del.df.heatmap.cnt$n == 2] <- "Both"
     del.df.heatmap.cnt <-
-      del.df.heatmap.cnt %>% ungroup() %>% group_by(.data$gene2, .data$HapBy, .data$del) %>% count_(wt = "n")
+      del.df.heatmap.cnt %>% dplyr::ungroup() %>% dplyr::group_by(.data$gene2, .data$HapBy, .data$del) %>% dplyr::count_(wt = "n")
     #names(del.df.heatmap.cnt)[4] <- 'n'
     del.df.heatmap.cnt$n[del.df.heatmap.cnt$del == 0] <- 0
     del.df.heatmap.cnt$n[del.df.heatmap.cnt$del == 1] <- 0

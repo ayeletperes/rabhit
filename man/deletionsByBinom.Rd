@@ -18,7 +18,7 @@ deletionsByBinom(
 
 \item{nonReliable_Vgenes}{a list of known non reliable gene assignments. A \code{list} created by \code{nonReliableVGenes}.}
 
-\item{genes_order}{A vector of the genes by the desired order. Defualt is by GENE.loc}
+\item{genes_order}{A vector of the genes by the desired order. Default is by GENE.loc}
 }
 \value{
 A \code{data.frame}, in which each row is the double chomosome deletion inference of a gene.

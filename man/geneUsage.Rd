@@ -16,9 +16,9 @@ geneUsage(
 
 \item{chain}{the IG/TR chain: IGH,IGK,IGL,TRB. Default is IGH.}
 
-\item{genes_order}{A vector of the genes by the desired order. Defualt is by GENE.loc}
+\item{genes_order}{A vector of the genes by the desired order. Default is by GENE.loc}
 
-\item{rmPseudo}{if TRUE non-functional and pseudo genes are removed. Defualt is TRUE.}
+\item{rmPseudo}{if TRUE non-functional and pseudo genes are removed. Default is TRUE.}
 }
 \value{
 A \code{data.frame}, in which each row is the relative gene usage value per individual.

@@ -15,9 +15,9 @@ NULL
 #' @param    hapBy_col             column name of the anchor gene. Default is j_call
 #' @param    hapBy                 a string of the anchor gene name. Default is IGHJ6.
 #' @param    toHap_GERM            a vector of named nucleotide germline sequences matching the allele calls in \code{toHap_col} columns in clip_db.
-#' @param    relative_freq_priors  if TRUE, the priors for Bayesian inference are estimated from the relative frequencies in clip_db. Else, priors are set to \code{c(0.5,0.5)}. Defualt is TRUE
-#' @param    kThreshDel            the minimum lK (log10 of the Bayes factor) to call a deletion. Defualt is 3.
-#' @param    rmPseudo              if TRUE non-functional and pseudo genes are removed. Defualt is TRUE.
+#' @param    relative_freq_priors  if TRUE, the priors for Bayesian inference are estimated from the relative frequencies in clip_db. Else, priors are set to \code{c(0.5,0.5)}. Default is TRUE
+#' @param    kThreshDel            the minimum lK (log10 of the Bayes factor) to call a deletion. Default is 3.
+#' @param    rmPseudo              if TRUE non-functional and pseudo genes are removed. Default is TRUE.
 #' @param    deleted_genes         double chromosome deletion summary table. A \code{data.frame} created by \code{deletionsByBinom}.
 #' @param    nonReliable_Vgenes    a list of known non reliable gene assignments. A \code{list} created by \code{nonReliableVGenes}.
 #' @param    min_minor_fraction    the minimum minor allele fraction to be used as an anchor gene. Default is 0.3
@@ -92,7 +92,7 @@ createFullHaplotype <-
     chain <- match.arg(chain)
 
     if (missing(toHap_GERM)){
-      cat("Missing toHap_GERM, using defualt germline from GERM by the given chain")
+      cat("Missing toHap_GERM, using Default germline from GERM by the given chain")
       toHap_GERM <-  unlist(unname(GERM[[chain]][toHap_col]))
     }
 
@@ -406,8 +406,8 @@ createFullHaplotype <-
 #'
 #' @param    clip_db               a \code{data.frame} in AIRR format. See details.
 #' @param    chain                 the IG/TR chain: IGH,IGK,IGL,TRB. Default is IGH.
-#' @param    genes_order           A vector of the genes by the desired order. Defualt is by GENE.loc
-#' @param    rmPseudo              if TRUE non-functional and pseudo genes are removed. Defualt is TRUE.
+#' @param    genes_order           A vector of the genes by the desired order. Default is by GENE.loc
+#' @param    rmPseudo              if TRUE non-functional and pseudo genes are removed. Default is TRUE.
 #'
 #' @return  A \code{data.frame}, in which each row is the relative gene usage value per individual.
 #'
@@ -537,7 +537,7 @@ geneUsage <- function(clip_db, chain = c("IGH", "IGK", "IGL", "TRB"), genes_orde
 #' @param    clip_db               a \code{data.frame} in AIRR format. See details.
 #' @param    chain                 the IG/TR chain: IGH,IGK,IGL,TRB. Default is IGH.
 #' @param    nonReliable_Vgenes    a list of known non reliable gene assignments. A \code{list} created by \code{nonReliableVGenes}.
-#' @param    genes_order           A vector of the genes by the desired order. Defualt is by GENE.loc
+#' @param    genes_order           A vector of the genes by the desired order. Default is by GENE.loc
 #'
 #' @return  A \code{data.frame}, in which each row is the double chomosome deletion inference of a gene.
 #'
@@ -731,7 +731,7 @@ deletionsByBinom <-
 #' @param  count_thresh             integer, the minimun number of sequences mapped to a specific V gene to be included in the V pooled inference.
 #' @param  deleted_genes            double chromosome deletion summary table. A \code{data.frame} created by \code{deletionsByBinom}.
 #' @param  min_minor_fraction       the minimum minor allele fraction to be used as an anchor gene. Default is 0.3
-#' @param  kThreshDel               the minimum lK (log10 of the Bayes factor) to call a deletion. Defualt is 3.
+#' @param  kThreshDel               the minimum lK (log10 of the Bayes factor) to call a deletion. Default is 3.
 #' @param  nonReliable_Vgenes       a list of known non reliable gene assignments. A \code{list} created by \code{nonReliableVGenes}.
 #'
 #' @return
@@ -835,13 +835,13 @@ deletionsByVpooled <-
 
       V.df <- list()
       if (length(GENES) > 0) {
-        print(
+        message(
           paste0(
             "The following genes used for pooled deletion detection for sample ",
             sample_name
           )
         )
-        print(paste(GENES, sep = ","))
+        message(paste(GENES, sep = ","))
         toHapGerm <-
           unlist(unname(GERM[[chain]][deletion_col]))
         for (G in GENES) {
@@ -1047,8 +1047,8 @@ deletionsByVpooled <-
 #' when the ratio of the multiple assignments with a gene is below the threshold.
 #'
 #' @param  clip_db              a \code{data.frame} in AIRR format. See details.
-#' @param  thresh               the threshold to consider non reliable gene. Defualt is 0.9
-#' @param  appearance           the minimun fraction of gene appearance to be considered for reliability check. Defualt is 0.01.
+#' @param  thresh               the threshold to consider non reliable gene. Default is 0.9
+#' @param  appearance           the minimum fraction of gene appearance to be considered for reliability check. Default is 0.01.
 #'
 #' @return  a nested list of non reliable genes for all subject.
 #'

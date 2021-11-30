@@ -21,7 +21,7 @@ plotDeletionsByBinom(
 
 \item{genes.dup}{a vector of IGH genes known to have a duplicated gene. Default is IGHD4-11 that his duplicate is IGHD4-4 and IGHD5-18 that his duplicate is IGHD5-5}
 
-\item{genes_order}{A vector of the genes by the desired order. Defualt is by GENE.loc}
+\item{genes_order}{A vector of the genes by the desired order. Default is by GENE.loc}
 }
 \value{
 A double chromosome deletion visualization.

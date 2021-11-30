@@ -18,9 +18,9 @@ plotHaplotype(
 \arguments{
 \item{hap_table}{haplotype summary table. See details.}
 
-\item{html_output}{if TRUE, a html5 interactive graph is outputed. Defualt is FALSE.}
+\item{html_output}{if TRUE, a html5 interactive graph is outputed. Default is FALSE.}
 
-\item{genes_order}{A vector of the genes by the desired order. Defualt is by GENE.loc}
+\item{genes_order}{A vector of the genes by the desired order. Default is by GENE.loc}
 
 \item{text_size}{the size of graph labels. Default is 14 (pts).}
 

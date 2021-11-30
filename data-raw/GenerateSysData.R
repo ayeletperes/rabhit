@@ -1,4 +1,9 @@
 # Generate sysdata
+## package libraries
+pacman::p_load('ggplot2', 'methods', 'utils', 'dendextend', 'plotly','tigger', 'tidyr',
+               'graphics', 'cowplot', 'gridExtra', 'dplyr', 'alakazam', 'rlang',
+               'data.table', 'reshape2', 'gtools', 'stats', "ggdendro", 'stringi', 'grid',
+               'htmlwidgets', 'gtable', "grDevices", 'plyr', 'splitstackshape', 'RColorBrewer', 'fastmatch', install = F)
 
 #### Default Gene location ####
 

@@ -18,13 +18,13 @@ hapDendo(
 
 \item{chain}{the IG/TR chain: IGH,IGK,IGL,TRB. Default is IGH.}
 
-\item{genes_order}{A vector of the genes by the desired order. Defualt is by GENE.loc}
+\item{genes_order}{A vector of the genes by the desired order. Default is by GENE.loc}
 
-\item{removeIGH}{if TRUE, 'IGH'\'IGK'\'IGL' prefix is removed from gene names. Defualt is TRUE.}
+\item{removeIGH}{if TRUE, 'IGH'\'IGK'\'IGL' prefix is removed from gene names. Default is TRUE.}
 
-\item{mark_low_lk}{if TRUE, a texture is add for low lK values. Defualt is TRUE.}
+\item{mark_low_lk}{if TRUE, a texture is add for low lK values. Default is TRUE.}
 
-\item{lk_cutoff}{the lK cutoff value to be considerd low for texture layer. Defualt is lK<1.}
+\item{lk_cutoff}{the lK cutoff value to be considerd low for texture layer. Default is lK<1.}
 }
 \value{
 A multitple samples visualization of the distances between haplotypes.

@@ -31,11 +31,11 @@ createFullHaplotype(
 
 \item{toHap_GERM}{a vector of named nucleotide germline sequences matching the allele calls in \code{toHap_col} columns in clip_db.}
 
-\item{relative_freq_priors}{if TRUE, the priors for Bayesian inference are estimated from the relative frequencies in clip_db. Else, priors are set to \code{c(0.5,0.5)}. Defualt is TRUE}
+\item{relative_freq_priors}{if TRUE, the priors for Bayesian inference are estimated from the relative frequencies in clip_db. Else, priors are set to \code{c(0.5,0.5)}. Default is TRUE}
 
-\item{kThreshDel}{the minimum lK (log10 of the Bayes factor) to call a deletion. Defualt is 3.}
+\item{kThreshDel}{the minimum lK (log10 of the Bayes factor) to call a deletion. Default is 3.}
 
-\item{rmPseudo}{if TRUE non-functional and pseudo genes are removed. Defualt is TRUE.}
+\item{rmPseudo}{if TRUE non-functional and pseudo genes are removed. Default is TRUE.}
 
 \item{deleted_genes}{double chromosome deletion summary table. A \code{data.frame} created by \code{deletionsByBinom}.}
 

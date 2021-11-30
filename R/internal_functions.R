@@ -552,7 +552,7 @@ binomTestDeletion <- function(GENE.usage.df, cutoff = 0.001, p.val.cutoff = 0.01
             return(paste0(GENE.usage.df$gene[i], "_", 2))
         }
     })
-    GENE.usage.df <- GENE.usage.df %>% group_by(.data$foradj) %>% mutate(pval_adj = p.adjust(.data$pval, method = "BH"))
+    GENE.usage.df <- GENE.usage.df %>% dplyr::group_by(.data$foradj) %>% mutate(pval_adj = p.adjust(.data$pval, method = "BH"))
 
 
 
@@ -588,9 +588,9 @@ binomTestDeletion <- function(GENE.usage.df, cutoff = 0.001, p.val.cutoff = 0.01
 #
 sample_size <- function(clip_db, CALL){
 
-  clip_db <- clip_db %>% select(.data$subject, !!as.name(CALL)) %>% group_by(.data$subject) %>%
-    mutate(SAMPLE.SIZE = sum(!grepl(',', !!as.name(CALL)))) %>% slice(1) %>%
-    ungroup() %>% select(.data$subject, .data$SAMPLE.SIZE)
+  clip_db <- clip_db %>% select(.data$subject, !!as.name(CALL)) %>% dplyr::group_by(.data$subject) %>%
+    dplyr::mutate(SAMPLE.SIZE = sum(!grepl(',', !!as.name(CALL)))) %>% slice(1) %>%
+    dplyr::ungroup() %>% dplyr::select(.data$subject, .data$SAMPLE.SIZE)
   SAMPLE.SIZE <- clip_db$SAMPLE.SIZE
   names(SAMPLE.SIZE) <- unique(clip_db$subject)
   return(SAMPLE.SIZE)
@@ -698,7 +698,7 @@ nonReliableAllelesText <- function(non_reliable_alleles_text, size = 4) {
     if (nrow(non_reliable_alleles_text) != 0) {
         non_reliable_alleles_text$text <- non_reliable_alleles_text$alleles
         non_reliable_alleles_text$pos <- ifelse(non_reliable_alleles_text$freq == 1, 0.5, 0.25)
-        non_reliable_alleles_text <- non_reliable_alleles_text %>% ungroup() %>% group_by(.data$gene, .data$subject, .data$hapBy) %>%
+        non_reliable_alleles_text <- non_reliable_alleles_text %>% ungroup() %>% dplyr::group_by(.data$gene, .data$subject, .data$hapBy) %>%
           mutate(pos = .data$pos + ifelse(dplyr::row_number()==2,dplyr::row_number()-1.5,dplyr::row_number()-1))
         non_reliable_alleles_text$size <- sapply(1:nrow(non_reliable_alleles_text), function(i) {
             if (non_reliable_alleles_text$freq[i] == 1) {
@@ -736,11 +736,11 @@ nonReliableAllelesText_V2 <- function(non_reliable_alleles_text, size = 3, map =
                                                           seq(0.125,1,by = 0.25)[1:4])))
     non_reliable_alleles_text$size = size
     if(!map){
-      non_reliable_alleles_text <- non_reliable_alleles_text %>% ungroup() %>% group_by(.data$gene, .data$subject, .data$hapBy) %>%
-      mutate(pos2 = .data$pos + 1 + ifelse(dplyr::row_number()==2,dplyr::row_number()-1.5,dplyr::row_number()-1))}
+      non_reliable_alleles_text <- non_reliable_alleles_text %>% dplyr::ungroup() %>% dplyr::group_by(.data$gene, .data$subject, .data$hapBy) %>%
+        dplyr::mutate(pos2 = .data$pos + 1 + ifelse(dplyr::row_number()==2,dplyr::row_number()-1.5,dplyr::row_number()-1))}
     else{
-      non_reliable_alleles_text <- non_reliable_alleles_text %>% ungroup() %>% group_by(.data$gene, .data$subject) %>%
-        mutate(pos = ifelse(.data$n == 1, 0.5,
+      non_reliable_alleles_text <- non_reliable_alleles_text %>% dplyr::ungroup() %>% dplyr::group_by(.data$gene, .data$subject) %>%
+        dplyr::mutate(pos = ifelse(.data$n == 1, 0.5,
                              ifelse(.data$n == 2, seq(0.25,1,by = 0.5)[1:max(dplyr::row_number())],
                                     ifelse(.data$n == 3, seq(0.165,1,by = 0.33)[1:max(dplyr::row_number())],
                                            seq(0.125,1,by = 0.25)[1:max(dplyr::row_number())]))))
@@ -771,7 +771,7 @@ novelAlleleAnnotation <- function(novel_allele, new_label, size = 3) {
                                ifelse(novel_allele$freq == 2, 0.5,
                                       ifelse(novel_allele$freq == 3, 0.33, 0.25)))
     novel_allele$size = size
-    novel_allele <- novel_allele %>% ungroup() %>% group_by(.data$gene, .data$subject, .data$hapBy) %>%
+    novel_allele <- novel_allele %>% dplyr::ungroup() %>% dplyr::group_by(.data$gene, .data$subject, .data$hapBy) %>%
       mutate(pos = ifelse(.data$n == 1, 0.5,
                           ifelse(.data$n == 2, seq(0.25,1,by = 0.5)[1:max(dplyr::row_number())],
                                  ifelse(.data$n == 3, seq(0.165,1,by = 0.33)[1:max(dplyr::row_number())],
