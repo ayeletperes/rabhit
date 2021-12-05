@@ -769,7 +769,8 @@ hapHeatmap <-
            ylabel_size = 1) {
 
     '.' <- list
-
+    oldpar <- par(no.readonly = TRUE)
+    on.exit(par(oldpar))
     subject <- gene <- alleles <- NULL
 
     if (missing(chain)) {
