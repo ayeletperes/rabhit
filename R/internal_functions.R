@@ -1317,5 +1317,15 @@ readHaplotypeDb <- function(file) {
   db <-
     suppressMessages(readr::read_tsv(file, col_types = types, na = c("", "NA", "None")))
 
+  # check alleles column, if numeric re-create the column
+  if(any(grepl(".", db[["alleles"]], fixed = T))){
+
+    db[["alleles"]] <- sapply(1:nrow(db), function(i){
+      alleles <- grep("[0-9]",as.list(db[i,3:4]),value=T)
+      alleles <- unique(alleles)
+      paste0(alleles, collapse = ",")
+    })
+
+  }
   return(as.data.frame(db))
 }
