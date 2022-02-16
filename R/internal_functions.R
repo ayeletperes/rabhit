@@ -286,13 +286,13 @@ parseHapTab <-
               alleles <- strsplit(panel.alleles[i], ",")[[1]]
               return(data.table::rbindlist(lapply(1:length(alleles), function(j) {
                 count_id <-
-                  which(strsplit(hap_table[i, 'alleles'], ',')[[1]] == alleles[j])
+                  which(strsplit(hap_table$alleles[i], ',')[[1]] == alleles[j])
                 return(
                   data.frame(
                     subject = sample_name,
                     gene = paste0(hap_table$gene[i], "*", alleles[j]),
                     hapBy = hapBy_alleles[panel],
-                    count = as.numeric(strsplit(hap_table[i, paste0("counts", count_id)], ",")[[1]][panel]),
+                    count = as.numeric(strsplit(hap_table[[paste0("counts", count_id)]][i], ",")[[1]][panel]),
                     stringsAsFactors = FALSE
                   )
                 )
@@ -1317,9 +1317,5 @@ readHaplotypeDb <- function(file) {
   db <-
     suppressMessages(readr::read_tsv(file, col_types = types, na = c("", "NA", "None")))
 
-  # change columns to lowercase
-  lower_cols <- names(db)
-  db <- mutate_at(db, lower_cols, toupper)
-
-  return(db)
+  return(as.data.frame(db))
 }
