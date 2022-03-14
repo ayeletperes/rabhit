@@ -517,20 +517,24 @@ sortDFByGene <-
     }
     chain <- match.arg(chain)
 
-    GENE.loc.tmp <- genes_order
-    names(GENE.loc.tmp) <- GENE.loc.tmp
     if (peseudo_remove) {
       DATA <- DATA[!grepl("OR|NL", DATA$gene), ]
       DATA <- DATA[!(DATA$gene %in% PSEUDO[[chain]]), ]
     }
-    DATA$gene <- factor(DATA$gene, levels = rev(GENE.loc.tmp))
+
+    DATA$order <-
+      fastmatch::fmatch(DATA$gene, genes_order)
+    DATA <- stats::na.omit(DATA, cols = "order")
+    DATA <- DATA[order(DATA$order),]
+
     if (removeIGH) {
-      GENE.loc.tmp <- gsub(chain, "", GENE.loc.tmp)
-      names(GENE.loc.tmp) <- GENE.loc.tmp
+      GENE.loc.tmp <- gsub(chain, "", genes_order)
       DATA$gene <- gsub(chain, "", DATA$gene)
       DATA$gene <- factor(DATA$gene, levels = rev(GENE.loc.tmp))
       if (!geno)
         DATA$hapBy <- gsub(chain, "", DATA$hapBy)
+    } else{
+      DATA$gene <- factor(DATA$gene, levels = rev(genes_order))
     }
 
     return(DATA)
@@ -791,12 +795,18 @@ alleleHapPalette <- function(hap_alleles, NRA = TRUE) {
                   perl = T)
   AlleleCol.tmp <-
     sort(unique(sapply(strsplit(Alleles, "_"), "[", 1)))
-  tmp.col <- ALLELE_PALETTE[AlleleCol.tmp]
+  ALLELE_PALETTE_specific <- ALLELE_PALETTE
+  if(any(!AlleleCol.tmp %in% names(ALLELE_PALETTE))){
+    missing_alleles <- AlleleCol.tmp[which(!AlleleCol.tmp %in% names(ALLELE_PALETTE))]
+    na_id <- which(names(ALLELE_PALETTE)=="NA")
+    names(ALLELE_PALETTE_specific)[na_id[1:length(missing_alleles)]] <- missing_alleles
+  }
+  tmp.col <- ALLELE_PALETTE_specific[AlleleCol.tmp]
 
 
   novels <- grep("_", Alleles, value = T)
   if (length(novels) > 0) {
-    novels.col <- ALLELE_PALETTE[sapply(strsplit(novels, "_"), "[", 1)]
+    novels.col <- ALLELE_PALETTE_specific[sapply(strsplit(novels, "_"), "[", 1)]
     names(novels.col) <- novels
     alleles.comb <-
       c(tmp.col, novels.col)[order(names(c(tmp.col, novels.col)))]
