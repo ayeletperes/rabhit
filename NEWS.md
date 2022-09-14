@@ -1,3 +1,10 @@
+Version 0.2.4: September 14, 2022
+-------------------------------------------------------------------------------
+
+General:
+
++ Generalized the createFullHaplotype to allow other genes as anchor.
+
 Version 0.2.3: March 14, 2022
 -------------------------------------------------------------------------------
 
