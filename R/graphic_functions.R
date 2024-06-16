@@ -1681,17 +1681,19 @@ hapDendo <-
 
       leg1 = gtable::gtable_filter(gt1, "guide-box")
       leg2 = gtable::gtable_filter(gt2, "guide-box")
+      id_grob = grep('grobs',lapply(leg1[['grobs']],names))
+      id_guide_box = grep("guide-box",lapply(gt1$grobs,function(x) x$name))
       # Combine the legends
       leg <-
-        cbind(leg1[["grobs"]][[1]], leg2[["grobs"]][[1]], size = "first")
+        cbind(leg1[["grobs"]][[id_grob]], leg2[["grobs"]][[id_grob]], size = "first")
       # Insert legend into g1 (or g2)
-      gt1$grobs[gt1$layout$name == "guide-box"][[1]] <- leg
-      gt1$grobs[gt1$layout$name == "guide-box"][[1]]$layout[3, c("t", "b")] <-
-        gt1$grobs[gt1$layout$name == "guide-box"][[1]]$layout[1, c("t", "b")]
-      gt1$grobs[gt1$layout$name == "guide-box"][[1]]$layout[3, c("l", "r")] <-
-        gt1$grobs[gt1$layout$name == "guide-box"][[1]]$layout[1, c("l", "r")] +
+      gt1$grobs[id_guide_box][[1]] <- leg
+      gt1$grobs[id_guide_box][[1]]$layout[3, c("t", "b")] <-
+        gt1$grobs[id_guide_box][[1]]$layout[1, c("t", "b")]
+      gt1$grobs[id_guide_box][[1]]$layout[3, c("l", "r")] <-
+        gt1$grobs[id_guide_box][[1]]$layout[1, c("l", "r")] +
         2
-      legend <- get_legend(gt1)
+      legend <- gt1$grobs[id_guide_box][[1]]
     } else
       legend <- get_legend(hap_plot)
 

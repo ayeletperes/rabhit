@@ -1,5 +1,5 @@
 # rabhit package documentation and import directives
-
+"_PACKAGE"
 #' The RAbHIT package
 #'
 #' The \code{rabhit} package provides a robust novel method for determining
@@ -33,7 +33,6 @@
 #' }
 #'
 #' @name     rabhit
-#' @docType  package
 #' @references
 #' \enumerate{
 #'   \item  Gidoni, M., Snir, O., Peres, A., Polak, P., Lindeman, I., Mikocziova, I., . . . Yaari, G. (2019).
@@ -50,7 +49,6 @@
 #' @importFrom  cowplot          get_legend plot_grid ggdraw draw_label background_grid
 #' @importFrom  gridExtra        arrangeGrob
 #' @importFrom  dplyr            do n desc funs %>% distinct
-#'                               as_data_frame data_frame
 #'                               bind_cols bind_rows combine rowwise slice
 #'                               filter select arrange
 #'                               group_by ungroup

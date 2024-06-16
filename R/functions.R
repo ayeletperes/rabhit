@@ -102,7 +102,7 @@ createFullHaplotype <-
 
     haplo_db <- c()
     clip_db <-
-      clip_db %>% select(.data$subject,!!eval(c(hapBy_col, toHap_col)))
+      clip_db %>% dplyr::select(.data$subject,!!eval(c(hapBy_col, toHap_col)))
     for (sample_name in unique(clip_db$subject)) {
       if (is.list(nonReliable_Vgenes)) {
         nonReliable_Vgenes_vec <- nonReliable_Vgenes[[sample_name]]
@@ -264,11 +264,11 @@ createFullHaplotype <-
                 clip_db_sub_g %>% filter(!grepl(',',!!as.name(toHap_col_tmp)))
 
             tmp <-
-              clip_db_sub.G %>% filter(grepl(
+              clip_db_sub.G %>% dplyr::filter(grepl(
                 paste0('^(?=.*', hapBy, '\\*)'),
                 !!as.name(hapBy_col),
                 perl = T
-              )) %>% select(!!as.name(toHap_col_tmp),!!as.name(hapBy_col)) %>% table()
+              )) %>% dplyr::select(!!as.name(toHap_col_tmp),!!as.name(hapBy_col)) %>% table()
 
             if (nrow(tmp) == 0) {
               return()

@@ -1,7 +1,7 @@
-## ---- eval=TRUE, message=FALSE, warning=FALSE---------------------------------
+## ----eval=TRUE, message=FALSE, warning=FALSE----------------------------------
 library(rabhit)
 
-## ---- eval=TRUE, warning=FALSE------------------------------------------------
+## ----eval=TRUE, warning=FALSE-------------------------------------------------
 # Load example sequence data and example germline database
 data(samples_db, HVGERM, HDGERM)
 # Selecting a single individual
@@ -11,22 +11,22 @@ haplo_db_J6 <- createFullHaplotype(clip_db, toHap_col=c("v_call","d_call"),
                                 hapBy_col="j_call", hapBy="IGHJ6", 
                                 toHap_GERM=c(HVGERM, HDGERM))
 
-## ---- eval=TRUE, warning=FALSE------------------------------------------------
+## ----eval=TRUE, warning=FALSE-------------------------------------------------
 head(haplo_db_J6,3)
 
-## ---- eval=TRUE, warning=FALSE,fig.width=15,fig.height=10---------------------
+## ----eval=TRUE, warning=FALSE,fig.width=15,fig.height=10----------------------
 # Plotting the haplotype map
 plotHaplotype(haplo_db_J6)
 
-## ---- eval=TRUE, warning=FALSE, fig.width=12, fig.height=8--------------------
+## ----eval=TRUE, warning=FALSE, fig.width=12, fig.height=8---------------------
 # Inferring haplotype using D2-21 as anchor
 haplo_db_D2_21 <- createFullHaplotype(clip_db, toHap_col="v_call",
                         hapBy_col="d_call", hapBy="IGHD2-21", toHap_GERM=HVGERM)
 
-## ---- eval=TRUE, warning=FALSE------------------------------------------------
+## ----eval=TRUE, warning=FALSE-------------------------------------------------
 haplo_db_J6[haplo_db_J6$gene == "IGHD2-21", ]
 
-## ---- eval=TRUE, warning=FALSE------------------------------------------------
+## ----eval=TRUE, warning=FALSE-------------------------------------------------
 # rename the subject
 haplo_db_J6$subject <- 'J6'
 haplo_db_D2_21$subject <- 'D2-21'
@@ -46,22 +46,22 @@ haplo_db_J6 <- haplo_db_J6[grep('IGHV',haplo_db_J6$gene),]
 # Combining the datasets row wise
 haplo_comb <- rbind(haplo_db_J6,haplo_db_D2_21)
 
-## ---- eval=TRUE, warning=FALSE, fig.width=14, fig.height=6--------------------
+## ----eval=TRUE, warning=FALSE, fig.width=14, fig.height=6---------------------
 # Plot the haplotype inferred deprogram
 hapDendo(haplo_comb)
 
-## ---- eval=TRUE, warning=FALSE------------------------------------------------
+## ----eval=TRUE, warning=FALSE-------------------------------------------------
 # Inferring double chromosome deletions
 del_binom_db <- deletionsByBinom(clip_dbs)
 head(del_binom_db)
 
-## ---- eval=TRUE, warning=FALSE,fig.height=9,fig.width=15----------------------
+## ----eval=TRUE, warning=FALSE,fig.height=9,fig.width=15-----------------------
 # Don't plot IGHJ
 del_binom_db <- del_binom_db[grep('IGHJ', del_binom_db$gene, invert = T),]
 # Inferred deletion summary table
 plotDeletionsByBinom(del_binom_db) 
 
-## ---- eval=TRUE, warning=FALSE------------------------------------------------
+## ----eval=TRUE, warning=FALSE-------------------------------------------------
 # Using the deleted_genes and nonRelaible_Vgenes flags 
 # to infer haplotype for a partial V coverage sequence dataset
 haplo_db <- createFullHaplotype(clip_db, toHap_col=c("v_call","d_call"),
@@ -70,19 +70,19 @@ haplo_db <- createFullHaplotype(clip_db, toHap_col=c("v_call","d_call"),
                         deleted_genes = del_binom_db, 
                         nonReliable_Vgenes = nonReliable_Vgenes)
 
-## ---- eval=TRUE, warning=FALSE------------------------------------------------
+## ----eval=TRUE, warning=FALSE-------------------------------------------------
 # Generate interactive haplotype plot
 p <- plotHaplotype(hap_table = haplo_db, html_output = TRUE)
 
-## ---- cache=FALSE, eval=FALSE, warning=FALSE----------------------------------
+## ----cache=FALSE, eval=FALSE, warning=FALSE-----------------------------------
 #  # Saving the plot to html output
 #  htmlwidgets::saveWidget(p, "haplotype.html", selfcontained = T)
 
-## ---- cache=FALSE, eval=F, warning=FALSE, message=F---------------------------
+## ----cache=FALSE, eval=F, warning=FALSE, message=F----------------------------
 #  # Plotting the interactive haplotype inference
 #  p
 
-## ---- eval=TRUE, warning=FALSE,fig.height=12,fig.width=15---------------------
+## ----eval=TRUE, warning=FALSE,fig.height=12,fig.width=15----------------------
 # Detecting non reliable genes
 nonReliable_Vgenes <- nonReliableVGenes(samples_db)
 

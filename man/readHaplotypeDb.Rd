@@ -5,6 +5,8 @@
 \title{Read a Change-O tab-delimited database file}
 \usage{
 readHaplotypeDb(file)
+
+readHaplotypeDb(file)
 }
 \arguments{
 \item{file}{tab-delimited database file output by a Change-O tool.}
@@ -17,8 +19,19 @@ A data.frame of the haplotype file. Columns will be imported as is, except for
             \item  alleles
             \item  subject
           }
+
+A data.frame of the haplotype file. Columns will be imported as is, except for
+          the following columns which will be explicitly converted into character
+          values:
+          \itemize{
+            \item  alleles
+            \item  subject
+          }
 }
 \description{
+\code{readHaplotypeDb} reads a tab-delimited haplotype file created by a createFullHaplotype
+into a data.frame. Based on readChangeoDb function from alakazam.
+
 \code{readHaplotypeDb} reads a tab-delimited haplotype file created by a createFullHaplotype
 into a data.frame. Based on readChangeoDb function from alakazam.
 }
