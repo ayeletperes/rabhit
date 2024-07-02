@@ -118,6 +118,7 @@ createHaplotypeTable <-
     counts.list <- list()
     res.list <- list()
     for (i in 1:nrow(df)) {
+
       allele <- rownames(df)[i]
       if (sum(df[i, ]) == 0) {
         #tohap <- tohap[-which(tohap == allele)]
@@ -204,15 +205,15 @@ createHaplotypeTable <-
             paste(counts.list[[2]][order(names(counts.list[[2]])[1:2])], collapse = ","),
             NA
           ),
-          k2 = ifelse(length(counts.list) > 1, max(res.list[[2]][1:2]) - min(res.list[[2]][1:2]), NA),
+          k2 = ifelse(length(res.list) > 1, max(res.list[[2]][1:2]) - min(res.list[[2]][1:2]), NA),
           counts3 = ifelse(
-            length(counts.list) > 2,
+            length(res.list) > 2,
             paste(counts.list[[3]][order(names(counts.list[[3]])[1:2])], collapse = ","),
             NA
           ),
-          k3 = ifelse(length(counts.list) > 2, max(res.list[[3]][1:2]) - min(res.list[[3]][1:2]), NA),
+          k3 = ifelse(length(res.list) > 2, max(res.list[[3]][1:2]) - min(res.list[[3]][1:2]), NA),
           counts4 = ifelse(
-            length(counts.list) > 3,
+            length(res.list) > 3,
             paste(counts.list[[4]][order(names(counts.list[[4]])[1:2])], collapse = ","),
             NA
           ),

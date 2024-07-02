@@ -204,6 +204,7 @@ createFullHaplotype <-
 
       GENES.df.num <-
         data.table::rbindlist(lapply(intersect(GENES, GENES.ref), function(G) {
+
           if (G %in% deleted_genes_vec || G %in% nonReliable_Vgenes_vec) {
             relFreqDf.tmp <- data.frame(matrix(c(
               sample_name, G,
