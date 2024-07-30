@@ -183,7 +183,7 @@ createFullHaplotype <-
           "\\*.*",
           "\\1",
           grep(
-            "^(?=.*IG)",
+            "^(?=.*[IG|TR])",
             unique(unlist(clip_db_sub[clip_db_sub[, hapBy_col] %in% hapBy_alleles, toHap_col], use.names = F)),
             value = T,
             perl = T
