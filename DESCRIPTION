@@ -1,7 +1,7 @@
 Package: rabhit
 Type: Package
 Title: Inference Tool for Antibody Haplotype
-Version: 0.2.7
+Version: 0.2.8
 Authors@R: c(person("Ayelet", "Peres", role=c("aut","cre"), 
                     email="peresay@biu.ac.il"),
             person("Moriah", "Gidoni", role=c("aut"), 
