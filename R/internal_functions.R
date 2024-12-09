@@ -58,21 +58,21 @@ get_probabilites_with_priors <-
 
 
 ##############################################################################################################
-# Create haplotype table
-#
-# \code{createHaplotypeTable} Haplotype of a specific gene
-#
-#' @details
+#' Create haplotype table
+#'
+#' \code{createHaplotypeTable} Haplotype of a specific gene
+#'
+#'
 #
 #' @param  df  table of counts
 #' @param  HapByPriors vector of frequencies of each of the anchor gene alleles
 #' @param  toHapByCol logical, haplotype each chromosome separetly to imrove the aligner assignmnet
 #' @param  toHapPriors vector of frequencies of the haplotyped gene alleles
-#
+#'
 #' @return  data frame with chromosomal associasions of alleles of a specific gene
-#
-#
-#
+#'
+#'
+#'
 #' @export
 createHaplotypeTable <-
   function(df,
