@@ -1,0 +1,439 @@
+
+R version 4.5.1 (2025-06-13) -- "Great Square Root"
+Copyright (C) 2025 The R Foundation for Statistical Computing
+Platform: x86_64-pc-linux-gnu
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> pkgname <- "rabhit"
+> source(file.path(R.home("share"), "R", "examples-header.R"))
+> options(warn = 1)
+> base::assign(".ExTimings", "rabhit-Ex.timings", pos = 'CheckExEnv')
+> base::cat("name\tuser\tsystem\telapsed\n", file=base::get(".ExTimings", pos = 'CheckExEnv'))
+> base::assign(".format_ptime",
++ function(x) {
++   if(!is.na(x[4L])) x[1L] <- x[1L] + x[4L]
++   if(!is.na(x[5L])) x[2L] <- x[2L] + x[5L]
++   options(OutDec = '.')
++   format(x[1L:3L], digits = 7L)
++ },
++ pos = 'CheckExEnv')
+> 
+> ### * </HEADER>
+> library('rabhit')
+Loading required package: ggplot2
+RAbHIT version: 0.3.0
+> 
+> base::assign(".oldSearch", base::search(), pos = 'CheckExEnv')
+> base::assign(".old_wd", base::getwd(), pos = 'CheckExEnv')
+> cleanEx()
+> nameEx("createFullHaplotype")
+> ### * createFullHaplotype
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: createFullHaplotype
+> ### Title: Anchor gene haplotype inference
+> ### Aliases: createFullHaplotype
+> 
+> ### ** Examples
+> 
+> # Load example data and germlines
+> data(samples_db, HVGERM, HDGERM)
+> 
+> # Selecting a single individual
+> clip_db = samples_db[samples_db$subject=='I5', ]
+> 
+> # Infering haplotype
+> haplo_db = createFullHaplotype(clip_db,toHap_col=c('v_call','d_call'),
++ hapBy_col='j_call',hapBy='IGHJ6',toHap_GERM=c(HVGERM,HDGERM))
+For sample I5, haplotyping with IGHJ6*02/IGHJ6*03
+> 
+> 
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("createFullHaplotype", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> cleanEx()
+> nameEx("deletionHeatmap")
+> ### * deletionHeatmap
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: deletionHeatmap
+> ### Title: Graphical output of single chromosome deletions
+> ### Aliases: deletionHeatmap
+> 
+> ### ** Examples
+> 
+> # Plotting single choromosme deletion from haplotype inference
+> deletionHeatmap(samplesHaplotype)
+Warning: `aes_string()` was deprecated in ggplot2 3.0.0.
+ℹ Please use tidy evaluation idioms with `aes()`.
+ℹ See also `vignette("ggplot2-in-packages")` for more information.
+ℹ The deprecated feature was likely used in the rabhit package.
+  Please report the issue at <https://bitbucket.org/yaarilab/rabhit/issues>.
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("deletionHeatmap", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> cleanEx()
+> nameEx("deletionsByBinom")
+> ### * deletionsByBinom
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: deletionsByBinom
+> ### Title: Double chromosome deletion by relative gene usage
+> ### Aliases: deletionsByBinom
+> 
+> ### ** Examples
+> 
+> # Load example data and germlines
+> data(samples_db)
+> 
+> # Selecting a single individual
+> clip_db = samples_db[samples_db$subject=='I5', ]
+> # Infering haplotype
+> del_binom_df = deletionsByBinom(clip_db)
+> head(del_binom_df)
+# A tibble: 6 × 6
+  subject gene          frac  cutoff     pval deletion   
+  <chr>   <fct>        <dbl>   <dbl>    <dbl> <fct>      
+1 I5      IGHV3-74   0.00879 0.00471 1   e+ 0 No Deletion
+2 I5      IGHV3-73   0.00623 0.00198 1   e+ 0 No Deletion
+3 I5      IGHV3-72   0.00172 0.00101 1   e+ 0 No Deletion
+4 I5      IGHV2-70   0.00789 0.00106 1   e+ 0 No Deletion
+5 I5      IGHV1-69-2 0       0.00102 2.97e-24 Deletion   
+6 I5      IGHV2-70D  0       0.00106 3.33e-25 Deletion   
+> 
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("deletionsByBinom", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> cleanEx()
+> nameEx("deletionsByVpooled")
+> ### * deletionsByVpooled
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: deletionsByVpooled
+> ### Title: Single chromosomal D or J gene deletions inferred by the V
+> ###   pooled method
+> ### Aliases: deletionsByVpooled
+> 
+> ### ** Examples
+> 
+> ## No test: 
+> data(samples_db)
+> 
+> # Infering V pooled deletions
+> del_db <- deletionsByVpooled(samples_db)
+The following genes used for pooled deletion detection for sample I3
+IGHV1-18IGHV1-46IGHV3-64DIGHV3-49IGHV2-5
+For sample I3, haplotyping with IGHV1-18*01/IGHV1-18*04
+For sample I3, haplotyping with IGHV1-46*01/IGHV1-46*03
+For sample I3, haplotyping with IGHV3-64D*06/IGHV3-64D*06_G258T
+For sample I3, haplotyping with IGHV3-49*04/IGHV3-49*05
+For sample I3, haplotyping with IGHV2-5*01/IGHV2-5*02
+The following genes used for pooled deletion detection for sample I1
+IGHV3-30IGHV3-48IGHV3-7IGHV3-11IGHV3-49IGHV1-46
+For sample I1, haplotyping with IGHV3-30*04/IGHV3-30*18
+For sample I1, haplotyping with IGHV3-48*01/IGHV3-48*02
+For sample I1, haplotyping with IGHV3-7*01/IGHV3-7*03
+For sample I1, haplotyping with IGHV3-11*01/IGHV3-11*06
+For sample I1, haplotyping with IGHV3-49*03/IGHV3-49*05
+For sample I1, haplotyping with IGHV1-46*01/IGHV1-46*03
+The following genes used for pooled deletion detection for sample I2
+IGHV3-9IGHV1-69IGHV3-73
+For sample I2, haplotyping with IGHV3-9*01/IGHV3-9*01_T307C
+For sample I2, haplotyping with IGHV1-69*01/IGHV1-69*04
+For sample I2, haplotyping with IGHV3-73*01/IGHV3-73*02
+The following genes used for pooled deletion detection for sample I4
+IGHV3-53IGHV3-48IGHV3-11IGHV1-46IGHV1-69IGHV2-5IGHV3-49
+For sample I4, haplotyping with IGHV3-53*01/IGHV3-53*04
+For sample I4, haplotyping with IGHV3-48*01/IGHV3-48*02
+For sample I4, haplotyping with IGHV3-11*01/IGHV3-11*05
+For sample I4, haplotyping with IGHV1-46*01/IGHV1-46*03
+For sample I4, haplotyping with IGHV1-69*02/IGHV1-69*04
+For sample I4, haplotyping with IGHV2-5*01/IGHV2-5*02
+For sample I4, haplotyping with IGHV3-49*03/IGHV3-49*05
+The following genes used for pooled deletion detection for sample I5
+IGHV4-59IGHV3-48IGHV3-30IGHV5-51IGHV3-7IGHV3-64IGHV2-70IGHV1-58IGHV3-53IGHV5-10-1IGHV3-49IGHV3-73
+For sample I5, haplotyping with IGHV4-59*01/IGHV4-59*08
+For sample I5, haplotyping with IGHV3-48*01/IGHV3-48*02
+For sample I5, haplotyping with IGHV3-30*02/IGHV3-30*18
+For sample I5, haplotyping with IGHV5-51*01/IGHV5-51*03
+For sample I5, haplotyping with IGHV3-7*02/IGHV3-7*03
+For sample I5, haplotyping with IGHV3-64*01/IGHV3-64*05_G265C
+For sample I5, haplotyping with IGHV2-70*01/IGHV2-70*15
+For sample I5, haplotyping with IGHV1-58*01/IGHV1-58*02
+For sample I5, haplotyping with IGHV3-53*01/IGHV3-53*04
+For sample I5, haplotyping with IGHV5-10-1*01/IGHV5-10-1*03
+For sample I5, haplotyping with IGHV3-49*03/IGHV3-49*05
+For sample I5, haplotyping with IGHV3-73*01/IGHV3-73*02
+The following genes used for pooled deletion detection for sample I5_FR2
+IGHV2-70IGHV3-30IGHV3-53IGHV4-59IGHV1-69IGHV3-48
+For sample I5_FR2, haplotyping with IGHV2-70*01/IGHV2-70*11_15
+For sample I5_FR2, haplotyping with IGHV3-30*02/IGHV3-30*18
+For sample I5_FR2, haplotyping with IGHV3-53*01_02/IGHV3-53*04
+For sample I5_FR2, haplotyping with IGHV4-59*08/IGHV4-59*09
+For sample I5_FR2, haplotyping with IGHV1-69*01_12_13/IGHV1-69*02_04_09
+For sample I5_FR2, haplotyping with IGHV3-48*01/IGHV3-48*02
+> head(del_db)
+  subject     gene deletion     k counts
+1      I3  IGHD1-1        0  4.16    4,9
+2      I3 IGHD1-20        1  0.07    1,6
+3      I3 IGHD1-26        0 99.67 86,159
+4      I3  IGHD1-7        0 14.11  14,33
+5      I3 IGHD2-15        0 28.75  29,70
+6      I3  IGHD2-2        0 42.69 86,351
+> ## End(No test)
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("deletionsByVpooled", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> cleanEx()
+> nameEx("hapDendo")
+> ### * hapDendo
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: hapDendo
+> ### Title: Hierarchical clustering of haplotypes graphical output
+> ### Aliases: hapDendo
+> 
+> ### ** Examples
+> 
+> # Plotting haplotype hierarchical clustering based on the Jaccard distance
+> ## No test: 
+> hapDendo(samplesHaplotype)
+Ignoring unknown labels:
+• colour : ""
+• size : ""
+> ## End(No test)
+> 
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("hapDendo", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> cleanEx()
+> nameEx("hapHeatmap")
+> ### * hapHeatmap
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: hapHeatmap
+> ### Title: Graphical output of alleles division by chromosome
+> ### Aliases: hapHeatmap
+> 
+> ### ** Examples
+> 
+> # Plotting haplotpe heatmap
+> p <- hapHeatmap(samplesHaplotype)
+> p$p
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("hapHeatmap", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> cleanEx()
+> nameEx("nonReliableVGenes")
+> ### * nonReliableVGenes
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: nonReliableVGenes
+> ### Title: Detect non reliable gene assignment
+> ### Aliases: nonReliableVGenes
+> 
+> ### ** Examples
+> 
+> # Example IGHV call data frame
+> clip_db <- data.frame(subject=rep('S1',6),
++ v_call=c('IGHV1-69*01','IGHV1-69*01','IGHV1-69*01,IGHV1-69*02',
++ 'IGHV4-59*01,IGHV4-61*01','IGHV4-59*01,IGHV4-31*02','IGHV4-59*01'))
+> # Detect non reliable genes
+> nonReliableVGenes(clip_db)
+$S1
+[1] "IGHV4-61" "IGHV4-59" "IGHV4-31"
+
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("nonReliableVGenes", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> cleanEx()
+> nameEx("plotDeletionsByBinom")
+> ### * plotDeletionsByBinom
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: plotDeletionsByBinom
+> ### Title: Graphical output of double chromosome deletions
+> ### Aliases: plotDeletionsByBinom
+> 
+> ### ** Examples
+> 
+> 
+> # Load example data and germlines
+> data(samples_db)
+> 
+> # Infering haplotype
+> deletions_db = deletionsByBinom(samples_db);
+> plotDeletionsByBinom(deletions_db)
+Warning: The `size` argument of `element_rect()` is deprecated as of ggplot2 3.4.0.
+ℹ Please use the `linewidth` argument instead.
+ℹ The deprecated feature was likely used in the rabhit package.
+  Please report the issue at <https://bitbucket.org/yaarilab/rabhit/issues>.
+> 
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("plotDeletionsByBinom", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> cleanEx()
+> nameEx("plotDeletionsByVpooled")
+> ### * plotDeletionsByVpooled
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: plotDeletionsByVpooled
+> ### Title: Graphical output for single chromosome D or J gene deletions
+> ###   according to V pooled method
+> ### Aliases: plotDeletionsByVpooled
+> 
+> ### ** Examples
+> 
+> ## No test: 
+> # Load example data and germlines
+> data(samples_db)
+> del_db <- deletionsByVpooled(samples_db)
+The following genes used for pooled deletion detection for sample I3
+IGHV1-18IGHV1-46IGHV3-64DIGHV3-49IGHV2-5
+For sample I3, haplotyping with IGHV1-18*01/IGHV1-18*04
+For sample I3, haplotyping with IGHV1-46*01/IGHV1-46*03
+For sample I3, haplotyping with IGHV3-64D*06/IGHV3-64D*06_G258T
+For sample I3, haplotyping with IGHV3-49*04/IGHV3-49*05
+For sample I3, haplotyping with IGHV2-5*01/IGHV2-5*02
+The following genes used for pooled deletion detection for sample I1
+IGHV3-30IGHV3-48IGHV3-7IGHV3-11IGHV3-49IGHV1-46
+For sample I1, haplotyping with IGHV3-30*04/IGHV3-30*18
+For sample I1, haplotyping with IGHV3-48*01/IGHV3-48*02
+For sample I1, haplotyping with IGHV3-7*01/IGHV3-7*03
+For sample I1, haplotyping with IGHV3-11*01/IGHV3-11*06
+For sample I1, haplotyping with IGHV3-49*03/IGHV3-49*05
+For sample I1, haplotyping with IGHV1-46*01/IGHV1-46*03
+The following genes used for pooled deletion detection for sample I2
+IGHV3-9IGHV1-69IGHV3-73
+For sample I2, haplotyping with IGHV3-9*01/IGHV3-9*01_T307C
+For sample I2, haplotyping with IGHV1-69*01/IGHV1-69*04
+For sample I2, haplotyping with IGHV3-73*01/IGHV3-73*02
+The following genes used for pooled deletion detection for sample I4
+IGHV3-53IGHV3-48IGHV3-11IGHV1-46IGHV1-69IGHV2-5IGHV3-49
+For sample I4, haplotyping with IGHV3-53*01/IGHV3-53*04
+For sample I4, haplotyping with IGHV3-48*01/IGHV3-48*02
+For sample I4, haplotyping with IGHV3-11*01/IGHV3-11*05
+For sample I4, haplotyping with IGHV1-46*01/IGHV1-46*03
+For sample I4, haplotyping with IGHV1-69*02/IGHV1-69*04
+For sample I4, haplotyping with IGHV2-5*01/IGHV2-5*02
+For sample I4, haplotyping with IGHV3-49*03/IGHV3-49*05
+The following genes used for pooled deletion detection for sample I5
+IGHV4-59IGHV3-48IGHV3-30IGHV5-51IGHV3-7IGHV3-64IGHV2-70IGHV1-58IGHV3-53IGHV5-10-1IGHV3-49IGHV3-73
+For sample I5, haplotyping with IGHV4-59*01/IGHV4-59*08
+For sample I5, haplotyping with IGHV3-48*01/IGHV3-48*02
+For sample I5, haplotyping with IGHV3-30*02/IGHV3-30*18
+For sample I5, haplotyping with IGHV5-51*01/IGHV5-51*03
+For sample I5, haplotyping with IGHV3-7*02/IGHV3-7*03
+For sample I5, haplotyping with IGHV3-64*01/IGHV3-64*05_G265C
+For sample I5, haplotyping with IGHV2-70*01/IGHV2-70*15
+For sample I5, haplotyping with IGHV1-58*01/IGHV1-58*02
+For sample I5, haplotyping with IGHV3-53*01/IGHV3-53*04
+For sample I5, haplotyping with IGHV5-10-1*01/IGHV5-10-1*03
+For sample I5, haplotyping with IGHV3-49*03/IGHV3-49*05
+For sample I5, haplotyping with IGHV3-73*01/IGHV3-73*02
+The following genes used for pooled deletion detection for sample I5_FR2
+IGHV2-70IGHV3-30IGHV3-53IGHV4-59IGHV1-69IGHV3-48
+For sample I5_FR2, haplotyping with IGHV2-70*01/IGHV2-70*11_15
+For sample I5_FR2, haplotyping with IGHV3-30*02/IGHV3-30*18
+For sample I5_FR2, haplotyping with IGHV3-53*01_02/IGHV3-53*04
+For sample I5_FR2, haplotyping with IGHV4-59*08/IGHV4-59*09
+For sample I5_FR2, haplotyping with IGHV1-69*01_12_13/IGHV1-69*02_04_09
+For sample I5_FR2, haplotyping with IGHV3-48*01/IGHV3-48*02
+> plotDeletionsByVpooled(del_db)
+> ## End(No test)
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("plotDeletionsByVpooled", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> cleanEx()
+> nameEx("plotHaplotype")
+> ### * plotHaplotype
+> 
+> flush(stderr()); flush(stdout())
+> 
+> base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+> ### Name: plotHaplotype
+> ### Title: Graphical output of an inferred haplotype
+> ### Aliases: plotHaplotype
+> 
+> ### ** Examples
+> 
+> 
+> # Selecting a single individual from the haplotype samples data
+> haplo_db = samplesHaplotype[samplesHaplotype$subject=='I5', ]
+> 
+> # plot haplotype
+> plotHaplotype(haplo_db)
+Warning in geom_bar(data = geno.df, mapping = aes_string(x = "gene", fill = "alleles",  :
+  Ignoring unknown aesthetics: text
+Warning in paste0("Gene: ", kval.df$gene, "<br />", "lK: ", round(as.numeric(kval.df$k),  :
+  NAs introduced by coercion
+> 
+> 
+> 
+> 
+> base::assign(".dptime", (proc.time() - get(".ptime", pos = "CheckExEnv")), pos = "CheckExEnv")
+> base::cat("plotHaplotype", base::get(".format_ptime", pos = 'CheckExEnv')(get(".dptime", pos = "CheckExEnv")), "\n", file=base::get(".ExTimings", pos = 'CheckExEnv'), append=TRUE, sep="\t")
+> ### * <FOOTER>
+> ###
+> cleanEx()
+> options(digits = 7L)
+> base::cat("Time elapsed: ", proc.time() - base::get("ptime", pos = 'CheckExEnv'),"\n")
+Time elapsed:  52.643 0.174 52.845 0 0 
+> grDevices::dev.off()
+null device 
+          1 
+> ###
+> ### Local variables: ***
+> ### mode: outline-minor ***
+> ### outline-regexp: "\\(> \\)?### [*]+" ***
+> ### End: ***
+> quit('no')

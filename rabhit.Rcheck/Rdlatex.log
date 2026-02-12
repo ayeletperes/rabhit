@@ -1,0 +1,173 @@
+Hmm ... looks like a package
+Converting parsed Rd's to LaTeX ..
+Creating pdf output from LaTeX ...
+
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex)
+ restricted \write18 enabled.
+entering extended mode
+LaTeX2e <2023-11-01>
+L3 programming layer <2024-01-04>
+(./Rd2.tex
+(/home/ayelet/.TinyTeX/texmf-dist/tex/latex/base/book.cls
+Document Class: book 2023/05/17 v1.4n Standard LaTeX document class
+(/home/ayelet/.TinyTeX/texmf-dist/tex/latex/base/bk10.clo)) (/usr/share/R/share/texmf/tex/latex/Rd.sty (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/base/ifthen.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/generic/iftex/iftex.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/tools/longtable.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/tools/bm.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/base/alltt.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/tools/verbatim.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/url/url.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/base/textcomp.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/amsmath/amsmath.sty
+For additional information on amsmath, use the `?' option.
+(/home/ayelet/.TinyTeX/texmf-dist/tex/latex/amsmath/amstext.sty (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/amsmath/amsgen.sty)) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/amsmath/amsbsy.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/amsmath/amsopn.sty)) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/amsfonts/amsfonts.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/amsfonts/amssymb.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/amsfonts/eucal.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/base/fontenc.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/psnfss/times.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/inconsolata/zi4.sty `inconsolata-zi4' v1.12, 2019/05/17 Text macros for Inconsolata (msharpe) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/xkeyval/xkeyval.sty (/home/ayelet/.TinyTeX/texmf-dist/tex/generic/xkeyval/xkeyval.tex (/home/ayelet/.TinyTeX/texmf-dist/tex/generic/xkeyval/xkvutils.tex (/home/ayelet/.TinyTeX/texmf-dist/tex/generic/xkeyval/keyval.tex))))) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/graphics/color.sty (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/graphics-cfg/color.cfg) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/graphics-def/pdftex.def) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/graphics/mathcolor.ltx)) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/hyperref/hyperref.sty (/home/ayelet/.TinyTeX/texmf-dist/tex/generic/infwarerr/infwarerr.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/kvsetkeys/kvsetkeys.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/generic/kvdefinekeys/kvdefinekeys.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/generic/pdfescape/pdfescape.sty (/home/ayelet/.TinyTeX/texmf-dist/tex/generic/ltxcmds/ltxcmds.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/generic/pdftexcmds/pdftexcmds.sty)) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/hycolor/hycolor.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/letltxmacro/letltxmacro.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/auxhook/auxhook.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/hyperref/nameref.sty (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/refcount/refcount.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/generic/gettitlestring/gettitlestring.sty (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/kvoptions/kvoptions.sty))) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/etoolbox/etoolbox.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/hyperref/pd1enc.def) (/home/ayelet/.TinyTeX/texmf-dist/tex/generic/intcalc/intcalc.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/hyperref/puenc.def) (/home/ayelet/.TinyTeX/texmf-dist/tex/generic/bitset/bitset.sty (/home/ayelet/.TinyTeX/texmf-dist/tex/generic/bigintcalc/bigintcalc.sty)) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/base/atbegshi-ltx.sty)) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/hyperref/hpdftex.def (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/base/atveryend-ltx.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/rerunfilecheck/rerunfilecheck.sty (/home/ayelet/.TinyTeX/texmf-dist/tex/generic/uniquecounter/uniquecounter.sty)))) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/base/makeidx.sty)
+Writing index file Rd2.idx
+(/home/ayelet/.TinyTeX/texmf-dist/tex/latex/psnfss/t1ptm.fd) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def)
+No file Rd2.aux.
+(/home/ayelet/.TinyTeX/texmf-dist/tex/latex/inconsolata/t1zi4.fd) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/amsfonts/umsa.fd) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/amsfonts/umsb.fd) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/psnfss/ts1ptm.fd)
+No file Rd2.toc.
+[1{/home/ayelet/.TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{/home/ayelet/.TinyTeX/texmf-dist/fonts/enc/dvips/base/8r.enc}{/home/ayelet/.TinyTeX/texmf-dist/fonts/enc/dvips/inconsolata/i4-t1-0.enc}] [2]
+Overfull \hbox (48.9982pt too wide) in paragraph at lines 118--119
+[]\T1/ptm/m/n/10 double chro-mo-some dele-tion sum-mary ta-ble. A []\T1/zi4/m/n/10 data.frame []\T1/ptm/m/n/10 cre-ated by []\T1/zi4/m/n/10 deletionsByBinom[]\T1/ptm/m/n/10 . 
+
+Overfull \hbox (26.66814pt too wide) in paragraph at lines 120--121
+[]\T1/ptm/m/n/10 a list of known non re-li-able gene as-sign-ments. A []\T1/zi4/m/n/10 list []\T1/ptm/m/n/10 cre-ated by []\T1/zi4/m/n/10 nonReliableVGenes[]\T1/ptm/m/n/10 . 
+
+Overfull \hbox (4.16887pt too wide) in paragraph at lines 131--132
+[]\T1/ptm/m/n/10 Function ac-cepts a []\T1/zi4/m/n/10 data.frame []\T1/ptm/m/n/10 in AIRR for-mat ([][]$\T1/zi4/m/n/10 https : / / changeo . readthedocs . io / en / stable /
+(/home/ayelet/.TinyTeX/texmf-dist/tex/latex/inconsolata/ts1zi4.fd) [3{/home/ayelet/.TinyTeX/texmf-dist/fonts/enc/dvips/inconsolata/i4-ts1.enc}] [4] [5]
+Overfull \hbox (26.66814pt too wide) in paragraph at lines 285--286
+[]\T1/ptm/m/n/10 a list of known non re-li-able gene as-sign-ments. A []\T1/zi4/m/n/10 list []\T1/ptm/m/n/10 cre-ated by []\T1/zi4/m/n/10 nonReliableVGenes[]\T1/ptm/m/n/10 . 
+[6] [7]
+Overfull \hbox (48.9982pt too wide) in paragraph at lines 365--366
+[]\T1/ptm/m/n/10 double chro-mo-some dele-tion sum-mary ta-ble. A []\T1/zi4/m/n/10 data.frame []\T1/ptm/m/n/10 cre-ated by []\T1/zi4/m/n/10 deletionsByBinom[]\T1/ptm/m/n/10 . 
+
+Overfull \hbox (26.66814pt too wide) in paragraph at lines 371--372
+[]\T1/ptm/m/n/10 a list of known non re-li-able gene as-sign-ments. A []\T1/zi4/m/n/10 list []\T1/ptm/m/n/10 cre-ated by []\T1/zi4/m/n/10 nonReliableVGenes[]\T1/ptm/m/n/10 . 
+[8] [9] [10] [11] [12] [13] [14] [15] [16] [17] [18]
+Overfull \hbox (3.07614pt too wide) in paragraph at lines 958--959
+[]\T1/ptm/m/n/10 A hap-lo-type map vi-su-al-iza-tion. If more than one sub-ject is vi-su-al-ized, a pdf is cre-ated. If html_output
+[19] [20] [21]
+Overfull \hbox (0.369pt too wide) in paragraph at lines 1110--1111
+[]\T1/ptm/m/n/10 A []\T1/zi4/m/n/10 data.frame []\T1/ptm/m/n/10 in Change-O for-mat ([][]$\T1/zi4/m/n/10 https : / / changeo . readthedocs . io / en / stable / standard .
+No file Rd2.ind.
+[22] (/tmp/RtmpO5sNrQ/Rd2pdfc97c63ba409d6/Rd2.aux)
+
+Package rerunfilecheck Warning: File `Rd2.out' has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+ )
+(see the transcript file for additional information)</home/ayelet/.TinyTeX/texmf-dist/fonts/type1/public/inconsolata/Inconsolata-zi4r.pfb></home/ayelet/.TinyTeX/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></home/ayelet/.TinyTeX/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></home/ayelet/.TinyTeX/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></home/ayelet/.TinyTeX/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
+Output written on Rd2.pdf (22 pages, 119219 bytes).
+Transcript written on Rd2.log.
+This is makeindex, version 2.17 [TeX Live 2023] (kpathsea + Thai support).
+Scanning input file Rd2.idx....done (58 entries accepted, 0 rejected).
+Sorting entries....done (351 comparisons).
+Generating output file Rd2.ind....done (94 lines written, 0 warnings).
+Output written in Rd2.ind.
+Transcript written in Rd2.ilg.
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex)
+ restricted \write18 enabled.
+entering extended mode
+LaTeX2e <2023-11-01>
+L3 programming layer <2024-01-04>
+(./Rd2.tex
+(/home/ayelet/.TinyTeX/texmf-dist/tex/latex/base/book.cls
+Document Class: book 2023/05/17 v1.4n Standard LaTeX document class
+(/home/ayelet/.TinyTeX/texmf-dist/tex/latex/base/bk10.clo)) (/usr/share/R/share/texmf/tex/latex/Rd.sty (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/base/ifthen.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/generic/iftex/iftex.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/tools/longtable.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/tools/bm.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/base/alltt.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/tools/verbatim.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/url/url.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/base/textcomp.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/amsmath/amsmath.sty
+For additional information on amsmath, use the `?' option.
+(/home/ayelet/.TinyTeX/texmf-dist/tex/latex/amsmath/amstext.sty (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/amsmath/amsgen.sty)) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/amsmath/amsbsy.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/amsmath/amsopn.sty)) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/amsfonts/amsfonts.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/amsfonts/amssymb.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/amsfonts/eucal.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/base/fontenc.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/psnfss/times.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/inconsolata/zi4.sty `inconsolata-zi4' v1.12, 2019/05/17 Text macros for Inconsolata (msharpe) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/xkeyval/xkeyval.sty (/home/ayelet/.TinyTeX/texmf-dist/tex/generic/xkeyval/xkeyval.tex (/home/ayelet/.TinyTeX/texmf-dist/tex/generic/xkeyval/xkvutils.tex (/home/ayelet/.TinyTeX/texmf-dist/tex/generic/xkeyval/keyval.tex))))) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/graphics/color.sty (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/graphics-cfg/color.cfg) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/graphics-def/pdftex.def) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/graphics/mathcolor.ltx)) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/hyperref/hyperref.sty (/home/ayelet/.TinyTeX/texmf-dist/tex/generic/infwarerr/infwarerr.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/kvsetkeys/kvsetkeys.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/generic/kvdefinekeys/kvdefinekeys.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/generic/pdfescape/pdfescape.sty (/home/ayelet/.TinyTeX/texmf-dist/tex/generic/ltxcmds/ltxcmds.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/generic/pdftexcmds/pdftexcmds.sty)) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/hycolor/hycolor.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/letltxmacro/letltxmacro.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/auxhook/auxhook.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/hyperref/nameref.sty (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/refcount/refcount.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/generic/gettitlestring/gettitlestring.sty (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/kvoptions/kvoptions.sty))) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/etoolbox/etoolbox.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/hyperref/pd1enc.def) (/home/ayelet/.TinyTeX/texmf-dist/tex/generic/intcalc/intcalc.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/hyperref/puenc.def) (/home/ayelet/.TinyTeX/texmf-dist/tex/generic/bitset/bitset.sty (/home/ayelet/.TinyTeX/texmf-dist/tex/generic/bigintcalc/bigintcalc.sty)) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/base/atbegshi-ltx.sty)) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/hyperref/hpdftex.def (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/base/atveryend-ltx.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/rerunfilecheck/rerunfilecheck.sty (/home/ayelet/.TinyTeX/texmf-dist/tex/generic/uniquecounter/uniquecounter.sty)))) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/base/makeidx.sty)
+Writing index file Rd2.idx
+(/home/ayelet/.TinyTeX/texmf-dist/tex/latex/psnfss/t1ptm.fd) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def) (/tmp/RtmpO5sNrQ/Rd2pdfc97c63ba409d6/Rd2.aux) (/tmp/RtmpO5sNrQ/Rd2pdfc97c63ba409d6/Rd2.out) (/tmp/RtmpO5sNrQ/Rd2pdfc97c63ba409d6/Rd2.out) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/inconsolata/t1zi4.fd) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/amsfonts/umsa.fd) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/amsfonts/umsb.fd) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/psnfss/ts1ptm.fd) (/tmp/RtmpO5sNrQ/Rd2pdfc97c63ba409d6/Rd2.toc [1{/home/ayelet/.TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{/home/ayelet/.TinyTeX/texmf-dist/fonts/enc/dvips/base/8r.enc}{/home/ayelet/.TinyTeX/texmf-dist/fonts/enc/dvips/inconsolata/i4-t1-0.enc}]) [2]
+Overfull \hbox (48.9982pt too wide) in paragraph at lines 118--119
+[]\T1/ptm/m/n/10 double chro-mo-some dele-tion sum-mary ta-ble. A []\T1/zi4/m/n/10 data.frame []\T1/ptm/m/n/10 cre-ated by []\T1/zi4/m/n/10 deletionsByBinom[]\T1/ptm/m/n/10 . 
+
+Overfull \hbox (26.66814pt too wide) in paragraph at lines 120--121
+[]\T1/ptm/m/n/10 a list of known non re-li-able gene as-sign-ments. A []\T1/zi4/m/n/10 list []\T1/ptm/m/n/10 cre-ated by []\T1/zi4/m/n/10 nonReliableVGenes[]\T1/ptm/m/n/10 . 
+[3]
+Overfull \hbox (4.16887pt too wide) in paragraph at lines 131--132
+[]\T1/ptm/m/n/10 Function ac-cepts a []\T1/zi4/m/n/10 data.frame []\T1/ptm/m/n/10 in AIRR for-mat ([][]$\T1/zi4/m/n/10 https : / / changeo . readthedocs . io / en / stable /
+(/home/ayelet/.TinyTeX/texmf-dist/tex/latex/inconsolata/ts1zi4.fd) [4{/home/ayelet/.TinyTeX/texmf-dist/fonts/enc/dvips/inconsolata/i4-ts1.enc}] [5] [6]
+Overfull \hbox (26.66814pt too wide) in paragraph at lines 285--286
+[]\T1/ptm/m/n/10 a list of known non re-li-able gene as-sign-ments. A []\T1/zi4/m/n/10 list []\T1/ptm/m/n/10 cre-ated by []\T1/zi4/m/n/10 nonReliableVGenes[]\T1/ptm/m/n/10 . 
+[7]
+Overfull \hbox (48.9982pt too wide) in paragraph at lines 365--366
+[]\T1/ptm/m/n/10 double chro-mo-some dele-tion sum-mary ta-ble. A []\T1/zi4/m/n/10 data.frame []\T1/ptm/m/n/10 cre-ated by []\T1/zi4/m/n/10 deletionsByBinom[]\T1/ptm/m/n/10 . 
+
+Overfull \hbox (26.66814pt too wide) in paragraph at lines 371--372
+[]\T1/ptm/m/n/10 a list of known non re-li-able gene as-sign-ments. A []\T1/zi4/m/n/10 list []\T1/ptm/m/n/10 cre-ated by []\T1/zi4/m/n/10 nonReliableVGenes[]\T1/ptm/m/n/10 . 
+[8] [9] [10] [11] [12] [13] [14] [15] [16] [17] [18]
+Overfull \hbox (3.07614pt too wide) in paragraph at lines 958--959
+[]\T1/ptm/m/n/10 A hap-lo-type map vi-su-al-iza-tion. If more than one sub-ject is vi-su-al-ized, a pdf is cre-ated. If html_output
+[19] [20] [21]
+Overfull \hbox (0.369pt too wide) in paragraph at lines 1110--1111
+[]\T1/ptm/m/n/10 A []\T1/zi4/m/n/10 data.frame []\T1/ptm/m/n/10 in Change-O for-mat ([][]$\T1/zi4/m/n/10 https : / / changeo . readthedocs . io / en / stable / standard .
+(/tmp/RtmpO5sNrQ/Rd2pdfc97c63ba409d6/Rd2.ind [22]
+
+LaTeX Font Warning: Font shape `T1/zi4/m/it' undefined
+(Font)              using `T1/zi4/m/n' instead on input line 67.
+
+[23]) (/tmp/RtmpO5sNrQ/Rd2pdfc97c63ba409d6/Rd2.aux)
+
+LaTeX Font Warning: Some font shapes were not available, defaults substituted.
+
+
+Package rerunfilecheck Warning: File `Rd2.out' has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+ )
+(see the transcript file for additional information)</home/ayelet/.TinyTeX/texmf-dist/fonts/type1/public/inconsolata/Inconsolata-zi4r.pfb></home/ayelet/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></home/ayelet/.TinyTeX/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></home/ayelet/.TinyTeX/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></home/ayelet/.TinyTeX/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></home/ayelet/.TinyTeX/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
+Output written on Rd2.pdf (23 pages, 134902 bytes).
+Transcript written on Rd2.log.
+This is makeindex, version 2.17 [TeX Live 2023] (kpathsea + Thai support).
+Scanning input file Rd2.idx....done (58 entries accepted, 0 rejected).
+Sorting entries....done (351 comparisons).
+Generating output file Rd2.ind....done (94 lines written, 0 warnings).
+Output written in Rd2.ind.
+Transcript written in Rd2.ilg.
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023) (preloaded format=pdflatex)
+ restricted \write18 enabled.
+entering extended mode
+LaTeX2e <2023-11-01>
+L3 programming layer <2024-01-04>
+(./Rd2.tex
+(/home/ayelet/.TinyTeX/texmf-dist/tex/latex/base/book.cls
+Document Class: book 2023/05/17 v1.4n Standard LaTeX document class
+(/home/ayelet/.TinyTeX/texmf-dist/tex/latex/base/bk10.clo)) (/usr/share/R/share/texmf/tex/latex/Rd.sty (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/base/ifthen.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/generic/iftex/iftex.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/tools/longtable.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/tools/bm.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/base/alltt.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/tools/verbatim.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/url/url.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/base/textcomp.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/amsmath/amsmath.sty
+For additional information on amsmath, use the `?' option.
+(/home/ayelet/.TinyTeX/texmf-dist/tex/latex/amsmath/amstext.sty (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/amsmath/amsgen.sty)) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/amsmath/amsbsy.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/amsmath/amsopn.sty)) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/amsfonts/amsfonts.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/amsfonts/amssymb.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/amsfonts/eucal.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/base/fontenc.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/psnfss/times.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/inconsolata/zi4.sty `inconsolata-zi4' v1.12, 2019/05/17 Text macros for Inconsolata (msharpe) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/xkeyval/xkeyval.sty (/home/ayelet/.TinyTeX/texmf-dist/tex/generic/xkeyval/xkeyval.tex (/home/ayelet/.TinyTeX/texmf-dist/tex/generic/xkeyval/xkvutils.tex (/home/ayelet/.TinyTeX/texmf-dist/tex/generic/xkeyval/keyval.tex))))) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/graphics/color.sty (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/graphics-cfg/color.cfg) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/graphics-def/pdftex.def) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/graphics/mathcolor.ltx)) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/hyperref/hyperref.sty (/home/ayelet/.TinyTeX/texmf-dist/tex/generic/infwarerr/infwarerr.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/kvsetkeys/kvsetkeys.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/generic/kvdefinekeys/kvdefinekeys.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/generic/pdfescape/pdfescape.sty (/home/ayelet/.TinyTeX/texmf-dist/tex/generic/ltxcmds/ltxcmds.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/generic/pdftexcmds/pdftexcmds.sty)) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/hycolor/hycolor.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/letltxmacro/letltxmacro.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/auxhook/auxhook.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/hyperref/nameref.sty (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/refcount/refcount.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/generic/gettitlestring/gettitlestring.sty (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/kvoptions/kvoptions.sty))) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/etoolbox/etoolbox.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/hyperref/pd1enc.def) (/home/ayelet/.TinyTeX/texmf-dist/tex/generic/intcalc/intcalc.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/hyperref/puenc.def) (/home/ayelet/.TinyTeX/texmf-dist/tex/generic/bitset/bitset.sty (/home/ayelet/.TinyTeX/texmf-dist/tex/generic/bigintcalc/bigintcalc.sty)) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/base/atbegshi-ltx.sty)) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/hyperref/hpdftex.def (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/base/atveryend-ltx.sty) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/rerunfilecheck/rerunfilecheck.sty (/home/ayelet/.TinyTeX/texmf-dist/tex/generic/uniquecounter/uniquecounter.sty)))) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/base/makeidx.sty)
+Writing index file Rd2.idx
+(/home/ayelet/.TinyTeX/texmf-dist/tex/latex/psnfss/t1ptm.fd) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/l3backend/l3backend-pdftex.def) (/tmp/RtmpO5sNrQ/Rd2pdfc97c63ba409d6/Rd2.aux) (/tmp/RtmpO5sNrQ/Rd2pdfc97c63ba409d6/Rd2.out) (/tmp/RtmpO5sNrQ/Rd2pdfc97c63ba409d6/Rd2.out) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/inconsolata/t1zi4.fd) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/amsfonts/umsa.fd) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/amsfonts/umsb.fd) (/home/ayelet/.TinyTeX/texmf-dist/tex/latex/psnfss/ts1ptm.fd) (/tmp/RtmpO5sNrQ/Rd2pdfc97c63ba409d6/Rd2.toc [1{/home/ayelet/.TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map}{/home/ayelet/.TinyTeX/texmf-dist/fonts/enc/dvips/base/8r.enc}{/home/ayelet/.TinyTeX/texmf-dist/fonts/enc/dvips/inconsolata/i4-t1-0.enc}]) [2]
+Overfull \hbox (48.9982pt too wide) in paragraph at lines 118--119
+[]\T1/ptm/m/n/10 double chro-mo-some dele-tion sum-mary ta-ble. A []\T1/zi4/m/n/10 data.frame []\T1/ptm/m/n/10 cre-ated by []\T1/zi4/m/n/10 deletionsByBinom[]\T1/ptm/m/n/10 . 
+
+Overfull \hbox (26.66814pt too wide) in paragraph at lines 120--121
+[]\T1/ptm/m/n/10 a list of known non re-li-able gene as-sign-ments. A []\T1/zi4/m/n/10 list []\T1/ptm/m/n/10 cre-ated by []\T1/zi4/m/n/10 nonReliableVGenes[]\T1/ptm/m/n/10 . 
+[3]
+Overfull \hbox (4.16887pt too wide) in paragraph at lines 131--132
+[]\T1/ptm/m/n/10 Function ac-cepts a []\T1/zi4/m/n/10 data.frame []\T1/ptm/m/n/10 in AIRR for-mat ([][]$\T1/zi4/m/n/10 https : / / changeo . readthedocs . io / en / stable /
+(/home/ayelet/.TinyTeX/texmf-dist/tex/latex/inconsolata/ts1zi4.fd) [4{/home/ayelet/.TinyTeX/texmf-dist/fonts/enc/dvips/inconsolata/i4-ts1.enc}] [5] [6]
+Overfull \hbox (26.66814pt too wide) in paragraph at lines 285--286
+[]\T1/ptm/m/n/10 a list of known non re-li-able gene as-sign-ments. A []\T1/zi4/m/n/10 list []\T1/ptm/m/n/10 cre-ated by []\T1/zi4/m/n/10 nonReliableVGenes[]\T1/ptm/m/n/10 . 
+[7]
+Overfull \hbox (48.9982pt too wide) in paragraph at lines 365--366
+[]\T1/ptm/m/n/10 double chro-mo-some dele-tion sum-mary ta-ble. A []\T1/zi4/m/n/10 data.frame []\T1/ptm/m/n/10 cre-ated by []\T1/zi4/m/n/10 deletionsByBinom[]\T1/ptm/m/n/10 . 
+
+Overfull \hbox (26.66814pt too wide) in paragraph at lines 371--372
+[]\T1/ptm/m/n/10 a list of known non re-li-able gene as-sign-ments. A []\T1/zi4/m/n/10 list []\T1/ptm/m/n/10 cre-ated by []\T1/zi4/m/n/10 nonReliableVGenes[]\T1/ptm/m/n/10 . 
+[8] [9] [10] [11] [12] [13] [14] [15] [16] [17] [18]
+Overfull \hbox (3.07614pt too wide) in paragraph at lines 958--959
+[]\T1/ptm/m/n/10 A hap-lo-type map vi-su-al-iza-tion. If more than one sub-ject is vi-su-al-ized, a pdf is cre-ated. If html_output
+[19] [20] [21]
+Overfull \hbox (0.369pt too wide) in paragraph at lines 1110--1111
+[]\T1/ptm/m/n/10 A []\T1/zi4/m/n/10 data.frame []\T1/ptm/m/n/10 in Change-O for-mat ([][]$\T1/zi4/m/n/10 https : / / changeo . readthedocs . io / en / stable / standard .
+(/tmp/RtmpO5sNrQ/Rd2pdfc97c63ba409d6/Rd2.ind [22]
+
+LaTeX Font Warning: Font shape `T1/zi4/m/it' undefined
+(Font)              using `T1/zi4/m/n' instead on input line 67.
+
+[23]) (/tmp/RtmpO5sNrQ/Rd2pdfc97c63ba409d6/Rd2.aux)
+
+LaTeX Font Warning: Some font shapes were not available, defaults substituted.
+
+ )
+(see the transcript file for additional information)</home/ayelet/.TinyTeX/texmf-dist/fonts/type1/public/inconsolata/Inconsolata-zi4r.pfb></home/ayelet/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></home/ayelet/.TinyTeX/texmf-dist/fonts/type1/urw/times/utmb8a.pfb></home/ayelet/.TinyTeX/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></home/ayelet/.TinyTeX/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></home/ayelet/.TinyTeX/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
+Output written on Rd2.pdf (23 pages, 135677 bytes).
+Transcript written on Rd2.log.
+Saving output to ‘rabhit-manual.pdf’ ...
+Done
+You may want to clean up by 'rm -Rf /tmp/RtmpO5sNrQ/Rd2pdfc97c63ba409d6'

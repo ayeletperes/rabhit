@@ -64,6 +64,98 @@ plotHaplotype <-
       hap_table$subject <- rep("S1", nrow(hap_table))
     }
 
+    # Define helper functions once outside the sample loop
+    add_border <- function(p_l) {
+      p_l$x$attrs <- lapply(p_l$x$attrs,
+                            function(x) {
+                              x$mode <- "markers"
+                              x
+                            })
+      for (i in 1:length(p_l$x$data)) {
+        p_l$x$data[[i]]$marker$line$width <- suppressMessages(0.2)
+        p_l$x$data[[i]]$marker$line$color <-
+          ifelse(
+            p_l$x$data[[i]]$marker$line$color == 'transparent',
+            'black',
+            p_l$x$data[[i]]$marker$line$color
+          )
+      }
+      return(p_l)
+    }
+
+    mgsub <- function(pattern, replacement, x, ...) {
+      if (length(pattern) != length(replacement)) {
+        stop("pattern and replacement do not have the same length.")
+      }
+      result <- x
+      for (i in 1:length(pattern)) {
+        result <- gsub(pattern[i], replacement[i], result, ...)
+      }
+      result
+    }
+
+    text_for_hovertext <- function(labels, count.df) {
+      for (i in 1:length(labels)) {
+        label <- labels[i]
+        gene <-
+          strsplit(strsplit(label, "<")[[1]][1], " ")[[1]][2]
+        allele <- strsplit(label, "Allele: ")[[1]][2]
+        if (!is.na(allele)) {
+          count <-
+            strsplit(strsplit(label, "<br />Count: ")[[1]][2], "<")[[1]][1]
+          if (count == "NA")
+            next
+          count <- as.numeric(count)
+          if (count %% 1 != 0)
+            count <-
+              count.df %>% filter(
+                .data$gene == gene &
+                  .data$alleles == allele &
+                  round(.data$count3, nchar(as.character(count)) - 2) == count
+              ) %>% select(.data$count)
+          else
+            count <-
+              count.df %>% filter(.data$gene == gene &
+                                    .data$alleles == allele &
+                                    .data$count3 == count) %>% select(.data$count)
+          labels[i] <-
+            paste0("Gene: ",
+                   gene,
+                   "<br />Allele: ",
+                   allele,
+                   "<br />Count: ",
+                   count[1,])
+        }
+      }
+      return(labels)
+    }
+
+    text_for_hovertext_non_reliable <-
+      function(labels, text, annot) {
+        for (i in 1:length(labels)) {
+          label <- labels[i]
+          label.tmp <- toupper(label)
+          gene <-
+            strsplit(strsplit(label.tmp, "GENE: ")[[1]][2], '[<]')[[1]][1]
+          allele <-
+            gsub("text: ", "", strsplit(grep(gene, text, value = T), "<")[[1]][1])
+
+          labels[i] <-
+            paste0("Gene: ", gene, "<br />Allele: ", annot[allele])
+        }
+        return(labels)
+      }
+
+    change_hovertext <- function(pp, annot) {
+      ind <- grep('text: ', pp$x$data)
+      for (i in ind) {
+        pp$x$data[[i]]$type <-  suppressWarnings("text")
+        pp$x$data[[i]]$hoveron <- "fill"
+        pp$x$data[[i]]$hoverinfo <- "skip"
+      }
+      return(pp)
+    }
+
     plot_list <- c()
     for (sample_name in unique(hap_table$subject)) {
       haplo.db <-
@@ -76,29 +168,30 @@ plotHaplotype <-
           hapBy_alleles = hapBy_alleles
         )
 
-      geno.df <-
-        sortDFByGene(
-          haplo.db$geno.df,
-          chain = chain,
-          genes_order = genes_order,
-          removeIGH = removeIGH
-        )
+      # Precompute gene levels once for all 3 data frames
+      if (removeIGH) {
+        gene_levels_sorted <- rev(gsub(chain, "", genes_order))
+      } else {
+        gene_levels_sorted <- rev(genes_order)
+      }
 
-      kval.df <-
-        sortDFByGene(
-          haplo.db$kval.df,
-          chain = chain,
-          genes_order = genes_order,
-          removeIGH = removeIGH
-        )
+      .sortDF <- function(DATA) {
+        DATA$order <- match(DATA$gene, genes_order)
+        DATA <- stats::na.omit(DATA, cols = "order")
+        DATA <- DATA[order(DATA$order), ]
+        if (removeIGH) {
+          DATA$gene <- gsub(chain, "", DATA$gene)
+          DATA$gene <- factor(DATA$gene, levels = gene_levels_sorted)
+          DATA$hapBy <- gsub(chain, "", DATA$hapBy)
+        } else {
+          DATA$gene <- factor(DATA$gene, levels = gene_levels_sorted)
+        }
+        DATA
+      }
 
-      count.df <-
-        sortDFByGene(
-          haplo.db$count.df,
-          chain = chain,
-          genes_order = genes_order,
-          removeIGH = removeIGH
-        )
+      geno.df <- .sortDF(haplo.db$geno.df)
+      kval.df <- .sortDF(haplo.db$kval.df)
+      count.df <- .sortDF(haplo.db$count.df)
 
       ########################################################################################################
 
@@ -115,30 +208,32 @@ plotHaplotype <-
         geno.df$freq <-
           ifelse(geno.df$n == 2, 0.5, ifelse(geno.df$n != 1, 0.25, 1))
         non_reliable_alleles_text <-
-          nonReliableAllelesText_V2(non_reliable_alleles_text = geno.df[grep("[0-9][0-9]_[0-9][0-9]", geno.df$alleles),])
+          nonReliableAllelesText(non_reliable_alleles_text = geno.df[grep("[0-9][0-9]_[0-9][0-9]", geno.df$alleles),], size = 3, style = "numbered")
       } else {
         non_reliable_alleles_text <- c()
       }
 
-      geno.df$ALLELE_TEXT <- sapply(1:nrow(geno.df), function(i) {
-        if (grepl("[0-9][0-9]_[0-9][0-9]", geno.df$ALLELE_TEXT[i])) {
-          unique(non_reliable_alleles_text$text_bottom[geno.df$gene[i] == non_reliable_alleles_text$gene &
-                                                         grepl(geno.df$ALLELE_TEXT[i],
-                                                               non_reliable_alleles_text$text_bottom)])
-        } else{
-          geno.df$ALLELE_TEXT[i]
+      nra_mask_geno <- grepl("[0-9][0-9]_[0-9][0-9]", geno.df$ALLELE_TEXT)
+      if (any(nra_mask_geno) && is.data.frame(non_reliable_alleles_text)) {
+        nra_lookup <- setNames(non_reliable_alleles_text$text_bottom,
+                               paste0(non_reliable_alleles_text$gene, "|", non_reliable_alleles_text$text_bottom))
+        for (idx in which(nra_mask_geno)) {
+          matches <- non_reliable_alleles_text$text_bottom[
+            geno.df$gene[idx] == non_reliable_alleles_text$gene &
+              grepl(geno.df$ALLELE_TEXT[idx], non_reliable_alleles_text$text_bottom)]
+          if (length(matches) > 0) geno.df$ALLELE_TEXT[idx] <- unique(matches)[1]
         }
-      })
+      }
 
-      count.df$ALLELE_TEXT <- sapply(1:nrow(count.df), function(i) {
-        if (grepl("[0-9][0-9]_[0-9][0-9]", count.df$ALLELE_TEXT[i])) {
-          unique(non_reliable_alleles_text$text_bottom[count.df$gene[i] == non_reliable_alleles_text$gene &
-                                                         grepl(count.df$ALLELE_TEXT[i],
-                                                               non_reliable_alleles_text$text_bottom)])
-        } else{
-          count.df$ALLELE_TEXT[i]
+      nra_mask_count <- grepl("[0-9][0-9]_[0-9][0-9]", count.df$ALLELE_TEXT)
+      if (any(nra_mask_count) && is.data.frame(non_reliable_alleles_text)) {
+        for (idx in which(nra_mask_count)) {
+          matches <- non_reliable_alleles_text$text_bottom[
+            count.df$gene[idx] == non_reliable_alleles_text$gene &
+              grepl(count.df$ALLELE_TEXT[idx], non_reliable_alleles_text$text_bottom)]
+          if (length(matches) > 0) count.df$ALLELE_TEXT[idx] <- unique(matches)[1]
         }
-      })
+      }
 
       ## Middle panel
       geno.df$alleles[grep("[0-9][0-9]_[0-9][0-9]", geno.df$alleles)] <-
@@ -156,8 +251,7 @@ plotHaplotype <-
                '<br />',
                "Allele: ",
                geno.df$ALLELE_TEXT)
-      #options(warn = -1)
-      p = ggplot() +
+      p = suppressWarnings(ggplot() +
         geom_bar(
           data = geno.df,
           mapping = aes_string(x = "gene", fill = "alleles", text = "text"),
@@ -183,7 +277,7 @@ plotHaplotype <-
           values = alpha(names(AlleleCol), transper),
           name = "Alleles",
           drop = F
-        )
+        ))
 
       if (!plotYaxis) {
         p = p + theme(axis.text.y = element_blank())
@@ -196,13 +290,13 @@ plotHaplotype <-
           kval.df$gene,
           '<br />',
           "lK: ",
-          round(as.numeric(kval.df$k), 4),
+          round(as.numeric(ifelse(kval.df$k == "NA", NA, kval.df$k)), 4),
           '<br />',
           "lK group: ",
           kval.df$K_GROUPED
         )
       pk <-
-        ggplot(kval.df,
+        suppressWarnings(ggplot(kval.df,
                aes_string(x = "gene", fill = "K_GROUPED", text = "text")) + theme_bw() + theme(
                  axis.ticks = element_blank(),
                  axis.text = element_blank(),
@@ -220,7 +314,7 @@ plotHaplotype <-
                ) + geom_bar(position = "fill",
                             width = 0.7,
                             na.rm = T) + coord_flip() + xlab("") + ylab("") + facet_grid(paste0(".~", "hapBy"),
-                                                                                         switch = "x")
+                                                                                         switch = "x"))
 
       count.df$alleles <- as.character(count.df$alleles)
       count.df$alleles[grep("[0-9][0-9]_[0-9][0-9]", count.df$alleles)] <-
@@ -365,102 +459,10 @@ plotHaplotype <-
 
         p2.l$x$data[[grep("dot", p2.l$x$data)]]$y[2] = p2.l$x$layout$yaxis$range[2]
 
-        add_border <- function(p_l) {
-          p_l$x$attrs <- lapply(p_l$x$attrs,
-                                function(x) {
-                                  x$mode <- "markers"
-                                  x
-                                })
-
-          for (i in 1:length(p_l$x$data)) {
-            p_l$x$data[[i]]$marker$line$width <- suppressMessages(0.2)
-            p_l$x$data[[i]]$marker$line$color <-
-              ifelse(
-                p_l$x$data[[i]]$marker$line$color == 'transparent',
-                'black',
-                p_l$x$data[[i]]$marker$line$color
-              )
-          }
-          return(p_l)
-        }
-
         p.l <- add_border(p.l)
         pk.l <- add_border(pk.l)
-        mgsub <- function(pattern, replacement, x, ...) {
-          if (length(pattern) != length(replacement)) {
-            stop("pattern and replacement do not have the same length.")
-          }
-          result <- x
-          for (i in 1:length(pattern)) {
-            result <- gsub(pattern[i], replacement[i], result, ...)
-          }
-          result
-        }
-
-
-        text_for_hovertext <- function(labels, count.df) {
-          for (i in 1:length(labels)) {
-            label <- labels[i]
-            gene <-
-              strsplit(strsplit(label, "<")[[1]][1], " ")[[1]][2]
-            allele <- strsplit(label, "Allele: ")[[1]][2]
-            if (!is.na(NA)) {
-              count <-
-                strsplit(strsplit(label, "<br />Count: ")[[1]][2], "<")[[1]][1]
-              if (count == "NA")
-                next
-              count <- as.numeric(count)
-              if (count %% 1 != 0)
-                count <-
-                  count.df %>% filter(
-                    .data$gene == gene &
-                      .data$alleles == allele &
-                      round(.data$count3, nchar(as.character(count)) - 2) == count
-                  ) %>% select(.data$count)
-              else
-                count <-
-                  count.df %>% filter(.data$gene == gene &
-                                        .data$alleles == allele &
-                                        .data$count3 == count) %>% select(.data$count)
-              labels[i] <-
-                paste0("Gene: ",
-                       gene,
-                       "<br />Allele: ",
-                       allele,
-                       "<br />Count: ",
-                       count[1,])
-            }
-          }
-          return(labels)
-        }
-
-        text_for_hovertext_non_reliable <-
-          function(labels, text, annot) {
-            for (i in 1:length(labels)) {
-              label <- labels[i]
-              label.tmp <- toupper(label)
-              gene <-
-                strsplit(strsplit(label.tmp, "GENE: ")[[1]][2], '[<]')[[1]][1]
-              allele <-
-                gsub("text: ", "", strsplit(grep(gene, text, value = T), "<")[[1]][1])
-
-              labels[i] <-
-                paste0("Gene: ", gene, "<br />Allele: ", annot[allele])
-            }
-            return(labels)
-          }
 
         count.df$count3 <- abs(count.df$count2)
-
-        change_hovertext <- function(pp, annot) {
-          ind <- grep('text: ', pp$x$data)
-          for (i in ind) {
-            pp$x$data[[i]]$type <-  suppressWarnings("text")
-            pp$x$data[[i]]$hoveron <- "fill"
-            pp$x$data[[i]]$hoverinfo <- "skip"
-          }
-          return(pp)
-        }
 
         bottom_annot <- c()
         if (short_reads) {
@@ -802,7 +804,7 @@ hapHeatmap <-
       # getting the lk value for each allele
       # input haplotype row
       # output lk value
-      if (x[5] %fin% c("Unk", "Del", "NR")) {
+      if (x[5] %in% c("Unk", "Del", "NR")) {
         k_m <- paste0('k', 1:4)
       } else{
         k_m <- paste0('k', which(x[-c(1:10)] == x[5], arr.ind = T))
@@ -820,23 +822,24 @@ hapHeatmap <-
 
     # check that all samples have all genes. Those who are missing adding as unk
 
-    hap_table <-
-      setDT(hap_table)[CJ(subject = subject,
-                          gene = gene,
-                          unique = TRUE), on = c("subject", "gene")]
-    hap_table[is.na(alleles) , c(hapBy_cols, "alleles", paste0("k", 1:4)) := list("Unk",
-                                                                                  "Unk",
-                                                                                  NA_character_,
-                                                                                  NA_integer_,
-                                                                                  NA_integer_,
-                                                                                  NA_integer_,
-                                                                                  NA_integer_)]
+    all_combos <- tidyr::expand_grid(
+      subject = unique(hap_table$subject),
+      gene = unique(hap_table$gene)
+    )
+    hap_table <- as.data.frame(dplyr::left_join(all_combos, hap_table, by = c("subject", "gene")))
+    na_rows <- is.na(hap_table$alleles)
+    if (any(na_rows)) {
+      hap_table[na_rows, hapBy_cols[1]] <- "Unk"
+      hap_table[na_rows, hapBy_cols[2]] <- "Unk"
+      hap_table[na_rows, "alleles"] <- NA_character_
+      for (kcol in paste0("k", 1:4)) hap_table[[kcol]] <- as.numeric(hap_table[[kcol]])
+    }
 
     # sort the data
     hap_table$order <-
-      fastmatch::fmatch(hap_table$gene, genes_order)
-    hap_table <- stats::na.omit(hap_table, cols = "order")
-    hap_table <- hap_table[order(order), ]
+      match(hap_table$gene, genes_order)
+    hap_table <- hap_table[!is.na(hap_table$order), ]
+    hap_table <- hap_table[order(hap_table$order), ]
     if (removeIGH) {
       hap_table$gene <- gsub(chain, "", hap_table$gene)
       hap_table$gene <-
@@ -856,17 +859,16 @@ hapHeatmap <-
     hap_table[is.na(hap_table)] <- Inf
     # melt haplotype columns to one
     panels <-
-      reshape2::melt(
+      as.data.frame(tidyr::pivot_longer(
         hap_table,
-        measure.vars = hapBy_cols,
-        variable.name = "hapBy",
-        value.name = 'hapBy_alleles'
-      )
+        cols = dplyr::all_of(hapBy_cols),
+        names_to = "hapBy",
+        values_to = 'hapBy_alleles'
+      ))
 
     # separating the allele column
     panels <-
-      splitstackshape::cSplit(
-        panels[, c(
+      panels[, c(
           'subject',
           'gene',
           'gene_LOC',
@@ -874,37 +876,42 @@ hapHeatmap <-
           "hapBy_alleles",
           "alleles",
           paste0("k", 1:4)
-        )],
-        'alleles',
-        sep = ",",
-        fixed = T,
-        type.convert = F,
-        drop = F
-      )
+        )]
+    # separate alleles into wide columns (alleles_1, alleles_2, etc.)
+    max_alleles <- max(sapply(strsplit(as.character(panels$alleles), ","), length), na.rm = TRUE)
+    allele_col_names <- paste0("alleles_", seq_len(max_alleles))
+    panels <- tidyr::separate(panels, "alleles", into = allele_col_names, sep = ",", fill = "right", remove = FALSE)
+    # reorder columns: subject, gene, gene_LOC, hapBy, hapBy_alleles, alleles, k1-k4, alleles_1, alleles_2, ...
+    panels <- panels[, c('subject', 'gene', 'gene_LOC', 'hapBy', 'hapBy_alleles', 'alleles',
+                          paste0("k", 1:4), allele_col_names)]
+
     # separating the hap alleles
     panels <-
-      splitstackshape::cSplit(
+      as.data.frame(tidyr::separate_rows(
         panels,
-        'hapBy_alleles',
-        sep = ",",
-        direction = "long",
-        fixed = T,
-        type.convert = F
-      )
+        "hapBy_alleles",
+        sep = ","
+      ))
+
     # getting the lk value
-    panels[, "k" := apply(panels, 1, k_assign)]
-    # clean lk inf
-    invisible(lapply(names(panels), function(.name)
-      data.table::set(panels, which(is.infinite(panels[[.name]])), j = .name, value =
-                        NA)))
+    panels$k <- as.numeric(apply(panels, 1, k_assign))
+    # clean lk inf - replace Inf with NA in all columns except k
+    for (.name in names(panels)) {
+      if (is.numeric(panels[[.name]]) && .name != "k") {
+        panels[[.name]][is.infinite(panels[[.name]])] <- NA
+      }
+    }
+    # For k, replace Inf with NA but use safe subsetting downstream
+    panels$k[is.infinite(panels$k)] <- NA
     # remove unnecessary columns
-    cols <-
-      c("subject", "gene", "gene_LOC", "hapBy", "hapBy_alleles", "k")
-    panels <- panels[, .SD, .SDcols = cols]
+    panels <- panels[, c("subject", "gene", "gene_LOC", "hapBy", "hapBy_alleles", "k")]
 
     ######sort the heatmap for plotting
-    panels_m <-
-      panels[, "n" :=  .N, by = c("subject", "gene", "hapBy")][] # count number of alleles for group
+    panels_m <- panels %>%
+      dplyr::group_by(.data$subject, .data$gene, .data$hapBy) %>%
+      dplyr::mutate(n = dplyr::n()) %>%
+      dplyr::ungroup() %>%
+      as.data.frame() # count number of alleles for group
     panels_m$alleles_G <- panels_m$hapBy_alleles # for grouping
     panels_m$text <- ''
     panels_m$text_bottom <- panels_m$hapBy_alleles
@@ -960,11 +967,13 @@ hapHeatmap <-
                allele_palette$AlleleCol[id])
       names(new_allele) <- allele_palette$AlleleCol[id]
       # change the text for plot
-      ids <- panels_m$hapBy_alleles %fin% names(new_allele)
+      ids <- panels_m$hapBy_alleles %in% names(new_allele)
       rep <- new_allele[panels_m$hapBy_alleles[ids]]
       rep2 <- code_allele[panels_m$hapBy_alleles[ids]]
       # add new allele code to data
-      panels_m[ids, c("hapBy_alleles", "text_bottom", "text") := list(rep, rep, rep2)]
+      panels_m$hapBy_alleles[ids] <- rep
+      panels_m$text_bottom[ids] <- rep
+      panels_m$text[ids] <- rep2
       # change annotation in legend colors
       allele_palette$AlleleCol[id] <- new_allele
       names(allele_palette$transper)[id] <- new_allele
@@ -983,53 +992,65 @@ hapHeatmap <-
     genes_n <- length(genes)
 
     # order the data by gene loc
-    setorderv(panels_m, c("subject", "gene_LOC"))
-    setkey(panels_m, "subject")
+    panels_m <- panels_m[order(panels_m$subject, panels_m$gene_LOC), ]
 
     # sort data for matrix
-    panels_m[, "line" := 12 / panels_m$n]
+    panels_m$line <- 12 / panels_m$n
     allele_code <- 1:length(allele_palette$AlleleCol)
     names(allele_code) <-
       gsub(paste0("\\^", "[0-9]+[-]"), "", allele_palette$AlleleCol)
     # sort the alleles in gene box
-    panels_m[, "A_CODE" := allele_code[hapBy_alleles] + 1]
-    panels_m[grep("[0-9]_[0-9]+$|[0-9]_[0-9]+[.]+",
-                  panels_m$hapBy_alleles,
-                  perl = T), "A_CODE" :=
-               allele_code["NRA"]]
-    setorderv(panels_m, c("subject", "gene_LOC", "A_CODE"))
+    panels_m$A_CODE <- allele_code[as.character(panels_m$hapBy_alleles)] + 1
+    nra_idx <- grep("[0-9]_[0-9]+$|[0-9]_[0-9]+[.]+",
+                  panels_m$hapBy_alleles, perl = T)
+    if (length(nra_idx) > 0) {
+      panels_m$A_CODE[nra_idx] <- allele_code["NRA"]
+    }
+    panels_m <- panels_m[order(panels_m$subject, panels_m$gene_LOC, panels_m$A_CODE), ]
 
     # duplicate the data by 12 box to gene
-    panels_m[, "id" := 1:.N, by = c("subject", "gene", "hapBy")]
-    panels_f = panels_m[, c("n_line" = 1:get("line")), by = c("subject",
-                                                              "hapBy",
-                                                              "gene",
-                                                              "gene_LOC",
-                                                              "alleles_G",
-                                                              "A_CODE",
-                                                              "text_bottom",
-                                                              "k"), nomatch = 0]
+    panels_m <- panels_m %>%
+      dplyr::group_by(.data$subject, .data$gene, .data$hapBy) %>%
+      dplyr::mutate(id = dplyr::row_number()) %>%
+      dplyr::ungroup() %>%
+      as.data.frame()
+    # expand each row by line count (12 / n)
+    panels_f <- do.call(rbind, lapply(1:nrow(panels_m), function(i) {
+      row <- panels_m[i, ]
+      n_lines <- as.integer(row$line)
+      data.frame(
+        subject = rep(row$subject, n_lines),
+        hapBy = rep(row$hapBy, n_lines),
+        gene = rep(row$gene, n_lines),
+        gene_LOC = rep(row$gene_LOC, n_lines),
+        alleles_G = rep(row$alleles_G, n_lines),
+        A_CODE = rep(row$A_CODE, n_lines),
+        text_bottom = rep(row$text_bottom, n_lines),
+        k = rep(row$k, n_lines),
+        n_line = seq_len(n_lines),
+        stringsAsFactors = FALSE
+      )
+    }))
 
     if (!is.null(order_subject))
-      panels_f <-
-      panels_f[order(match(panels_f$subject, order_subject))]
+      panels_f <- panels_f[order(match(panels_f$subject, order_subject)), ]
 
     # transform allele codes to matrix, 12 box for each gene. each row is an individual
+    upper_pf <- panels_f[panels_f$hapBy == hapBy_cols[1], ]
+    lower_pf <- panels_f[panels_f$hapBy == hapBy_cols[2], ]
     upper_m <-
       matrix(
-        panels_f[panels_f$hapBy == hapBy_cols[1]][[6]],
+        upper_pf[[6]],
         ncol = 12 * genes_n,
         byrow = T,
-        dimnames = list(unique(panels_f[panels_f$hapBy == hapBy_cols[1]][[1]]), panels_f[panels_f$hapBy ==
-                                                                                           hapBy_cols[1]][[3]][1:(12 * genes_n)])
+        dimnames = list(unique(upper_pf[[1]]), upper_pf[[3]][1:(12 * genes_n)])
       )
     lower_m <-
       matrix(
-        panels_f[panels_f$hapBy == hapBy_cols[2]][[6]],
+        lower_pf[[6]],
         ncol = 12 * genes_n,
         byrow = T,
-        dimnames = list(unique(panels_f[panels_f$hapBy == hapBy_cols[2]][[1]]), panels_f[panels_f$hapBy ==
-                                                                                           hapBy_cols[2]][[3]][1:(12 * genes_n)])
+        dimnames = list(unique(lower_pf[[1]]), lower_pf[[3]][1:(12 * genes_n)])
       )
 
     #### sort legend
@@ -1159,7 +1180,7 @@ hapHeatmap <-
 
     # draw lines for low lk values
     sub_geno = panels_m[panels_m$hapBy == hapBy_cols[1] &
-                          panels_m$k < lk_cutoff, ]
+                          !is.na(panels_m$k) & panels_m$k < lk_cutoff, ]
     if (nrow(sub_geno) > 0) {
       NR = samples_n
       NC = genes_n * 12
@@ -1229,7 +1250,7 @@ hapHeatmap <-
     # draw lines for low lk values
 
     sub_geno = panels_m[panels_m$hapBy == hapBy_cols[2] &
-                          panels_m$k < lk_cutoff, ]
+                          !is.na(panels_m$k) & panels_m$k < lk_cutoff, ]
     if (nrow(sub_geno) > 0) {
       NR = samples_n
       NC = genes_n * 12
@@ -1505,25 +1526,7 @@ hapDendo <-
       sapply(1:nrow(haplo_db_clust), function(i)
         paste0(haplo_db_clust$subject[i], " ", haplo_db_clust$hapBy[i]))
 
-    haplo_db_clust_texture <-
-      setNames(
-        data.frame(matrix(ncol = 13, nrow = 0), stringsAsFactors = F),
-        c(
-          'subject',
-          'gene',
-          'alleles',
-          'hapBy',
-          'k',
-          'n',
-          'freq',
-          'grouper_x',
-          'grouper_y',
-          'points',
-          'yend',
-          'x',
-          'xend'
-        )
-      )
+    texture_list <- list()
     loc <- 1:length(levels(droplevels(haplo_db_clust$gene)))
     names(loc) <- levels(droplevels(haplo_db_clust$gene))
     for (i in 1:nrow(haplo_db_clust)) {
@@ -1537,10 +1540,15 @@ hapDendo <-
             x = loc[as.character(.data$gene)] - 0.49,
             xend = loc[as.character(.data$gene)] + 0.49
           )
-        haplo_db_clust_texture <-
-          plyr::rbind.fill(haplo_db_clust_texture, tmp_point)
+        texture_list[[length(texture_list) + 1]] <- tmp_point
       }
     }
+    haplo_db_clust_texture <- if (length(texture_list) > 0) dplyr::bind_rows(texture_list) else
+      data.frame(subject = character(), gene = character(), alleles = character(),
+                 hapBy = character(), k = numeric(), n = numeric(), freq = numeric(),
+                 grouper_x = character(), grouper_y = character(),
+                 points = numeric(), yend = numeric(), x = numeric(), xend = numeric(),
+                 stringsAsFactors = FALSE)
 
 
     allele_cols <- gsub(chain, "", gsub("_", "*", hapBy_cols))
@@ -1859,7 +1867,7 @@ plotDeletionsByBinom <-
         ),
         legend.key = element_rect(
           colour = "black",
-          size = 0.5,
+          linewidth = 0.5,
           linetype = "solid"
         ),
         legend.text = element_text(size = 14),
@@ -2050,8 +2058,7 @@ deletionHeatmap <-
     del.df.heatmap.cnt$n[del.df.heatmap.cnt$del == 1] <- 0
     del.df.heatmap.cnt$HapBy[del.df.heatmap.cnt$n == 2] <- "Both"
     del.df.heatmap.cnt <-
-      del.df.heatmap.cnt %>% dplyr::ungroup() %>% dplyr::group_by(.data$gene2, .data$HapBy, .data$del) %>% dplyr::count_(wt = "n")
-    #names(del.df.heatmap.cnt)[4] <- 'n'
+      del.df.heatmap.cnt %>% dplyr::ungroup() %>% dplyr::group_by(.data$gene2, .data$HapBy, .data$del) %>% dplyr::summarize(n = sum(.data$n), .groups = "drop")
     del.df.heatmap.cnt$n[del.df.heatmap.cnt$del == 0] <- 0
     del.df.heatmap.cnt$n[del.df.heatmap.cnt$del == 1] <- 0
     del.df.heatmap.cnt$HapBy <-
@@ -2170,7 +2177,7 @@ deletionHeatmap <-
 
       lk_labels <- setNames(paste0("lK - ", lk_labels), 0:4)
       heatmap.plot <-
-        ggplot(data = heatmap.df, aes_string(x = "gene2", y = "subject", text = "text")) +
+        suppressWarnings(ggplot(data = heatmap.df, aes_string(x = "gene2", y = "subject", text = "text")) +
         theme_bw() + geom_tile(aes_string(fill = "del")) +
         facet_wrap( ~ HapBy, nrow = 2) + scale_x_discrete(drop = FALSE) +
         scale_fill_manual(
@@ -2199,7 +2206,7 @@ deletionHeatmap <-
           legend.title = element_text(size = 14),
           legend.key = element_rect(fill = "white", colour = "black"),
           axis.line = element_line(colour = "black")
-        )
+        ))
 
       del.df.heatmap.cnt$text <-
         paste0(
@@ -2426,7 +2433,7 @@ plotDeletionsByVpooled <-
         ),
         legend.key = element_rect(
           colour = "black",
-          size = 0.5,
+          linewidth = 0.5,
           linetype = "solid"
         ),
         legend.text = element_text(size = 14),

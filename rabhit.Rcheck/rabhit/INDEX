@@ -1,0 +1,32 @@
+.onAttach               .onAttach start message
+GENE.loc                Human Gene order on the chromosome
+GERM                    Human germlines
+HDGERM                  Human IGHD germlines
+HJGERM                  Human IGHJ germlines
+HVGERM                  Human IGHV germlines
+KJGERM                  Human IGKJ germlines
+KVGERM                  Human IGKV germlines
+LJGERM                  Human IGLJ germlines
+createFullHaplotype     Anchor gene haplotype inference
+createHaplotypeTable    Create haplotype table
+deletionHeatmap         Graphical output of single chromosome deletions
+deletionsByBinom        Double chromosome deletion by relative gene
+                        usage
+deletionsByVpooled      Single chromosomal D or J gene deletions
+                        inferred by the V pooled method
+geneUsage               Double chromosome deletion by relative gene
+                        usage
+hapDendo                Hierarchical clustering of haplotypes graphical
+                        output
+hapHeatmap              Graphical output of alleles division by
+                        chromosome
+nonReliableVGenes       Detect non reliable gene assignment
+plotDeletionsByBinom    Graphical output of double chromosome deletions
+plotDeletionsByVpooled
+                        Graphical output for single chromosome D or J
+                        gene deletions according to V pooled method
+plotHaplotype           Graphical output of an inferred haplotype
+rabhit                  The RAbHIT package
+readHaplotypeDb         Read a Change-O tab-delimited database file
+samplesHaplotype        Example haplotype inference results
+samples_db              Example IGH human naive b-cell repertiore
