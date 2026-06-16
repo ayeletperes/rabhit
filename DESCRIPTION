@@ -46,6 +46,7 @@ Config/testthat/edition: 3
 Collate: 
     'Data.R'
     'rabhit.R'
+    'asc_support.R'
     'internal_functions.R'
     'functions.R'
     'graphic_functions.R'

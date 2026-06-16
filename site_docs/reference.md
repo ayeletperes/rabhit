@@ -33,6 +33,14 @@ Dirichlet-multinomial Bayesian model. Called internally by `createFullHaplotype(
 
 Read a previously saved haplotype table back into R.
 
+### `convertToASC()`
+
+Prepare data and germline for haplotype inference using PIgLET Allele Similarity
+Clusters (ASC), which collapse near-identical/duplicated IGHV alleles and align with
+OGRDB reference sets. Returns ASC-named `clip_db`, ASC `germline`, a `genes_order`,
+and the `allele_cluster_table`. Requires the optional `piglet` package. See
+[Allele clusters (ASC/OGRDB)](allele_clusters.md).
+
 ## Gene usage and deletions
 
 ### `geneUsage()`

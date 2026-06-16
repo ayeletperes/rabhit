@@ -40,6 +40,7 @@ nav:
   - Installation: installation.md
   - Input format: input.md
   - Tutorial: tutorial.md
+  - Allele clusters (ASC/OGRDB): allele_clusters.md
   - Function reference: reference.md
   - Citation: citation.md
 
