@@ -1,0 +1,38 @@
+citHeader("To cite RAbHIT in publications, please use both of the following:")
+
+bibentry(
+  bibtype = "Article",
+  title   = "Mosaic deletion patterns of the human antibody heavy chain gene locus shown by Bayesian haplotyping",
+  author  = c(person("Moriah", "Gidoni"),
+              person("Omri", "Snir"),
+              person("Ayelet", "Peres"),
+              person("Pazit", "Polak"),
+              person("Ida", "Lindeman"),
+              person("Ivana", "Mikocziova"),
+              person("Vikas Kumar", "Sarna"),
+              person(c("Knut", "E.", "A."), "Lundin"),
+              person("Christopher", "Clouser"),
+              person("Francois", "Vigneault"),
+              person("Gur", "Yaari")),
+  journal = "Nature Communications",
+  year    = "2019",
+  volume  = "10",
+  number  = "1",
+  pages   = "628",
+  doi     = "10.1038/s41467-019-08489-3"
+)
+
+bibentry(
+  bibtype = "Article",
+  title   = "RAbHIT: R Antibody Haplotype Inference Tool",
+  author  = c(person("Ayelet", "Peres"),
+              person("Moriah", "Gidoni"),
+              person("Pazit", "Polak"),
+              person("Gur", "Yaari")),
+  journal = "Bioinformatics",
+  year    = "2019",
+  volume  = "35",
+  number  = "22",
+  pages   = "4840--4842",
+  doi     = "10.1093/bioinformatics/btz481"
+)

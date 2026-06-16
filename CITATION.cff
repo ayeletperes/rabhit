@@ -1,0 +1,67 @@
+cff-version: 1.2.0
+message: "If you use RAbHIT, please cite the following articles."
+title: "RAbHIT: R Antibody Haplotype Inference Tool"
+abstract: >-
+  Infers V-D-J haplotypes and gene deletions from AIRR-seq data for Ig and TR
+  chains, based on J, D, or V genes as anchor, by adapting a Bayesian framework.
+authors:
+  - family-names: Peres
+    given-names: Ayelet
+  - family-names: Gidoni
+    given-names: Moriah
+  - family-names: Yaari
+    given-names: Gur
+repository-code: "https://github.com/ayeletperes/rabhit"
+url: "https://ayeletperes.github.io/rabhit/"
+license: CC-BY-SA-4.0
+preferred-citation:
+  type: article
+  title: "RAbHIT: R Antibody Haplotype Inference Tool"
+  authors:
+    - family-names: Peres
+      given-names: Ayelet
+    - family-names: Gidoni
+      given-names: Moriah
+    - family-names: Polak
+      given-names: Pazit
+    - family-names: Yaari
+      given-names: Gur
+  journal: Bioinformatics
+  year: 2019
+  volume: 35
+  issue: 22
+  start: 4840
+  end: 4842
+  doi: 10.1093/bioinformatics/btz481
+references:
+  - type: article
+    title: "Mosaic deletion patterns of the human antibody heavy chain gene locus shown by Bayesian haplotyping"
+    authors:
+      - family-names: Gidoni
+        given-names: Moriah
+      - family-names: Snir
+        given-names: Omri
+      - family-names: Peres
+        given-names: Ayelet
+      - family-names: Polak
+        given-names: Pazit
+      - family-names: Lindeman
+        given-names: Ida
+      - family-names: Mikocziova
+        given-names: Ivana
+      - family-names: Sarna
+        given-names: Vikas Kumar
+      - family-names: Lundin
+        given-names: Knut E. A.
+      - family-names: Clouser
+        given-names: Christopher
+      - family-names: Vigneault
+        given-names: Francois
+      - family-names: Yaari
+        given-names: Gur
+    journal: Nature Communications
+    year: 2019
+    volume: 10
+    issue: 1
+    start: 628
+    doi: 10.1038/s41467-019-08489-3

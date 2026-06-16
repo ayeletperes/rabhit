@@ -30,6 +30,12 @@ Plot the haplotype map:
 plotHaplotype(haplo_db_J6)
 ```
 
+![Single-subject haplotype map](assets/img/haplotype_single.png){ loading=lazy }
+
+The left panel shows per-gene read counts, the middle panels the allele frequencies on each
+chromosome (one column per anchor allele), and the right panels the Bayes factor `lK` for each
+assignment.
+
 ### D gene anchor (IGHD2-21)
 
 Any sufficiently heterozygous gene can be used as the anchor:
@@ -63,12 +69,16 @@ p.list$width      # suggested width
 p.list$height     # suggested height
 ```
 
+![Haplotype heatmap across subjects](assets/img/hap_heatmap.png){ loading=lazy }
+
 A dendrogram clusters samples by haplotype similarity (Jaccard distance). This needs the optional
 `ggdendro` package:
 
 ```r
 hapDendo(haplo_db)
 ```
+
+![Haplotype dendrogram](assets/img/hap_dendro.png){ loading=lazy }
 
 ## Deletion inference
 
@@ -80,6 +90,8 @@ del_binom_db <- del_binom_db[grep("IGHJ", del_binom_db$gene, invert = TRUE), ]
 plotDeletionsByBinom(del_binom_db)
 ```
 
+![Double-chromosome deletions](assets/img/deletions_binom.png){ loading=lazy }
+
 ### Single-chromosome deletions (V pooled)
 
 ```r
@@ -88,6 +100,8 @@ del_db <- deletionsByVpooled(samples_db, nonReliable_Vgenes = nonReliable_Vgenes
 head(del_db)
 plotDeletionsByVpooled(del_db)
 ```
+
+![Single-chromosome V deletions](assets/img/deletions_vpooled.png){ loading=lazy }
 
 ### Deletion heatmap across subjects
 
@@ -101,6 +115,8 @@ haplo_db <- createFullHaplotype(samples_db,
                                 nonReliable_Vgenes = nonReliable_Vgenes)
 deletionHeatmap(haplo_db)
 ```
+
+![Deletion heatmap across subjects](assets/img/deletion_heatmap.png){ loading=lazy }
 
 ## Handling partial V coverage
 

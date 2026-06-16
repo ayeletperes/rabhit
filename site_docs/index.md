@@ -41,6 +41,8 @@ haplo <- createFullHaplotype(clip_db,
 plotHaplotype(haplo)
 ```
 
+![Single-subject haplotype map](assets/img/haplotype_single.png){ loading=lazy }
+
 See the [Tutorial](tutorial.md) for the full workflow and the
 [Function reference](reference.md) for the complete API.
 

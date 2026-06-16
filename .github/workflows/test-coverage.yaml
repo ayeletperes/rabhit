@@ -39,7 +39,8 @@ jobs:
 
       - uses: codecov/codecov-action@v4
         with:
-          fail_ci_if_error: ${{ github.event_name != 'pull_request' && true || false }}
+          # Do not fail the job if Codecov is not configured (no CODECOV_TOKEN secret yet).
+          fail_ci_if_error: false
           file: ./cobertura.xml
           plugins: noop
           disable_search: true
