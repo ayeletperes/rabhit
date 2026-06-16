@@ -41,29 +41,20 @@
 #'  }
 #'
 #' @import   ggplot2
-#' @import   methods
 #' @import   utils
-#' @import   dendextend
-#' @importFrom  plotly           ggplotly subplot
 #' @importFrom  graphics         grid image axis points text par plot
 #' @importFrom  cowplot          get_legend plot_grid ggdraw draw_label background_grid
-#' @importFrom  dplyr            do n desc %>% distinct all_of across
-#'                               bind_cols bind_rows combine rowwise slice
+#' @importFrom  dplyr            do n desc %>% distinct all_of across .data
+#'                               bind_cols bind_rows rowwise slice
 #'                               filter select arrange
 #'                               group_by ungroup
 #'                               mutate summarize
 #'                               mutate_at summarize_at count
 #'                               rename transmute pull ungroup row_number if_else
-#' @importFrom  gtools           ddirichlet
 #' @importFrom  stats            hclust as.dendrogram as.dist binom.test p.adjust setNames weighted.mean
-#' @importFrom  ggdendro         dendro_data segment
-#' @importFrom  htmlwidgets      saveWidget
 #' @importFrom  gtable           gtable_filter gtable_add_rows gtable_add_grob
 #' @importFrom  grDevices        dev.off pdf recordPlot dev.control
-#' @importFrom  rlang            .data
-#' @importFrom  RColorBrewer     brewer.pal
 #' @importFrom  tidyr            separate_rows separate pivot_longer expand_grid
 #' @importFrom  grid             gpar textGrob
-#' @importFrom  utils            read.delim
 NULL
 

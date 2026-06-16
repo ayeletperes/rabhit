@@ -3,6 +3,21 @@
 #' @include rabhit.R
 NULL
 
+# 9-class ColorBrewer "Blues" palette, inlined to avoid a dependency on RColorBrewer.
+# Equivalent to RColorBrewer::brewer.pal(9, "Blues").
+BLUES9 <- c("#F7FBFF", "#DEEBF7", "#C6DBEF", "#9ECAE1", "#6BAED6",
+            "#4292C6", "#2171B5", "#08519C", "#08306B")
+
+# Dirichlet probability density, inlined to avoid a dependency on gtools.
+# Equivalent to gtools::ddirichlet() for a single probability vector `x`
+# (whose elements are in [0, 1] and sum to 1) with concentration `alpha`.
+ddirichlet_local <- function(x, alpha) {
+  if (any(x < 0 | x > 1)) return(0)
+  if (!isTRUE(all.equal(sum(x), 1))) return(0)
+  logD <- sum(lgamma(alpha)) - lgamma(sum(alpha))
+  exp(sum((alpha - 1) * log(x)) - logD)
+}
+
 ########################################################################################################
 # Calculate models likelihood
 #
@@ -41,17 +56,17 @@ get_probabilites_with_priors <-
     H2 <- c(params[1], params[2])
 
     E1 <-
-      gtools::ddirichlet((H1 + epsilon) / sum(H1 + epsilon), alpha_dirichlet + X)
+      ddirichlet_local((H1 + epsilon) / sum(H1 + epsilon), alpha_dirichlet + X)
     E2 <-
-      gtools::ddirichlet((H2 + epsilon) / sum(H2 + epsilon), alpha_dirichlet + X)
+      ddirichlet_local((H2 + epsilon) / sum(H2 + epsilon), alpha_dirichlet + X)
 
     while (sort(c(E1, E2), decreasing = TRUE)[2] == 0) {
       Number_Of_Divisions <- Number_Of_Divisions + 1
       X <- X / 10
       E1 <-
-        gtools::ddirichlet((H1 + epsilon) / sum(H1 + epsilon), alpha_dirichlet + X)
+        ddirichlet_local((H1 + epsilon) / sum(H1 + epsilon), alpha_dirichlet + X)
       E2 <-
-        gtools::ddirichlet((H2 + epsilon) / sum(H2 + epsilon), alpha_dirichlet + X)
+        ddirichlet_local((H2 + epsilon) / sum(H2 + epsilon), alpha_dirichlet + X)
     }
     return(c(log10(c(E1, E2)), Number_Of_Divisions))
   }

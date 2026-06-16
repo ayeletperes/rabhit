@@ -21,18 +21,27 @@ LazyData: true
 BuildVignettes: true
 VignetteBuilder: knitr
 Encoding: UTF-8
-Depends: R (>= 3.5.0), ggplot2 (>= 3.2.0)
-Imports: dplyr (>= 1.0.0), tidyr (>= 1.0.0), plotly (>= 4.7.1),
-    gtools (>= 3.5.0), cowplot (>= 0.9.1),
-    dendextend (>= 1.9.0),
-    ggdendro (>= 0.1.20),
-    methods (>= 3.4.4), htmlwidgets (>= 1.3.0), gtable (>= 0.3.0), rlang (>= 0.4.0),
-    RColorBrewer (>= 1.1.2),
-    grid (>= 3.4.4)
+Depends: R (>= 3.5.0)
+Imports: ggplot2 (>= 3.2.0),
+    dplyr (>= 1.0.0),
+    tidyr (>= 1.0.0),
+    cowplot (>= 0.9.1),
+    gtable (>= 0.3.0),
+    grid,
+    stats,
+    utils,
+    graphics,
+    grDevices
 Suggests: knitr,
-    rmarkdown, stats, graphics, grDevices
+    rmarkdown,
+    plotly (>= 4.7.1),
+    htmlwidgets (>= 1.3.0),
+    ggdendro (>= 0.1.20),
+    piglet,
+    testthat (>= 3.0.0)
 RoxygenNote: 7.3.3
 NeedsCompilation: no
+Config/testthat/edition: 3
 Collate: 
     'Data.R'
     'rabhit.R'

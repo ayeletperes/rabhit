@@ -50,6 +50,13 @@ plotHaplotype <-
     }
     chain <- match.arg(chain)
 
+    if (html_output &&
+        (!requireNamespace("plotly", quietly = TRUE) ||
+         !requireNamespace("htmlwidgets", quietly = TRUE))) {
+      stop("html_output = TRUE requires the 'plotly' and 'htmlwidgets' packages. ",
+           "Install them with install.packages(c('plotly', 'htmlwidgets')).")
+    }
+
     if (is.null(genes_order)) {
       genes_order <- GENE.loc[[chain]]
     }
@@ -412,7 +419,7 @@ plotHaplotype <-
 
         p = p + theme(axis.title.x = element_blank())
         p.l <-
-          ggplotly(p,
+          plotly::ggplotly(p,
                    height = 800,
                    width = 400,
                    tooltip = "text") %>% plotly::layout(showlegend = FALSE)
@@ -421,11 +428,11 @@ plotHaplotype <-
         pk <-
           pk + scale_fill_manual(
             name = "log<sub>10</sub>(lK)",
-            values = c('#FFFFFF', RColorBrewer::brewer.pal(9, 'Blues')),
+            values = c('#FFFFFF', BLUES9),
             drop = FALSE
           )
         pk.l <-
-          ggplotly(pk,
+          plotly::ggplotly(pk,
                    height = 800,
                    width = 400,
                    tooltip = "text") %>% plotly::layout(showlegend = TRUE)
@@ -434,7 +441,7 @@ plotHaplotype <-
 
         p2 <- p2 + ylab("log<sub>10</sub>(Count+1)")
         p2.l <-
-          ggplotly(p2,
+          plotly::ggplotly(p2,
                    height = 1000,
                    width = 700,
                    tooltip = "text") %>% plotly::layout(
@@ -492,7 +499,7 @@ plotHaplotype <-
 
         p.l.c <-
           suppressWarnings(
-            subplot(
+            plotly::subplot(
               p2.l,
               p.l,
               pk.l,
@@ -611,7 +618,7 @@ plotHaplotype <-
 
         pk = pk + scale_fill_manual(
           name = expression("log"[10] * "(lK)"),
-          values = c('#FFFFFF', RColorBrewer::brewer.pal(9, 'Blues')),
+          values = c('#FFFFFF', BLUES9),
           drop = FALSE
         )
         pk.legend <-
@@ -1388,6 +1395,11 @@ hapDendo <-
     }
     chain <- match.arg(chain)
 
+    if (!requireNamespace("ggdendro", quietly = TRUE)) {
+      stop("hapDendo() requires the 'ggdendro' package. ",
+           "Install it with install.packages('ggdendro').")
+    }
+
     if (is.null(genes_order)) {
       genes_order <- GENE.loc[[chain]]
     }
@@ -1944,6 +1956,11 @@ deletionHeatmap <-
       chain = "IGH"
     }
     chain <- match.arg(chain)
+
+    if (html_output && !requireNamespace("plotly", quietly = TRUE)) {
+      stop("html_output = TRUE requires the 'plotly' package. ",
+           "Install it with install.packages('plotly').")
+    }
 
     if (!("subject" %in% names(hap_table))) {
       hap_table$subject <- rep("S1", nrow(hap_table))

@@ -1,8 +1,18 @@
+# RStudio
 .Rproj.user
 .Rhistory
 .RData
 .Ruserdata
-inst/doc
-^.*\.Rproj$
-Rprof.out
+*.Rproj
 
+# R build / check artifacts
+inst/doc
+Rprof.out
+Rplots.pdf
+*.tar.gz
+*.Rcheck/
+
+# Claude Code
+CLAUDE.local.md
+CLAUDE.md
+.claude/
