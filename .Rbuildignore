@@ -13,6 +13,7 @@ Rprof.out
 ^cran-comments\.md$
 ^mkdocs\.yml$
 ^site_docs/
+^site$
 ^requirements-docs\.txt$
 ^\.plan/
 ^LICENSE\.md$

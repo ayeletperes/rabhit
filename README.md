@@ -1,4 +1,11 @@
-# RAbHIT: R Antibody Haplotype Infrence Tool 
+# RAbHIT: R Antibody Haplotype Inference Tool
+
+<!-- badges: start -->
+[![R-CMD-check](https://github.com/ayeletperes/rabhit/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/ayeletperes/rabhit/actions/workflows/R-CMD-check.yaml)
+[![test-coverage](https://github.com/ayeletperes/rabhit/actions/workflows/test-coverage.yaml/badge.svg)](https://github.com/ayeletperes/rabhit/actions/workflows/test-coverage.yaml)
+[![docs](https://github.com/ayeletperes/rabhit/actions/workflows/docs.yaml/badge.svg)](https://ayeletperes.github.io/rabhit/)
+[![License: CC BY-SA 4.0](https://img.shields.io/badge/License-CC%20BY--SA%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by-sa/4.0/)
+<!-- badges: end -->
 
 Analysis of antibody repertoires by high throughput sequencing is of major importance in understanding adaptive immune responses. Our knowledge of variations in the genomic loci encoding antibody genes is incomplete, mostly due to technical difficulties in aligning short reads to these highly repetitive loci. The partial knowledge results in conflicting V-D-J gene assignments between different algorithms, and biased genotype and haplotype inference. Previous studies have shown that haplotypes can be inferred by taking advantage of IGHJ6 heterozygosity, observed in approximately one third of the population.
 
@@ -35,23 +42,22 @@ RAbHIT is available for installion either from CRAN or from the development vers
 install.packages("rabhit")
 ```
 
-### RAbHIT repository installation ###
+### RAbHIT development version installation ###
 
-To build from the source code, first install the build dependencies:  
+To install the latest development version directly from GitHub:
+
+```R
+# install.packages("devtools")
+devtools::install_github("ayeletperes/rabhit")
+```
+
+To build from the source code, first install the build dependencies:
 
 ```R
 install.packages(c("devtools", "roxygen2", "testthat", "knitr", "rmarkdown", "plotly"))
 ```
 
-To install the latest version via devtools:
-
-```R
-library(devtools)
-install_bitbucket("yaarilab/rabhit")
-```
-
-Note, installing from bitbucket does not generate the documentation.
-To generate them, first clone the repository and then build:
+Then clone the repository and build:
 
 ```R
 library(devtools)
@@ -63,7 +69,7 @@ install()
 
 ## Documentation ##
 
-A complete documentation of RAbHIT is available at: https://yaarilab.bitbucket.io/RAbHIT/ or in your local repository at: ./vignettes/RAbHIT-vignette.html
+A complete documentation of RAbHIT is available at: https://ayeletperes.github.io/rabhit/ or in your local repository at: ./vignettes/RAbHIT-vignette.html
 
 
 ## Contact ##
@@ -73,7 +79,7 @@ For help, questions, or suggestions, please contact:
 * [Ayelet Peres](mailto:peresay@biu.ac.il)
 * [Moriah Gidoni](mailto:moriah.cohen@biu.ac.il)
 * [Gur Yaari](mailto:gur.yaari@biu.ac.il)
-* [Issue tracker](https://bitbucket.org/yaarilab/rabhit/issues?status=new&status=open)
+* [Issue tracker](https://github.com/ayeletperes/rabhit/issues)
 
 
 ## Copying ##

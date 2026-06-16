@@ -15,8 +15,9 @@ Description: Infers V-D-J haplotypes and gene deletions from AIRR-seq data for I
     Gidoni, et al (2019) <doi:10.1038/s41467-019-08489-3>.
     Peres and Gidoni, et al (2019) <doi:10.1093/bioinformatics/btz481>.
 License: CC BY-SA 4.0
-URL: https://yaarilab.bitbucket.io/RAbHIT/
-BugReports: https://bitbucket.org/yaarilab/rabhit/issues
+URL: https://github.com/ayeletperes/rabhit,
+    https://ayeletperes.github.io/rabhit/
+BugReports: https://github.com/ayeletperes/rabhit/issues
 LazyData: true
 BuildVignettes: true
 VignetteBuilder: knitr

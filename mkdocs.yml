@@ -1,0 +1,56 @@
+site_name: RAbHIT
+site_description: R Antibody Haplotype Inference Tool — V-D-J haplotype and gene deletion inference from AIRR-seq data
+site_url: https://ayeletperes.github.io/rabhit/
+repo_url: https://github.com/ayeletperes/rabhit
+repo_name: ayeletperes/rabhit
+docs_dir: site_docs
+
+theme:
+  name: material
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: indigo
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+  features:
+    - navigation.sections
+    - navigation.top
+    - navigation.tracking
+    - content.code.copy
+    - search.suggest
+    - search.highlight
+    - toc.follow
+
+nav:
+  - Home: index.md
+  - Installation: installation.md
+  - Input format: input.md
+  - Tutorial: tutorial.md
+  - Function reference: reference.md
+  - Citation: citation.md
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.superfences
+  - pymdownx.details
+
+plugins:
+  - search

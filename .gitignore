@@ -12,6 +12,9 @@ Rplots.pdf
 *.tar.gz
 *.Rcheck/
 
+# MkDocs build output
+site/
+
 # Claude Code
 CLAUDE.local.md
 CLAUDE.md
