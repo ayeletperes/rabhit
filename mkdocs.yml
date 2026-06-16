@@ -4,32 +4,36 @@ site_url: https://ayeletperes.github.io/rabhit/
 repo_url: https://github.com/ayeletperes/rabhit
 repo_name: ayeletperes/rabhit
 docs_dir: site_docs
+use_directory_urls: false
 
 theme:
   name: material
+  language: en
   palette:
-    - media: "(prefers-color-scheme: light)"
-      scheme: default
-      primary: indigo
-      accent: indigo
-      toggle:
-        icon: material/weather-night
-        name: Switch to dark mode
-    - media: "(prefers-color-scheme: dark)"
-      scheme: slate
-      primary: indigo
-      accent: indigo
-      toggle:
-        icon: material/weather-sunny
-        name: Switch to light mode
+    scheme: default
+    primary: white
+    accent: green
+  font:
+    text: IBM Plex Sans
+    code: IBM Plex Mono
+  icon:
+    repo: fontawesome/brands/github
   features:
+    - navigation.tabs
     - navigation.sections
+    - navigation.indexes
     - navigation.top
+    - navigation.footer
     - navigation.tracking
     - content.code.copy
+    - content.code.annotate
+    - content.tabs.link
     - search.suggest
     - search.highlight
     - toc.follow
+
+extra_css:
+  - stylesheets/extra.css
 
 nav:
   - Home: index.md
@@ -51,6 +55,8 @@ markdown_extensions:
   - pymdownx.inlinehilite
   - pymdownx.superfences
   - pymdownx.details
+  - pymdownx.tabbed:
+      alternate_style: true
 
 plugins:
   - search

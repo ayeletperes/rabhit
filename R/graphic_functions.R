@@ -261,7 +261,7 @@ plotHaplotype <-
       p = suppressWarnings(ggplot() +
         geom_bar(
           data = geno.df,
-          mapping = aes_string(x = "gene", fill = "alleles", text = "text"),
+          mapping = aes_str(x = "gene", fill = "alleles", text = "text"),
           position = "fill",
           width = 0.9,
           na.rm = T
@@ -304,7 +304,7 @@ plotHaplotype <-
         )
       pk <-
         suppressWarnings(ggplot(kval.df,
-               aes_string(x = "gene", fill = "K_GROUPED", text = "text")) + theme_bw() + theme(
+               aes_str(x = "gene", fill = "K_GROUPED", text = "text")) + theme_bw() + theme(
                  axis.ticks = element_blank(),
                  axis.text = element_blank(),
                  axis.title = element_blank(),
@@ -348,7 +348,7 @@ plotHaplotype <-
       ## Left panel
       p2 <-
         ggplot(count.df,
-               aes_string(
+               aes_str(
                  x = "gene",
                  y = "count2",
                  fill = "alleles",
@@ -359,7 +359,7 @@ plotHaplotype <-
           position = "Dodge",
           width = 0.9,
           na.rm = T,
-          aes_string(colour = "border")
+          aes_str(colour = "border")
         ) + coord_flip() + cowplot::background_grid(minor = "none") +
         scale_fill_manual(
           values = alpha(names(AlleleCol),
@@ -386,7 +386,7 @@ plotHaplotype <-
         p <-
           p + geom_text(
             data = non_reliable_alleles_text,
-            aes_string(label = "text", x = "gene", y = "pos"),
+            aes_str(label = "text", x = "gene", y = "pos"),
             angle = 0,
             size = non_reliable_alleles_text$size
           )
@@ -399,7 +399,7 @@ plotHaplotype <-
         p2 <-
           p2 + geom_text(
             data = non_reliable_alleles_text,
-            aes_string(
+            aes_str(
               label = "text",
               x = "gene",
               hjust = "hjust"
@@ -1464,7 +1464,7 @@ hapDendo <-
       with(samples_pos_table, c(min(y_center - 0.5 * height), max(y_center + 0.5 * height))) + 0.1 * c(-1, 1)
 
     plt_dendr <-
-      ggplot(segment_data) + geom_segment(aes_string(
+      ggplot(segment_data) + geom_segment(aes_str(
         x = "x",
         y = "y",
         xend = "xend",
@@ -1620,7 +1620,7 @@ hapDendo <-
     hap_plot <-
       ggplot() + geom_col(
         data = heatmap.df,
-        mapping = aes_string(x = "gene_LOC", y = "freq", fill = "alleles"),
+        mapping = aes_str(x = "gene_LOC", y = "freq", fill = "alleles"),
         position = "fill",
         width = 0.95,
         na.rm = T
@@ -1685,7 +1685,7 @@ hapDendo <-
       hap_plot <-
         hap_plot + geom_segment(
           data = haplo_db_clust_texture,
-          mapping = aes_string(
+          mapping = aes_str(
             x = "x",
             xend = "xend",
             y = "points",
@@ -1725,7 +1725,7 @@ hapDendo <-
       hap_plot <-
         hap_plot + geom_text(
           data = non_reliable_alleles_text,
-          aes_string(label = "text", x = "gene_LOC", y = "pos"),
+          aes_str(label = "text", x = "gene_LOC", y = "pos"),
           angle = 90,
           size = non_reliable_alleles_text$size
         )
@@ -1826,8 +1826,8 @@ plotDeletionsByBinom <-
     p.del <-
       ggplot(
         GENE.usage.df %>% filter(.data$deletion != "Non reliable"),
-        aes_string(x = "gene2", y = "frac")
-      ) + geom_boxplot(outlier.colour = NA) + geom_jitter(aes_string(x = "gene2",
+        aes_str(x = "gene2", y = "frac")
+      ) + geom_boxplot(outlier.colour = NA) + geom_jitter(aes_str(x = "gene2",
                                                                      color = "deletion"),
                                                           width = 0.25,
                                                           size = 0.5) + theme(
@@ -1862,7 +1862,7 @@ plotDeletionsByBinom <-
     else
       col_val = c("#6d6d6d", "#ffffff", "#dedede", "#ffefd5")
     heatmap.plot <-
-      ggplot(data = GENE.usage.df, aes_string(x = "gene2", y = "subject")) + geom_tile(aes_string(fill = "deletion")) + scale_fill_manual(
+      ggplot(data = GENE.usage.df, aes_str(x = "gene2", y = "subject")) + geom_tile(aes_str(fill = "deletion")) + scale_fill_manual(
         name = "",
         labels = lab,
         values = col_val,
@@ -2083,8 +2083,8 @@ deletionHeatmap <-
              levels = c(ALLELE_01_col, ALLELE_02_col, "Both"))
     if (!html_output) {
       heatmap.plot <-
-        ggplot(data = heatmap.df, aes_string(x = "gene2", y = "subject")) +
-        theme_bw() + geom_tile(aes_string(fill = "del")) +
+        ggplot(data = heatmap.df, aes_str(x = "gene2", y = "subject")) +
+        theme_bw() + geom_tile(aes_str(fill = "del")) +
         facet_wrap( ~ HapBy, nrow = 2) + scale_x_discrete(drop = FALSE) +
         scale_fill_manual(
           name = "lK",
@@ -2124,7 +2124,7 @@ deletionHeatmap <-
 
       pdel <-
         ggplot(del.df.heatmap.cnt,
-               aes_string(x = "gene2", y = "n", fill = "HapBy")) + theme_bw() + geom_bar(stat = "identity",
+               aes_str(x = "gene2", y = "n", fill = "HapBy")) + theme_bw() + geom_bar(stat = "identity",
                                                                                          position = "stack",
                                                                                          na.rm = T) +
         theme(
@@ -2194,8 +2194,8 @@ deletionHeatmap <-
 
       lk_labels <- setNames(paste0("lK - ", lk_labels), 0:4)
       heatmap.plot <-
-        suppressWarnings(ggplot(data = heatmap.df, aes_string(x = "gene2", y = "subject", text = "text")) +
-        theme_bw() + geom_tile(aes_string(fill = "del")) +
+        suppressWarnings(ggplot(data = heatmap.df, aes_str(x = "gene2", y = "subject", text = "text")) +
+        theme_bw() + geom_tile(aes_str(fill = "del")) +
         facet_wrap( ~ HapBy, nrow = 2) + scale_x_discrete(drop = FALSE) +
         scale_fill_manual(
           name = "",
@@ -2240,7 +2240,7 @@ deletionHeatmap <-
         paste0("Chromosome - ", del.df.heatmap.cnt$HapBy)
       pdel <-
         ggplot(del.df.heatmap.cnt,
-               aes_string(
+               aes_str(
                  x = "gene2",
                  y = "n",
                  fill = "HapBy2",
@@ -2432,7 +2432,7 @@ plotDeletionsByVpooled <-
     }
 
     heatmap.plot <-
-      ggplot(data = del.df, aes_string(x = "gene2", y = "subject")) + geom_tile(aes_string(fill = "EVENT")) + scale_fill_manual(
+      ggplot(data = del.df, aes_str(x = "gene2", y = "subject")) + geom_tile(aes_str(fill = "EVENT")) + scale_fill_manual(
         name = "",
         labels = labels1,
         values = values1,

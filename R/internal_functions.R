@@ -8,6 +8,23 @@ NULL
 BLUES9 <- c("#F7FBFF", "#DEEBF7", "#C6DBEF", "#9ECAE1", "#6BAED6",
             "#4292C6", "#2171B5", "#08519C", "#08306B")
 
+# Build an aes() mapping from column-name strings — a drop-in replacement for the
+# deprecated ggplot2::aes_string(). Character arguments are turned into symbols so the
+# columns are resolved from the plotting data at build time; non-character arguments
+# (e.g. already-quoted expressions) are passed through unchanged.
+aes_str <- function(...) {
+  args <- lapply(list(...), function(a) if (is.character(a)) str2lang(a) else a)
+  mapping <- do.call(ggplot2::aes, args)
+  # aes_string() evaluated its strings in the caller's environment, so variables
+  # referenced by a mapping (not just data columns) resolved there. Re-point each
+  # quosure at the caller to preserve that behaviour.
+  caller <- parent.frame()
+  for (i in seq_along(mapping)) {
+    if (inherits(mapping[[i]], "formula")) environment(mapping[[i]]) <- caller
+  }
+  mapping
+}
+
 # Dirichlet probability density, inlined to avoid a dependency on gtools.
 # Equivalent to gtools::ddirichlet() for a single probability vector `x`
 # (whose elements are in [0, 1] and sum to 1) with concentration `alpha`.
@@ -1006,8 +1023,8 @@ alleleCollapse <-
 #
 getDigLegend <- function(color) {
   return(ggplotGrob(
-    ggplot(data.frame(x = c(1, 2), y = c(3, 4)), aes_string("x", "y")) + geom_abline(
-      aes_string(
+    ggplot(data.frame(x = c(1, 2), y = c(3, 4)), aes_str("x", "y")) + geom_abline(
+      aes_str(
         colour = "color",
         intercept = 1,
         slope = 1
