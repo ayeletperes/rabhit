@@ -10,7 +10,6 @@ Rprof.out
 ^.*\.Rcheck$
 ^Rplots\.pdf$
 ^README\.html$
-^cran-comments\.md$
 ^CITATION\.cff$
 ^mkdocs\.yml$
 ^site_docs/
