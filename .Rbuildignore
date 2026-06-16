@@ -11,6 +11,7 @@ Rprof.out
 ^Rplots\.pdf$
 ^README\.html$
 ^CITATION\.cff$
+^cran-comments\.md$
 ^mkdocs\.yml$
 ^site_docs/
 ^site$

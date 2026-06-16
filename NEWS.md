@@ -1,3 +1,25 @@
+Version 0.4.0: June 16, 2026
+-------------------------------------------------------------------------------
+
+New features:
+
++ `convertToASC()`: prepare data and germline for haplotype inference using
+  PIgLET Allele Similarity Clusters (ASC), resolving duplicated genes and
+  aligning with OGRDB reference sets.
+
+Dependencies:
+
++ Reduced the dependency footprint: removed `gtools`, `RColorBrewer`,
+  `dendextend`, `rlang` and `methods`; moved `plotly`, `htmlwidgets` and
+  `ggdendro` to Suggests (loaded only when needed); moved `ggplot2` to Imports.
+
+General:
+
++ Replaced the deprecated `ggplot2::aes_string()` usage.
++ Added a `testthat` test suite.
++ Migrated the repository to GitHub with continuous integration and an online
+  documentation site.
+
 Version 0.3.0: Dec 9, 2024
 -------------------------------------------------------------------------------
 

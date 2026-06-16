@@ -15,6 +15,9 @@ Rplots.pdf
 # MkDocs build output
 site/
 
+# CRAN submission notes (kept local, not published)
+cran-comments.md
+
 # Claude Code
 CLAUDE.local.md
 CLAUDE.md
