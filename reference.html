@@ -13,7 +13,7 @@
         <link rel="canonical" href="https://ayeletperes.github.io/rabhit/reference.html">
       
       
-        <link rel="prev" href="tutorial.html">
+        <link rel="prev" href="allele_clusters.html">
       
       
         <link rel="next" href="citation.html">
@@ -273,6 +273,25 @@
   
   
   
+  
+    <li class="md-tabs__item">
+      <a href="allele_clusters.html" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Allele clusters (ASC/OGRDB)
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
     
   
   
@@ -466,6 +485,33 @@
       
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="allele_clusters.html" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Allele clusters (ASC/OGRDB)
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
     
   
   
@@ -567,6 +613,17 @@
     <span class="md-ellipsis">
       
         readHaplotypeDb()
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#converttoasc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        convertToASC()
       
     </span>
   </a>
@@ -767,6 +824,17 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#converttoasc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        convertToASC()
+      
+    </span>
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -898,6 +966,12 @@ candidate alleles, read counts, and the Bayes factor <code>lK</code>.</p>
 Dirichlet-multinomial Bayesian model. Called internally by <code>createFullHaplotype()</code> per gene.</p>
 <h3 id="readhaplotypedb"><code>readHaplotypeDb()</code><a class="headerlink" href="#readhaplotypedb" title="Permanent link">&para;</a></h3>
 <p>Read a previously saved haplotype table back into R.</p>
+<h3 id="converttoasc"><code>convertToASC()</code><a class="headerlink" href="#converttoasc" title="Permanent link">&para;</a></h3>
+<p>Prepare data and germline for haplotype inference using PIgLET Allele Similarity
+Clusters (ASC), which collapse near-identical/duplicated IGHV alleles and align with
+OGRDB reference sets. Returns ASC-named <code>clip_db</code>, ASC <code>germline</code>, a <code>genes_order</code>,
+and the <code>allele_cluster_table</code>. Requires the optional <code>piglet</code> package. See
+<a href="allele_clusters.html">Allele clusters (ASC/OGRDB)</a>.</p>
 <h2 id="gene-usage-and-deletions">Gene usage and deletions<a class="headerlink" href="#gene-usage-and-deletions" title="Permanent link">&para;</a></h2>
 <h3 id="geneusage"><code>geneUsage()</code><a class="headerlink" href="#geneusage" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="nf">geneUsage</span><span class="p">(</span><span class="n">clip_db</span><span class="p">,</span><span class="w"> </span><span class="n">chain</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s">&quot;IGH&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;IGK&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;IGL&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;TRB&quot;</span><span class="p">),</span>
@@ -990,7 +1064,7 @@ ordering). See <a href="input.html">Input format</a>.</p>
       <nav class="md-footer__inner md-grid" aria-label="Footer" >
         
           
-          <a href="tutorial.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: Tutorial">
+          <a href="allele_clusters.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: Allele clusters (ASC/OGRDB)">
             <div class="md-footer__button md-icon">
               
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
@@ -1000,7 +1074,7 @@ ordering). See <a href="input.html">Input format</a>.</p>
                 Previous
               </span>
               <div class="md-ellipsis">
-                Tutorial
+                Allele clusters (ASC/OGRDB)
               </div>
             </div>
           </a>
