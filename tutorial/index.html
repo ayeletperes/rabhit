@@ -774,6 +774,10 @@
 <p>Plot the haplotype map:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="nf">plotHaplotype</span><span class="p">(</span><span class="n">haplo_db_J6</span><span class="p">)</span>
 </code></pre></div>
+<p><img alt="Single-subject haplotype map" loading="lazy" src="../assets/img/haplotype_single.png" /></p>
+<p>The left panel shows per-gene read counts, the middle panels the allele frequencies on each
+chromosome (one column per anchor allele), and the right panels the Bayes factor <code>lK</code> for each
+assignment.</p>
 <h3 id="d-gene-anchor-ighd2-21">D gene anchor (IGHD2-21)<a class="headerlink" href="#d-gene-anchor-ighd2-21" title="Permanent link">&para;</a></h3>
 <p>Any sufficiently heterozygous gene can be used as the anchor:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="n">haplo_db_D2_21</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">createFullHaplotype</span><span class="p">(</span><span class="n">clip_db</span><span class="p">,</span>
@@ -800,22 +804,26 @@ with an optimal width/height for rendering:</p>
 <a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="n">p.list</span><span class="o">$</span><span class="n">width</span><span class="w">      </span><span class="c1"># suggested width</span>
 <a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="n">p.list</span><span class="o">$</span><span class="n">height</span><span class="w">     </span><span class="c1"># suggested height</span>
 </code></pre></div>
+<p><img alt="Haplotype heatmap across subjects" loading="lazy" src="../assets/img/hap_heatmap.png" /></p>
 <p>A dendrogram clusters samples by haplotype similarity (Jaccard distance). This needs the optional
 <code>ggdendro</code> package:</p>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="nf">hapDendo</span><span class="p">(</span><span class="n">haplo_db</span><span class="p">)</span>
 </code></pre></div>
+<p><img alt="Haplotype dendrogram" loading="lazy" src="../assets/img/hap_dendro.png" /></p>
 <h2 id="deletion-inference">Deletion inference<a class="headerlink" href="#deletion-inference" title="Permanent link">&para;</a></h2>
 <h3 id="double-chromosome-deletions-binomial-test">Double-chromosome deletions (binomial test)<a class="headerlink" href="#double-chromosome-deletions-binomial-test" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="n">del_binom_db</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">deletionsByBinom</span><span class="p">(</span><span class="n">clip_dbs</span><span class="p">)</span>
 <a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="n">del_binom_db</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">del_binom_db</span><span class="p">[</span><span class="nf">grep</span><span class="p">(</span><span class="s">&quot;IGHJ&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">del_binom_db</span><span class="o">$</span><span class="n">gene</span><span class="p">,</span><span class="w"> </span><span class="n">invert</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">),</span><span class="w"> </span><span class="p">]</span>
 <a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="nf">plotDeletionsByBinom</span><span class="p">(</span><span class="n">del_binom_db</span><span class="p">)</span>
 </code></pre></div>
+<p><img alt="Double-chromosome deletions" loading="lazy" src="../assets/img/deletions_binom.png" /></p>
 <h3 id="single-chromosome-deletions-v-pooled">Single-chromosome deletions (V pooled)<a class="headerlink" href="#single-chromosome-deletions-v-pooled" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="n">nonReliable_Vgenes</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">nonReliableVGenes</span><span class="p">(</span><span class="n">samples_db</span><span class="p">)</span>
 <a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="n">del_db</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">deletionsByVpooled</span><span class="p">(</span><span class="n">samples_db</span><span class="p">,</span><span class="w"> </span><span class="n">nonReliable_Vgenes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nonReliable_Vgenes</span><span class="p">)</span>
 <a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a><span class="nf">head</span><span class="p">(</span><span class="n">del_db</span><span class="p">)</span>
 <a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="nf">plotDeletionsByVpooled</span><span class="p">(</span><span class="n">del_db</span><span class="p">)</span>
 </code></pre></div>
+<p><img alt="Single-chromosome V deletions" loading="lazy" src="../assets/img/deletions_vpooled.png" /></p>
 <h3 id="deletion-heatmap-across-subjects">Deletion heatmap across subjects<a class="headerlink" href="#deletion-heatmap-across-subjects" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="n">del_binom_db</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">deletionsByBinom</span><span class="p">(</span><span class="n">samples_db</span><span class="p">,</span><span class="w"> </span><span class="n">nonReliable_Vgenes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nonReliable_Vgenes</span><span class="p">)</span>
 <a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a><span class="n">haplo_db</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">createFullHaplotype</span><span class="p">(</span><span class="n">samples_db</span><span class="p">,</span>
@@ -826,6 +834,7 @@ with an optimal width/height for rendering:</p>
 <a id="__codelineno-8-7" name="__codelineno-8-7" href="#__codelineno-8-7"></a><span class="w">                                </span><span class="n">nonReliable_Vgenes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nonReliable_Vgenes</span><span class="p">)</span>
 <a id="__codelineno-8-8" name="__codelineno-8-8" href="#__codelineno-8-8"></a><span class="nf">deletionHeatmap</span><span class="p">(</span><span class="n">haplo_db</span><span class="p">)</span>
 </code></pre></div>
+<p><img alt="Deletion heatmap across subjects" loading="lazy" src="../assets/img/deletion_heatmap.png" /></p>
 <h2 id="handling-partial-v-coverage">Handling partial V coverage<a class="headerlink" href="#handling-partial-v-coverage" title="Permanent link">&para;</a></h2>
 <p>For datasets with partial V coverage (e.g. primer-limited protocols), detect non-reliable V genes and
 feed them — together with detected deletions — back into the haplotype inference:</p>
