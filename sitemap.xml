@@ -1,27 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-         <loc>https://ayeletperes.github.io/rabhit/</loc>
+         <loc>https://ayeletperes.github.io/rabhit/index.html</loc>
          <lastmod>2026-06-16</lastmod>
     </url>
     <url>
-         <loc>https://ayeletperes.github.io/rabhit/citation/</loc>
+         <loc>https://ayeletperes.github.io/rabhit/citation.html</loc>
          <lastmod>2026-06-16</lastmod>
     </url>
     <url>
-         <loc>https://ayeletperes.github.io/rabhit/input/</loc>
+         <loc>https://ayeletperes.github.io/rabhit/input.html</loc>
          <lastmod>2026-06-16</lastmod>
     </url>
     <url>
-         <loc>https://ayeletperes.github.io/rabhit/installation/</loc>
+         <loc>https://ayeletperes.github.io/rabhit/installation.html</loc>
          <lastmod>2026-06-16</lastmod>
     </url>
     <url>
-         <loc>https://ayeletperes.github.io/rabhit/reference/</loc>
+         <loc>https://ayeletperes.github.io/rabhit/reference.html</loc>
          <lastmod>2026-06-16</lastmod>
     </url>
     <url>
-         <loc>https://ayeletperes.github.io/rabhit/tutorial/</loc>
+         <loc>https://ayeletperes.github.io/rabhit/tutorial.html</loc>
          <lastmod>2026-06-16</lastmod>
     </url>
 </urlset>

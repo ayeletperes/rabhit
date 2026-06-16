@@ -1,0 +1,45 @@
+/* RAbHIT documentation theme — brand accents matching the lab's GenAIRR-style site
+   (white top bar, green brand accent). */
+
+:root {
+  --md-primary-fg-color:        #ffffff;
+  --md-primary-fg-color--light: #ffffff;
+  --md-primary-fg-color--dark:  #f5f5f5;
+  --md-primary-bg-color:        #1f2937; /* dark text/icons on the white header */
+  --md-primary-bg-color--light: #4b5563;
+
+  --md-accent-fg-color:         #1f8a4c; /* brand green */
+  --md-accent-fg-color--transparent: rgba(31, 138, 76, 0.1);
+
+  --md-typeset-a-color:         #1f8a4c; /* links in brand green */
+}
+
+/* Give the white header a subtle bottom border so it reads as a bar. */
+.md-header {
+  border-bottom: 1px solid rgba(0, 0, 0, 0.07);
+  box-shadow: none;
+}
+
+/* Active/hovered nav tabs underlined in the brand green. */
+.md-tabs__link--active,
+.md-tabs__link:hover {
+  color: #1f8a4c;
+}
+
+/* Section headings in the brand green for a clear visual identity. */
+.md-typeset h1,
+.md-typeset h2 {
+  color: #14532d;
+}
+
+/* Rounded, bordered figures for the embedded example plots. */
+.md-typeset img {
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+/* Brand-colored accent on the repository/source button. */
+.md-header__source {
+  color: var(--md-primary-bg-color);
+}
