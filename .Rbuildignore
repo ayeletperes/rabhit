@@ -18,3 +18,4 @@ Rprof.out
 ^requirements-docs\.txt$
 ^\.plan/
 ^LICENSE\.md$
+^CRAN-SUBMISSION$
