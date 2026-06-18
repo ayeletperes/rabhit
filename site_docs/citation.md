@@ -48,7 +48,7 @@ citation("rabhit")
 
 For help, questions, or suggestions:
 
-- [Ayelet Peres](mailto:peresay@biu.ac.il)
+- [Ayelet Peres](mailto:ayelet.peres@yale.edu)
 - [Moriah Gidoni](mailto:moriah.cohen@biu.ac.il)
 - [Gur Yaari](mailto:gur.yaari@biu.ac.il)
 - [Issue tracker](https://github.com/ayeletperes/rabhit/issues)

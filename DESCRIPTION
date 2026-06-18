@@ -3,7 +3,7 @@ Type: Package
 Title: Inference Tool for Antibody Haplotype
 Version: 0.4.0
 Authors@R: c(person("Ayelet", "Peres", role=c("aut","cre"), 
-                    email="peresay@biu.ac.il"),
+                    email="ayelet.peres@yale.edu"),
             person("Moriah", "Gidoni", role=c("aut"), 
                     email="moriah.cohen@biu.ac.il"),
              person("Gur", "Yaari", role=c("aut","cph"), 
