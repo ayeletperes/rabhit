@@ -12,7 +12,9 @@ plotHaplotype(
   removeIGH = TRUE,
   plotYaxis = TRUE,
   chain = c("IGH", "IGK", "IGL", "TRB"),
-  dir
+  dir,
+  width = 15,
+  height = 20
 )
 }
 \arguments{
@@ -31,6 +33,10 @@ plotHaplotype(
 \item{chain}{the Ig/TR chain: IGH,IGK,IGL,TRB. Default is IGH.}
 
 \item{dir}{The output folder for saving the haplotype map for multiple individuals.}
+
+\item{width}{width (in inches) of the multi-subject pdf output. Default is 15.}
+
+\item{height}{height (in inches) of the multi-subject pdf output. Default is 20.}
 }
 \value{
 A haplotype map visualization. If more than one subject is visualized, a pdf is created. If html_output is TRUE, a folder named html_output is created with individual graphs.

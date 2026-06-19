@@ -8,6 +8,58 @@ NULL
 BLUES9 <- c("#F7FBFF", "#DEEBF7", "#C6DBEF", "#9ECAE1", "#6BAED6",
             "#4292C6", "#2171B5", "#08519C", "#08306B")
 
+# Structural plot colours shared across the graphical functions. Named once here
+# so the meaning is explicit and the values stay consistent between plots.
+COL_DELETION    <- "#6d6d6d"  # "Deletion" category fill / outline
+COL_NA          <- "#dedede"  # missing / "NA" category
+COL_NONRELIABLE <- "#ffefd5"  # non-reliable gene category
+LEGEND_KEY_BG   <- "#DCDCDC"  # legend key background fill
+
+# deletionHeatmap fill scales, shared by its static and interactive branches.
+DEL_HEATMAP_COLS <- c("white", "#ffb6c1", "lightblue", COL_DELETION, COL_NA)   # lK deletion categories
+PDEL_CHROM_COLS  <- c("darksalmon", "deepskyblue", "darkolivegreen3", "grey50") # per-chromosome bars
+
+# Theme shared by both deletionHeatmap branches for the tile (heatmap) panel.
+# Branch-specific keys (legend placement vs panel spacing) are added by the caller.
+del_heatmap_theme <- function() {
+  theme(
+    strip.text = element_text(size = 18),
+    strip.background = element_rect(fill = "seashell2"),
+    axis.title = element_text(size = 18),
+    axis.text = element_text(size = 14, colour = "black"),
+    axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),
+    plot.margin = margin(b = 12),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.background = element_blank(),
+    legend.text = element_text(size = 14),
+    legend.title = element_text(size = 14),
+    legend.key = element_rect(fill = "white", colour = "black"),
+    axis.line = element_line(colour = "black")
+  )
+}
+
+# Theme shared by both deletionHeatmap branches for the per-chromosome count
+# (bar) panel. The static branch additionally pins the legend to the bottom.
+del_count_theme <- function() {
+  theme(
+    strip.background = element_blank(),
+    axis.text = element_text(size = 14, colour = "black"),
+    axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1),
+    plot.margin = margin(0, 8, 0, 7, "pt"),
+    axis.line = element_line(colour = "black"),
+    panel.border = element_blank(),
+    legend.background = element_blank(),
+    panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank(),
+    panel.background = element_blank(),
+    legend.key = element_rect(fill = "white", colour = "black"),
+    legend.margin = margin(0, 0, 0, 0),
+    legend.text = element_text(size = 14),
+    legend.title = element_text(size = 14)
+  )
+}
+
 # Build an aes() mapping from column-name strings — a drop-in replacement for the
 # deprecated ggplot2::aes_string(). Character arguments are turned into symbols so the
 # columns are resolved from the plotting data at build time; non-character arguments
